@@ -125,7 +125,7 @@ class HeaderLayout extends Component {
                             <div className="b-hash-menu">
                                 <div className="b-logout">
                                     <GoogleLogout
-                                        clientId="748712237748-u625dabsn5e95cohlu9m31lt765cbvin.apps.googleusercontent.com"
+                                        clientId="489215353054-itb951p112dp4pc6bs603q781v60p6c0.apps.googleusercontent.com"
                                         buttonText="Đăng Xuất"
                                         onLogoutSuccess={this.logoutGoogle}
                                         className="b-logout"
@@ -181,7 +181,7 @@ class HeaderLayout extends Component {
                             width: '100%'
                         }}>
                             <GoogleLogin
-                                clientId="748712237748-u625dabsn5e95cohlu9m31lt765cbvin.apps.googleusercontent.com"
+                                clientId="489215353054-itb951p112dp4pc6bs603q781v60p6c0.apps.googleusercontent.com"
                                 scope="https://www.googleapis.com/auth/analytics"
                                 onSuccess={this.responseGoogle}
                                 onFailure={this.error}
