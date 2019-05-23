@@ -29,7 +29,7 @@ class FormModalComponent extends Component {
             calender: [],
             title: '',
             dateStart: dateFormatDate(now, 'yyyy-mm-dd'),
-            rooms: 1,
+            rooms: this.props.room.length > 0 ? this.props.room[0].id : '',
             timestart: '08:30',
             timeend: '09:30',
             checkbox: false,
@@ -41,6 +41,11 @@ class FormModalComponent extends Component {
         }
     }
     componentDidUpdate(prevProps, prevState) {
+        if (this.props.room !== prevProps.room && !this.state.rooms && this.props.room.length) {
+            this.setState({
+                rooms: this.props.room[0].id
+            })
+        }
         if (prevProps.visible !== this.props.visible) {
             if (prevProps.edit !== this.props.edit) {
                 let data = this.props.dataEdit.attributes;
@@ -51,7 +56,7 @@ class FormModalComponent extends Component {
                     dateStart: dateFormatDate(data.daystart, 'yyyy-mm-dd'),
                     timestart: data.timestart,
                     timeend: data.timeend,
-                    rooms: data.id_rooms,
+                    rooms: data.room.id,
                     checkbox: data.repeat === null ? false : true,
                     choice: data.repeat === null ? 'daily' : data.repeat.repeatby,
                     count: data.repeat === null ? 1 : data.repeat.count,
@@ -121,6 +126,8 @@ class FormModalComponent extends Component {
             this.onReset();
             this.props.onCheckModal();
         } else {
+            console.log(this.state);
+
             this.props.onAddEvent(this.state)
             this.onReset();
             this.props.onCheckModal();
@@ -140,7 +147,7 @@ class FormModalComponent extends Component {
             calender: [],
             title: '',
             dateStart: dateFormatDate(now, 'yyyy-mm-dd'),
-            rooms: 1,
+            rooms: this.props.room.length > 0 ? this.props.room[0].id : '',
             timestart: '08:30',
             timeend: '09:30',
             checkbox: false,
@@ -173,6 +180,8 @@ class FormModalComponent extends Component {
         this.setState({
             visible: false
         })
+        this.props.onCheckModal();
+
 
     }
     render() {
@@ -202,12 +211,12 @@ class FormModalComponent extends Component {
                                         </div>
                                         <div className="b-form-group">
                                             <label style={{ paddingRight: '10px' }}>Giờ Bắt Đầu</label>
-                                            <TimePicker disabledHours={disabledHours} minuteStep={30} defaultValue={moment(this.state.timestart, format)} format={format} onChange={this.onChangeTime} />,
-                                    </div>
+                                            <TimePicker disabledHours={disabledHours} minuteStep={30} defaultValue={moment(this.state.timestart, format)} format={format} onChange={this.onChangeTime} />
+                                        </div>
                                         <div className="b-form-group">
                                             <label style={{ paddingRight: '10px' }}>Giờ Bắt Kết Thúc</label>
-                                            <TimePicker disabledHours={disabledHours} minuteStep={30} defaultValue={moment(this.state.timeend, format)} value={moment(this.state.timeend, format)} format={format} onChange={this.onChangeTimeItem} />,
-                                    </div>
+                                            <TimePicker disabledHours={disabledHours} minuteStep={30} defaultValue={moment(this.state.timeend, format)} value={moment(this.state.timeend, format)} format={format} onChange={this.onChangeTimeItem} />
+                                        </div>
                                         <div className="b-form-group">
                                             <label htmlFor="c">Chọn Phòng</label>
                                             <select className="b-select" value={this.state.rooms} name="rooms" onChange={this.onChanger}>
@@ -217,8 +226,8 @@ class FormModalComponent extends Component {
                                             </select>
                                         </div>
                                         <div className="b-form-group">
-                                            <Checkbox name="checkbox" checked={this.state.checkbox} onChange={this.onChangerCheck} value={this.state.checkbox}>Lặp Lại</Checkbox>,
-                                    </div>
+                                            <Checkbox name="checkbox" checked={this.state.checkbox} onChange={this.onChangerCheck} value={this.state.checkbox}>Lặp Lại</Checkbox>
+                                        </div>
                                         <div className={this.state.checkbox ? "b-repeat" : "b-repeat is-disable"}>
 
                                             <div className="b-form-group">
@@ -241,8 +250,8 @@ class FormModalComponent extends Component {
                                                         {children.map(data => (
                                                             <Option key={data.id} value={data.name}>{data.name}</Option>
                                                         ))}
-                                                    </Select>,
-                                            </div>
+                                                    </Select>
+                                                </div>
                                                 :
                                                 <></>
                                             }

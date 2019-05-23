@@ -4,6 +4,7 @@ const INITIAL_STATE = {
     fetching: false,
     fetched: false,
     error: null,
+    distinct: false
 }
 export default function (state = INITIAL_STATE, action = {}) {
     switch (action.type) {
@@ -43,6 +44,10 @@ export default function (state = INITIAL_STATE, action = {}) {
         case types.REQUEST_RESEARCH:
             return Object.assign({}, state, {
                 all: action.payload,
+            })
+        case types.REQUEST_DISTICNT_EVENT:
+            return Object.assign({}, state, {
+                distinct: action.payload
             })
         default:
             return state;

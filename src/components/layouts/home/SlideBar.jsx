@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Modal, Button, DatePicker, TimePicker, Checkbox, Select, Radio } from 'antd';
 import { CalenderComponent } from '../../shared/home';
+import { connect } from 'react-redux'
 import moment from 'moment';
 import 'antd/dist/antd.css';
 import Cookies from 'universal-cookie';
@@ -36,7 +37,7 @@ class SlideBar extends Component {
       calender: [],
       title: '',
       dateStart: dateFormatDate(now, 'yyyy-mm-dd'),
-      rooms: this.props.room.length > 0 ? this.props.room[0].id : 4,
+      rooms: this.props.room.length > 0 ? this.props.room[0].id : '',
       timestart: '08:30',
       timeend: '09:30',
       checkbox: false,
@@ -77,6 +78,7 @@ class SlideBar extends Component {
         id: this.props.dataEdit.id,
         visible: this.props.edit,
         title: data.content,
+        rooms: data.room.id,
         dateStart: dateFormatDate(data.daystart, 'yyyy-mm-dd'),
         timestart: data.timestart,
         timeend: data.timeend,
@@ -84,6 +86,11 @@ class SlideBar extends Component {
         choice: data.repeat === null ? 'daily' : data.repeat.repeatby,
         count: data.repeat === null ? 1 : data.repeat.count,
         byweekday: data.repeat === null ? ['su', 'mo'] : data.repeat.byweekday
+      })
+    }
+    if (this.props.room !== prevProps.room && !this.state.rooms && this.props.room.length) {
+      this.setState({
+        rooms: this.props.room[0].id
       })
     }
   }
@@ -138,17 +145,6 @@ class SlideBar extends Component {
       timeend: dateString
     })
   }
-
-  onSubmit = (event) => {
-    event.preventDefault();
-    if (this.props.edit === true) {
-      this.props.onUpdate(this.state);
-      this.props.onCancleEdit();
-    } else {
-      this.props.onAddEvent(this.state)
-    }
-    this.onReset();
-  }
   onChangerCheck = (e) => {
     this.setState({
       checkbox: e.target.checked
@@ -169,7 +165,7 @@ class SlideBar extends Component {
       calender: [],
       title: '',
       dateStart: dateFormatDate(now, 'yyyy-mm-dd'),
-      rooms: 4,
+      rooms: this.props.room.length > 0 ? this.props.room[0].id : '',
       timestart: '08:30',
       timeend: '09:30',
       checkbox: false,
@@ -194,10 +190,24 @@ class SlideBar extends Component {
   }
   onCancel = (e) => {
     e.preventDefault();
-    this.setState({
-      visible: false
-    })
-
+    if (this.props.edit) {
+      this.props.onCancleEdit();
+    }
+    this.onReset();
+  }
+  handleBlur = (event) => {
+    console.log(event);
+  }
+  onSubmit = (event) => {
+    event.preventDefault();
+    if (this.props.edit === true) {
+      this.props.onUpdate(this.state);
+      this.props.onCancleEdit();
+      this.onReset();
+    } else {
+      this.props.onAddEvent(this.state);
+      this.onReset();
+    }
   }
   render() {
     return (
@@ -232,24 +242,23 @@ class SlideBar extends Component {
                 </div>
                 <div className="b-form-group">
                   <label style={{ paddingRight: '10px' }}>Giờ Bắt Đầu</label>
-                  <TimePicker disabledHours={disabledHours} minuteStep={30} defaultValue={moment(this.state.timestart, format)} format={format} onChange={this.onChangeTime} />,
-                                </div>
+                  <TimePicker disabledHours={disabledHours} minuteStep={30} defaultValue={moment(this.state.timestart, format)} format={format} onChange={this.onChangeTime} />
+                </div>
                 <div className="b-form-group">
                   <label style={{ paddingRight: '10px' }}>Giờ Bắt Kết Thúc</label>
-                  <TimePicker disabledHours={disabledHours} minuteStep={30} defaultValue={moment(this.state.timeend, format)} value={moment(this.state.timeend, format)} format={format} onChange={this.onChangeTimeItem} />,
-                                </div>
+                  <TimePicker disabledHours={disabledHours} minuteStep={30} defaultValue={moment(this.state.timeend, format)} value={moment(this.state.timeend, format)} format={format} onChange={this.onChangeTimeItem} />
+                </div>
                 <div className="b-form-group">
                   <label htmlFor="c">Chọn Phòng</label>
-                  <select className="b-select" value={this.state.rooms} name="rooms" onChange={this.onChanger}>
+                  <select className="b-select" value={this.state.rooms} name="rooms" onChange={this.onChanger} onBlur={this.handleBlur}>
                     {this.props.room.map(data => (
                       <option value={data.id} key={data.id}>{data.attributes.name} - {data.attributes.seats} Ghế</option>
                     ))}
-
                   </select>
                 </div>
                 <div className="b-form-group">
-                  <Checkbox name="checkbox" checked={this.state.checkbox} onChange={this.onChangerCheck} value={this.state.checkbox}>Lặp Lại</Checkbox>,
-                                </div>
+                  <Checkbox name="checkbox" checked={this.state.checkbox} onChange={this.onChangerCheck} value={this.state.checkbox}>Lặp Lại</Checkbox>
+                </div>
                 <div className={this.state.checkbox ? "b-repeat" : "b-repeat is-disable"}>
 
                   <div className="b-form-group">
@@ -272,8 +281,8 @@ class SlideBar extends Component {
                         {children.map(data => (
                           <Option key={data.id} value={data.name}>{data.name}</Option>
                         ))}
-                      </Select>,
-                                        </div>
+                      </Select>
+                    </div>
                     :
                     <></>
                   }
@@ -328,5 +337,9 @@ class SlideBar extends Component {
     );
   }
 }
-
-export default SlideBar;
+function mapStateProps(state) {
+  return {
+    exists_event: state.event.distinct
+  }
+}
+export default connect(mapStateProps, null)(SlideBar);

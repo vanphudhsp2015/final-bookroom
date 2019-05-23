@@ -6,7 +6,7 @@ class SiderLayout extends Component {
     onDropdown = (event) => {
         event.preventDefault();
     }
-    render() {        
+    render() {
         const contentUser = () => {
             if (cookies.get('data') !== undefined) {
                 let data = cookies.get('data');
@@ -17,7 +17,7 @@ class SiderLayout extends Component {
                                 <img className="img-user" src={data.attributes.img === null ? 'https://img.icons8.com/bubbles/2x/system-administrator-female.png' : data.img} alt="img-user" /></div>
                             <div className="user-content">
                                 <Link to="/" onClick={this.onDropdown}>
-                                    <h5 className="name-title">{data.attributes.name} &nbsp;<i className="fas fa-sort-down" />
+                                    <h5 className="name-title">{data.attributes.name}
                                     </h5>
                                     <span className="user-email text-muted">{data.attributes.email}</span>
                                 </Link>
@@ -32,24 +32,9 @@ class SiderLayout extends Component {
             }
         }
         return (
-
             <div className="left-menu">
                 <ul className="list-menu">
                     {contentUser()}
-                    <li className="item-menu ">
-                        <NavLink to="/admin" exact={true} activeClassName='active' className="item-link waves-effect waves-dark">
-                            <i className="fas fa-database" />
-                            <span className="hide-menu">Admin</span>
-                        </NavLink>
-
-                    </li>
-                    <li className="item-menu ">
-                        <NavLink to="/admin/profile" exact={true} activeClassName='active' className="item-link waves-effect waves-dark">
-                            <i className="fas fa-users" />
-                            <span className="hide-menu">Thông Tin User</span>
-                        </NavLink>
-
-                    </li>
                     <li className="item-menu">
                         <NavLink className="item-link waves-effect waves-dark" exact={true} activeClassName='active' to="/admin/room">
                             <i className="fas fa-table" />

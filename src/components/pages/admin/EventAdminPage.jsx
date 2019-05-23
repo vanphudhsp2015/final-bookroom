@@ -6,6 +6,7 @@ import * as action from '../../../actions/events';
 import * as action_Room from '../../../actions/room';
 import Cookies from 'universal-cookie';
 import { message, DatePicker, TimePicker } from 'antd';
+import { Redirect } from 'react-router-dom';
 var dateFormatDate = require('dateformat');
 const cookies = new Cookies();
 const format = 'HH:mm';
@@ -197,6 +198,17 @@ class EventAdminPage extends Component {
         this.onGetData();
     }
     render() {
+        if (cookies.get('data') !== undefined) {
+            if (cookies.get('data').attributes.roles[0] !== 'super_admin') {
+                return (
+                    <Redirect to='/'></Redirect>
+                )
+            }
+        } else {
+            return (
+                <Redirect to='/'></Redirect>
+            )
+        }
         return (
             <div className="wrapper">
                 <FormModalComponent views={this.state.views} onCheckModal={this.onCheckModal} visible={this.state.visible} onUpdate={this.onUpdate} dataEdit={this.state.dataEdit} edit={this.state.edit} onAddEvent={this.onAddEvent} room={this.convertArrayRoom(this.props.room)}></FormModalComponent>

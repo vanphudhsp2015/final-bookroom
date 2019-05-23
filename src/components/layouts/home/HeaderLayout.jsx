@@ -5,6 +5,7 @@ import { GoogleLogin, GoogleLogout } from 'react-google-login';
 import Cookies from 'universal-cookie';
 import * as action from '../../../actions/login';
 import { Redirect } from 'react-router-dom';
+import { API_GG } from '../../../constants/config';
 const cookies = new Cookies();
 class HeaderLayout extends Component {
     constructor(props, context) {
@@ -52,7 +53,7 @@ class HeaderLayout extends Component {
     }
     responseGoogle = (response) => {
         if (response) {
-            this.props.dispatch(action.requestGetLogin(response.accessToken))
+            this.props.dispatch(action.requestGetLogin(response))
             cookies.set('accessToken', response.accessToken);
             this.setState({
                 visible: false,
@@ -86,6 +87,8 @@ class HeaderLayout extends Component {
     }
     onRedirect = () => {
         if (cookies.get('data') !== undefined) {
+            console.log(cookies.get('data'));
+            
             if (cookies.get('data').attributes.roles[0] !== 'super_admin') {
                 this.onMessager()
             }
@@ -110,7 +113,7 @@ class HeaderLayout extends Component {
     render() {
         if (this.state.isRedirect) {
             return (
-                <Redirect to="/admin"></Redirect>
+                <Redirect to="/admin/event"></Redirect>
             )
         }
         const contentLogin = () => {
@@ -125,7 +128,7 @@ class HeaderLayout extends Component {
                             <div className="b-hash-menu">
                                 <div className="b-logout">
                                     <GoogleLogout
-                                        clientId="489215353054-itb951p112dp4pc6bs603q781v60p6c0.apps.googleusercontent.com"
+                                        clientId={API_GG}
                                         buttonText="Đăng Xuất"
                                         onLogoutSuccess={this.logoutGoogle}
                                         className="b-logout"
@@ -177,11 +180,9 @@ class HeaderLayout extends Component {
                                 Đăng Nhập
                             </h2>
                         </div>
-                        <div className="b-content" style={{
-                            width: '100%'
-                        }}>
+                        <div className="b-content" style={{ width: '100%' }}>
                             <GoogleLogin
-                                clientId="489215353054-itb951p112dp4pc6bs603q781v60p6c0.apps.googleusercontent.com"
+                                clientId={API_GG}
                                 scope="https://www.googleapis.com/auth/analytics"
                                 onSuccess={this.responseGoogle}
                                 onFailure={this.error}
@@ -193,7 +194,6 @@ class HeaderLayout extends Component {
                                 theme="dark"
                                 className="b-google"
                             />
-
                         </div>
                     </div>
                 </Modal>
@@ -205,12 +205,7 @@ class HeaderLayout extends Component {
                     </div>
                     <div className="b-block-right">
                         <div className="b-list-item">
-                            {/* <li className="b-item">
-                                <button className="b-btn"><i className="fas fa-bell" /></button>
-                            </li> */}
-
                             {contentLogout()}
-
                         </div>
                     </div>
                 </div>

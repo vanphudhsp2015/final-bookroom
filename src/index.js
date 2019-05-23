@@ -4,7 +4,7 @@ import App from './components/App';
 import * as serviceWorker from './serviceWorker';
 import { createBrowserHistory as createHistory } from 'history';
 import { Router } from 'react-router-dom';
-import configureStore from './config/config-store';
+import configureStore from './constants/config-store';
 import { Provider } from 'react-redux';
 
 ReactDOM.render(

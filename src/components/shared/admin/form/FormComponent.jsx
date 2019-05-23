@@ -13,7 +13,7 @@ class FormComponent extends Component {
             id: this.props.dataEdit && this.props.dataEdit.id ? this.props.dataEdit.id : '',
             name: this.props.edit ? this.props.dataEdit.attributes.name : '',
             type: this.props.edit ? this.props.dataEdit.attributes.type : 'Phòng Lớn',
-            seat: this.props.edit ? this.props.dataEdit.attributes.seat : '1',
+            seat: this.props.edit ? this.props.dataEdit.attributes.seats : '1',
             content: '',
             id_rooms: '',
             nameuser: '',
@@ -118,7 +118,7 @@ class FormComponent extends Component {
                                 <label className="text-contact">Số Chổ Ngồi </label><br />
                                 <InputNumber style={{
                                     width: "100%"
-                                }} className="form-control" min={1} max={10} value={3} onChange={this.onChangeNumber} />
+                                }} className="form-control" min={1} max={20} value={this.state.seat} onChange={this.onChangeNumber} />
                             </div>
                             <div className="form-group">
                                 <label className="text-contact">Phòng</label>

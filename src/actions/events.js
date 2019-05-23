@@ -27,11 +27,9 @@ export function requestGetEvent() {
                         if (moment(data.attributes.daystart + ' ' + data.attributes.timestart).diff(now, 'minutes') < 30) {
                             if (moment(data.attributes.daystart + ' ' + data.attributes.timestart).diff(now, 'minutes') === 30) {
                                 console.log('Còn 30 phút nữa là cuộc họp ');
-
                                 message.success('Còn 30 phút nữa là cuộc họp ' + data.attributes.content + ' bắt đầu ');
                             }
                             if (moment(data.attributes.daystart + ' ' + data.attributes.timestart).diff(now, 'minutes') === 0) {
-
                                 message.success('Cuộc họp ' + data.attributes.content + 'đang bắt đầu ');
                             }
                         }
@@ -45,7 +43,7 @@ export function requestGetEvent() {
     }
 }
 // add tour 
-export function requestAddEvents(data) {    
+export function requestAddEvents(data) {
     let formDataObject = {};
     if (data.checkbox === true) {
         let arrayDay = '';
@@ -91,11 +89,11 @@ export function requestAddEvents(data) {
         }).then(function (response) {
             if (response.data.original === "Thời gian đặt không hợp lệ") {
                 message.warning('Trùng Lịch Đặt');
+                dispatch(receiveData(types.REQUEST_DISTICNT_EVENT, true))
             } else {
                 message.success('Thêm Sự Kiện Thành Công');
                 dispatch(receiveData(types.REQUEST_ADD_EVENT, response.data.data))
             }
-
         }).catch(function (error) {
             dispatch(requestRejected(error));
         })

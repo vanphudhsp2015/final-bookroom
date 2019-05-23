@@ -195,7 +195,7 @@ class CalenderComponent extends Component {
                     header={{
                         left: 'prev,next today',
                         center: 'title',
-                        right: 'dayGridMonth,timeGridWeek,timeGridDay as ,listWeek,resourceTimeGridDay'
+                        right: 'dayGridMonth,timeGridWeek,resourceTimeGridDay',
                     }}
                     dayNames={['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado']}
                     plugins={[resourceTimeGridPlugin, rrulePlugin, dayGridPlugin, timeGridPlugin, interactionPlugin, listPlugin]}
