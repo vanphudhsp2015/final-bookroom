@@ -112,3 +112,39 @@
     padding: 2px 4px;
   }
 }
+.b-page-header {
+  .b-block {
+    padding-left: 15px;
+    .b-block-left {
+      img {
+        width: 200px;
+      }
+    }
+    .b-block-right {
+      .b-item {
+        display: inline-block;
+        &.b-dropdown {
+          position: relative;
+          &::after {
+            display: none;
+          }
+          i {
+            padding: 0 5px;
+          }
+          &.is-active {
+            .b-hash-menu {
+              visibility: visible;
+              opacity: 1;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+.fc-button {
+  &.fc-button-active {
+    border: none !important;
+    background-color: #3384e2
+  }
+}

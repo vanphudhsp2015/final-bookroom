@@ -35,7 +35,7 @@ class SlideBar extends Component {
     this.state = {
       visible: false,
       calender: [],
-      title: '',
+      title: 'Đặt Phòng Mới',
       dateStart: dateFormatDate(now, 'yyyy-mm-dd'),
       rooms: this.props.room.length > 0 ? this.props.room[0].id : '',
       timestart: '08:30',
@@ -157,13 +157,17 @@ class SlideBar extends Component {
     })
   }
   onGetDate = (data) => {
+    let dateCurrent = dateFormatDate(data, 'yyyy-mm-dd');
+    this.setState({
+      dateStart: dateCurrent
+    })
     this.props.onGetDate(data);
   }
   onReset() {
     this.setState({
       visible: false,
       calender: [],
-      title: '',
+      title: 'Đặt Phòng Mới',
       dateStart: dateFormatDate(now, 'yyyy-mm-dd'),
       rooms: this.props.room.length > 0 ? this.props.room[0].id : '',
       timestart: '08:30',
@@ -238,15 +242,15 @@ class SlideBar extends Component {
                 </div>
                 <div className="b-form-group">
                   <label style={{ paddingRight: '10px' }}>Chọn Ngày</label>
-                  <DatePicker onChange={this.onChange} defaultValue={moment(now, dateFormat)} value={moment(this.state.dateStart, dateFormat)} />
+                  <DatePicker onChange={this.onChange} allowClear={false} value={moment(this.state.dateStart, dateFormat)} format={dateFormat} required />
                 </div>
                 <div className="b-form-group">
                   <label style={{ paddingRight: '10px' }}>Giờ Bắt Đầu</label>
-                  <TimePicker disabledHours={disabledHours} minuteStep={30} defaultValue={moment(this.state.timestart, format)} format={format} onChange={this.onChangeTime} />
+                  <TimePicker hideDisabledOptions disabledHours={disabledHours} allowClear={false} minuteStep={30} value={moment(this.state.timestart, format)} format={format} onChange={this.onChangeTime} required />
                 </div>
                 <div className="b-form-group">
-                  <label style={{ paddingRight: '10px' }}>Giờ Bắt Kết Thúc</label>
-                  <TimePicker disabledHours={disabledHours} minuteStep={30} defaultValue={moment(this.state.timeend, format)} value={moment(this.state.timeend, format)} format={format} onChange={this.onChangeTimeItem} />
+                  <label style={{ paddingRight: '10px' }}>Giờ Kết Thúc</label>
+                  <TimePicker hideDisabledOptions disabledHours={disabledHours} allowClear={false} minuteStep={30} value={moment(this.state.timeend, format)} format={format} onChange={this.onChangeTimeItem} required />
                 </div>
                 <div className="b-form-group">
                   <label htmlFor="c">Chọn Phòng</label>
@@ -311,7 +315,7 @@ class SlideBar extends Component {
             </div>
           </div>
         </Modal>
-        <CalenderComponent onGetDate={this.onGetDate}></CalenderComponent>
+        <CalenderComponent data={this.state.dateStart} onGetDate={this.onGetDate}></CalenderComponent>
         <div className="b-rooms">
           <div className="b-heading text-center">
             <h2 className="b-text-title">
