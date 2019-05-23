@@ -5,6 +5,7 @@ import * as API from '../constants/actionAPI';
 import Cookies from 'universal-cookie';
 const cookies = new Cookies();
 export function requestGetLogin(data) {
+    
     let token = {
         'token': data.accessToken,
         'email': data.profileObj.email
@@ -19,6 +20,7 @@ export function requestGetLogin(data) {
             },
             data: token
         }).then(function (response) {
+            
             if (response !== undefined) {
                 cookies.set('token', response.data.access_token);
                 axios.request({

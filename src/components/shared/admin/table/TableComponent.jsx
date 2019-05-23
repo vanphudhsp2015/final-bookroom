@@ -18,22 +18,19 @@ class TableComponent extends Component {
         this.props.onChangerView();
     }
     onDelete(id) {
-        this.props.onDelete(id);
-
-    }
-    onEdit(id) {
         var self = this.props;
         confirm({
-            title: 'Bạn có muốn sửa phòng?',
-            content: 'Có chắc chắn !',
+            title: 'Có chắc bạn muốn xóa phòng này?',
             onOk() {
-                self.onEdit(id);
+                self.onDelete(id);
             },
             onCancel() {
-                console.log('Cancel');
+               
             },
         });
-
+    }
+    onEdit(id) {
+        this.props.onEdit(id);
     }
     render() {
         const contentMain = () => {
@@ -52,7 +49,6 @@ class TableComponent extends Component {
                                         <tr className="bg-table">
                                             <th>ID</th>
                                             <th>Tên Phòng </th>
-                                            <th>Thể Loại</th>
                                             <th>Màu</th>
                                             <th>Chổ Ngồi</th>
                                             <th>Create_at</th>
@@ -62,11 +58,10 @@ class TableComponent extends Component {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {this.props.data.map(data => (
+                                        {this.state.pageOfItems.map(data => (
                                             <tr key={data.id}>
                                                 <td>{data.id}</td>
                                                 <td>{data.attributes.name}</td>
-                                                <td>{data.attributes.type}</td>
                                                 <td style={{
                                                     display: 'block',
                                                     width: '100px',
@@ -92,6 +87,7 @@ class TableComponent extends Component {
                                     </tbody>
                                 </table>
                             </div>
+                            <Pagination items={this.props.data} onChangePage={this.onChangePage}></Pagination>
                         </div>
                     )
                 case "USER":
@@ -117,7 +113,7 @@ class TableComponent extends Component {
                                         <tbody>
 
                                             {
-                                                this.props.data.map(data => (
+                                                this.state.pageOfItems.map(data => (
                                                     <tr key={data.id}>
                                                         <td>{data.id}</td>
                                                         <td >
@@ -135,7 +131,7 @@ class TableComponent extends Component {
                                     </table>
                                 </div>
                             </div>
-                            <Pagination items={this.props.data} onChangePage={this.onChangePage}></Pagination>
+                           
                         </>
                     )
                 default:

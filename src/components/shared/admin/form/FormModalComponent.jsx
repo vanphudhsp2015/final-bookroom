@@ -203,18 +203,18 @@ class FormModalComponent extends Component {
                                 <div className="b-content">
                                     <form className="b-form" onSubmit={this.onSubmit}>
                                         <div className="b-form-group">
-                                            <input type="text" placeholder="Nhập Tiêu Đề" name="title" className="b-input" onChange={this.onChanger} value={this.state.title} />
+                                            <input type="text" placeholder="Nhập Tiêu Đề" name="title" className="b-input" onChange={this.onChanger} value={this.state.title} required/>
                                         </div>
                                         <div className="b-form-group">
                                             <label style={{ paddingRight: '10px' }}>Chọn Ngày</label>
-                                            <DatePicker onChange={this.onChange} defaultValue={moment(now, dateFormat)} value={moment(this.state.dateStart, dateFormat)} />
+                                            <DatePicker  onChange={this.onChange} defaultValue={moment(now, dateFormat)} value={moment(this.state.dateStart, dateFormat)}/>
                                         </div>
                                         <div className="b-form-group">
                                             <label style={{ paddingRight: '10px' }}>Giờ Bắt Đầu</label>
                                             <TimePicker disabledHours={disabledHours} minuteStep={30} defaultValue={moment(this.state.timestart, format)} format={format} onChange={this.onChangeTime} />
                                         </div>
                                         <div className="b-form-group">
-                                            <label style={{ paddingRight: '10px' }}>Giờ Bắt Kết Thúc</label>
+                                            <label style={{ paddingRight: '10px' }}>Giờ Kết Thúc</label>
                                             <TimePicker disabledHours={disabledHours} minuteStep={30} defaultValue={moment(this.state.timeend, format)} value={moment(this.state.timeend, format)} format={format} onChange={this.onChangeTimeItem} />
                                         </div>
                                         <div className="b-form-group">

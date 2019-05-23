@@ -51,7 +51,7 @@ class HeaderLayout extends Component {
         });
         this.onResetLogin();
     }
-    responseGoogle = (response) => {
+    responseGoogle = (response) => {        
         if (response) {
             this.props.dispatch(action.requestGetLogin(response))
             cookies.set('accessToken', response.accessToken);

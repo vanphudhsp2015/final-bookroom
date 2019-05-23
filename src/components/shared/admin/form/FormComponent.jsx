@@ -12,7 +12,6 @@ class FormComponent extends Component {
         this.state = {
             id: this.props.dataEdit && this.props.dataEdit.id ? this.props.dataEdit.id : '',
             name: this.props.edit ? this.props.dataEdit.attributes.name : '',
-            type: this.props.edit ? this.props.dataEdit.attributes.type : 'Phòng Lớn',
             seat: this.props.edit ? this.props.dataEdit.attributes.seats : '1',
             content: '',
             id_rooms: '',
@@ -78,7 +77,6 @@ class FormComponent extends Component {
     onReset() {
         this.setState({
             name: '',
-            type: 'Phòng Lớn',
             seat: '1',
         })
     }
@@ -112,21 +110,13 @@ class FormComponent extends Component {
                                     value={this.state.name}
                                     className="form-control"
                                     type="text"
-                                    placeholder="Bạn vui lòng nhập tên phòng!" />
+                                    placeholder="Bạn vui lòng nhập tên phòng!" required/>
                             </div>
                             <div className="form-group">
                                 <label className="text-contact">Số Chổ Ngồi </label><br />
                                 <InputNumber style={{
                                     width: "100%"
-                                }} className="form-control" min={1} max={20} value={this.state.seat} onChange={this.onChangeNumber} />
-                            </div>
-                            <div className="form-group">
-                                <label className="text-contact">Phòng</label>
-                                <select className="form-control" name="type" onChange={this.onChanger} defaultValue={this.state.type}>
-                                    <option className="city">Phòng Lớn</option>
-                                    <option className="city">Phòng Nhỏ 1</option>
-                                    <option className="city">Phòng Nhỏ 2</option>
-                                </select>
+                                }} className="form-control" min={1} max={200} value={this.state.seat} onChange={this.onChangeNumber} />
                             </div>
                             <div className="form-group">
                                 <label className="text-contact">Mã Màu Phòng</label>
