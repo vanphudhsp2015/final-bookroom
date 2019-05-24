@@ -51,7 +51,7 @@ class HeaderLayout extends Component {
         });
         this.onResetLogin();
     }
-    responseGoogle = (response) => {
+    responseGoogle = (response) => {        
         if (response) {
             this.props.dispatch(action.requestGetLogin(response))
             cookies.set('accessToken', response.accessToken);
@@ -87,8 +87,6 @@ class HeaderLayout extends Component {
     }
     onRedirect = () => {
         if (cookies.get('data') !== undefined) {
-            console.log(cookies.get('data'));
-            
             if (cookies.get('data').attributes.roles[0] !== 'super_admin') {
                 this.onMessager()
             }
@@ -120,11 +118,15 @@ class HeaderLayout extends Component {
             if (cookies.get('data') !== undefined) {
                 return (
                     <>
-                        <li className="b-item">
-                            <button className="b-btn" onClick={this.onRedirect}><i className="fas fa-cog" /></button>
-                        </li>
+                        {cookies.get('data').attributes.roles[0] !== 'super_admin' ?
+                            <></>
+                            :
+                            <li className="b-item">
+                                <button className="b-btn" onClick={this.onRedirect}><i className="fas fa-cog" /></button>
+                            </li>
+                        }
                         <li className={this.state.is_dropdown ? "b-item b-dropdown is-active" : "b-item b-dropdown"}>
-                            <button className="b-btn" onClick={this.onShowLogout}><i className="fas fa-user" /> Xin Chào, {cookies.get('data').attributes.name}</button>
+                            <button className="b-btn" onClick={this.onShowLogout}><i className="fas fa-user" /> Xin Chào, {cookies.get('data').attributes.name}<i className="fas fa-angle-down"></i></button>
                             <div className="b-hash-menu">
                                 <div className="b-logout">
                                     <GoogleLogout
@@ -133,9 +135,6 @@ class HeaderLayout extends Component {
                                         onLogoutSuccess={this.logoutGoogle}
                                         className="b-logout"
                                     />
-                                    {/* <button className="b-btn" onClick={this.logout}>
-                                        <i className="fas fa-sign-out-alt"></i> Logout
-                                </button> */}
                                 </div>
                             </div>
                         </li>

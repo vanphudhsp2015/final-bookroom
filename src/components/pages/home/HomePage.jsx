@@ -25,7 +25,7 @@ class HomePage extends Component {
     }
     componentDidMount() {
         this.onGetData();
-        this.interval = setInterval(() => (this.onGetData()), 20000);
+        // this.interval = setInterval(() => (this.onGetData()), 20000);
     }
     onGetData() {
         this.props.dispatch(action.requestGetEvent());
@@ -183,6 +183,7 @@ class HomePage extends Component {
         })
     }
     render() {
+                
         return (
             <div className="wrapper">
                 <HeaderLayout onResetCheckLogin={this.onResetCheckLogin} isCheck={this.state.isLogin}></HeaderLayout>

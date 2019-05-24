@@ -45,7 +45,7 @@ export function requestAddRoom(data) {
     let body = null;
     body = {
         name: data.name,
-        type: data.type,
+        type: 'phong',
         seats: data.seat,
         color: data.background
     }
@@ -76,7 +76,7 @@ export function receiveData(action, payload) {
 export function requestEditRoom(data) {
     let params = {
         name: data.name,
-        type: data.type,
+        type: 'phong',
         seats: data.seat,
         color: data.background
     }
@@ -101,9 +101,4 @@ export function requestEditRoom(data) {
         })
     }
 }
-// export function updateData(response) {
-//     return {
-//         type: REQUEST_UPDATE_ROOM,
-//         payload: response
-//     }
-// }
+

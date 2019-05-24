@@ -8,15 +8,18 @@ class CalenderComponent extends Component {
             date: new Date()
         }
     }
-    onChange = (date) => { 
+
+    onChange = (date) => {
         this.props.onGetDate(date)
-     }
+    }
     render() {
+
         return (
             <div className="b-calender">
                 <Calendar
                     onChange={this.onChange}
                     value={this.state.date}
+                    activeStartDate={this.state.date}
                 />
             </div>
         );

@@ -44,6 +44,7 @@ class CalenderComponent extends Component {
             timestart: info.event.extendedProps.timestart,
             timeend: info.event.extendedProps.timeend,
             room: info.event.extendedProps.room,
+            color: info.event.extendedProps.color,
             user: info.event.extendedProps.user,
             id: info.event.id,
             redate: info.event.extendedProps.redate,
@@ -70,7 +71,6 @@ class CalenderComponent extends Component {
         var self = this.props;
         confirm({
             title: 'Bạn Muốn Xóa Sự Kiện?',
-            content: 'Bạn Có Chắc Chắn',
             onOk() {
                 self.onDelete(id);
             },
@@ -84,19 +84,11 @@ class CalenderComponent extends Component {
     }
     onEdit(id) {
         var self = this.props;
-        confirm({
-            title: 'Bạn Muốn Sửa Sự Kiện?',
-            content: 'Bạn Có Chắc Chắn',
-            onOk() {
-                if (cookies.get('data') === undefined) {
-                    message.warning('Vui Lòng Đăng Nhập Để Sửa Sự Kiện !')
-                } else {
-                    self.onEdit(id);
-                }
-            },
-            onCancel() {
-            },
-        });
+        if (cookies.get('data') === undefined) {
+            message.warning('Vui Lòng Đăng Nhập Để Sửa Sự Kiện !')
+        } else {
+            self.onEdit(id);
+        }
         this.setState({
             show: !this.state.show
         })

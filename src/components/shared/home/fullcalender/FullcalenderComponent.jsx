@@ -115,7 +115,7 @@ class FullcalenderComponent extends Component {
         var self = this.props;
         confirm({
             title: 'Bạn Muốn Sửa Sự Kiện?',
-            content: 'Bạn Có Chắc Chắn',
+            content: 'Bấm Ok để xóa',
             onOk() {
                 if (cookies.get('data') === undefined) {
                     message.warning('Vui Lòng Đăng Nhập Để Sửa Sự Kiện !')

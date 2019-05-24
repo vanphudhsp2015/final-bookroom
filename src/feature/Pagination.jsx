@@ -123,7 +123,7 @@ class Pagination extends Component {
                         </button>
                     </li>
                     {pager.pages.map((page, index) =>
-                        <li key={index} className="page-number">
+                        <li key={index} className={pager.currentPage === page ? 'page-number is-active' : 'page-number'}>
                             <button className="btn-page" onClick={() => this.setPage(page)}>{page}</button>
                         </li>
                     )}
