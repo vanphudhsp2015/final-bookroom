@@ -37,6 +37,7 @@ class TableComponent extends Component {
             switch (this.props.choice) {
                 case "ROOM":
                     return (
+                        <>
                         <div className="card-body">
                             <div className="header-card">
                             </div>
@@ -87,8 +88,10 @@ class TableComponent extends Component {
                                     </tbody>
                                 </table>
                             </div>
-                            <Pagination items={this.props.data} onChangePage={this.onChangePage}></Pagination>
+                          
                         </div>
+                        <Pagination items={this.props.data} onChangePage={this.onChangePage}></Pagination>
+                        </>
                     )
                 case "USER":
                     return (
@@ -131,7 +134,7 @@ class TableComponent extends Component {
                                     </table>
                                 </div>
                             </div>
-                           
+                            <Pagination items={this.props.data} onChangePage={this.onChangePage}></Pagination>
                         </>
                     )
                 default:
