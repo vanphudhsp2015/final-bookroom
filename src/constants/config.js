@@ -1,4 +1,5 @@
+const env = process.env || {}
 const config = {
-    API_GG: '748712237748-u625dabsn5e95cohlu9m31lt765cbvin.apps.googleusercontent.com',
+    API_GG: env.REACT_APP_API_GG,
 }
 module.exports = config

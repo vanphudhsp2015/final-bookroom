@@ -90,7 +90,7 @@ class FullcalenderComponent extends Component {
         var self = this.props;
         confirm({
             title: 'Bạn Muốn Xóa Sự Kiện?',
-            content: 'Bạn Có Chắc Chắn',
+            content: 'Bấm Ok để Xóa',
             onOk() {
                 if (cookies.get('data') === undefined) {
                     message.warning('Vui Lòng Đăng Nhập Để Xóa Sự Kiện !')
@@ -115,7 +115,7 @@ class FullcalenderComponent extends Component {
         var self = this.props;
         confirm({
             title: 'Bạn Muốn Sửa Sự Kiện?',
-            content: 'Bấm Ok để xóa',
+            content: 'Bấm Ok để sửa',
             onOk() {
                 if (cookies.get('data') === undefined) {
                     message.warning('Vui Lòng Đăng Nhập Để Sửa Sự Kiện !')

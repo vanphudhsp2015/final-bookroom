@@ -1,2 +1,3 @@
 // Link API
-export const API_URL = "http://localhost/booking-room/public/api/v1";
+const env = process.env || {}
+export const API_URL = env.REACT_APP_API_BE;
