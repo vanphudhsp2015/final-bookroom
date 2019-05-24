@@ -203,7 +203,7 @@ class FormModalComponent extends Component {
                                 <div className="b-content">
                                     <form className="b-form" onSubmit={this.onSubmit}>
                                         <div className="b-form-group">
-                                            <input type="text" placeholder="Nhập Tiêu Đề" name="title" className="b-input" onChange={this.onChanger} value={this.state.title} />
+                                            <input type="text" placeholder="Nhập Tiêu Đề" name="title" className="b-input" onChange={this.onChanger} value={this.state.title} required/>
                                         </div>
                                         <div className="b-form-group">
                                             <label style={{ paddingRight: '10px' }}>Chọn Ngày</label>

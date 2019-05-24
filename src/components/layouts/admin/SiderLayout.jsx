@@ -53,9 +53,6 @@ class SiderLayout extends Component {
                             <span className="hide-menu">Đặt Phòng</span>
                         </NavLink>
                     </li>
-                    <li className="text-center">
-                        <NavLink to="/" className="link-upgrade">Upgrade to pro</NavLink>
-                    </li>
                 </ul>
             </div>
         );

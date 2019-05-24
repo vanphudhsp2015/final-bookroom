@@ -183,6 +183,7 @@ class HomePage extends Component {
         })
     }
     render() {
+                
         return (
             <div className="wrapper">
                 <HeaderLayout onResetCheckLogin={this.onResetCheckLogin} isCheck={this.state.isLogin}></HeaderLayout>
