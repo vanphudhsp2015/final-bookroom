@@ -119,7 +119,7 @@
         .page-number {
             display: inline;
             .btn-page {
-                margin: 2px;
+                margin: -1px;
                 padding: 10px 15px;
                 color: #2962FF;
                 background-color: white;
@@ -128,19 +128,20 @@
                 i {
                     font-size: 12px;
                 }
-                &:hover {
-                    background-color: #2962FF;
-                    color: #fff;
+                &:hover{
+                  background-color: #2962FF;
+                  color: #fff;
                 }
             }
-            
+            &.is-active {
+             .btn-page{
+              background-color: #2962FF;
+              color: #fff;
+             }
+          }
 
         }
-        .b-item {
-          &.is-active {
-              background-color: #2962FF;
-          }
-      }
+       
     }
 }
 .b-page-header {
