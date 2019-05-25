@@ -300,7 +300,6 @@ class FullcalenderComponent extends Component {
                     handleWindowResize
                     allDayText={'Giờ'}
                     allDaySlot
-                    dayNames={['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado']}
                     plugins={[resourceTimeGridPlugin, rrulePlugin, dayGridPlugin, timeGridPlugin, interactionPlugin, listPlugin]}
                     ref={this.calendarComponentRef}
                     weekends={this.state.calendarWeekends}

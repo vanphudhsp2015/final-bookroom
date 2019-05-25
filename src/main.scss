@@ -183,3 +183,57 @@
   display: flex;
   overflow: hidden;
 }
+
+// .room_item_1 {
+//   &.fc-time-grid-event-inset {
+//     position: relative;
+//     background-color: rgba(0, 0, 0, 0.45) !important;
+//     z-index: 999;
+//     &::before {
+//       position: absolute;
+//       content: "Trùng";
+//       background-color: #feeb0c;
+//       right: -25px;
+//       bottom: -10px;
+//       z-index: 9999 !important;
+//       border-radius: 2px;
+//       color: #2962ff;
+//       padding: 2px 4px;
+//     }
+//   }
+// }
+// .room_item_2 {
+//   &.fc-time-grid-event-inset {
+//     position: relative;
+//     background-color: rgba(0, 0, 0, 0.45) !important;
+//     z-index: 999;
+//     &::before {
+//       position: absolute;
+//       content: "Trùng";
+//       background-color: #feeb0c;
+//       right: -25px;
+//       bottom: -10px;
+//       z-index: 9999 !important;
+//       border-radius: 2px;
+//       color: #2962ff;
+//       padding: 2px 4px;
+//     }
+//   }
+// }
+.is-error {
+  display: block;
+  padding: 2px 0;
+  color: red;
+  visibility: hidden;
+  opacity: 0;
+  &.is-check {
+    visibility: visible;
+    opacity: 1;
+  }
+}
+.b-btn {
+  &:disabled {
+    background-color: #4c4c4c !important;
+    cursor: no-drop;
+  }
+}
