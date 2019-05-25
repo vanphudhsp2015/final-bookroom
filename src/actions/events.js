@@ -95,6 +95,7 @@ export function requestAddEvents(data) {
                 dispatch(receiveData(types.REQUEST_ADD_EVENT, response.data.data))
             }
         }).catch(function (error) {
+
             dispatch(requestRejected(error));
         })
     }
@@ -113,7 +114,9 @@ export function requestDeleteEvent(id) {
             message.success('Xóa Sự Kiện Thành Công');
             dispatch(receiveData(types.REQUEST_DELETE_EVENT, id))
         }).catch(function (error) {
-            // noteError(error);
+            if (error.response) {
+                console.log(error.response);
+            }
             dispatch(requestRejected(error));
         })
     }
@@ -244,4 +247,9 @@ export function requestRejected(response) {
 }
 export function receiveData(type, payload) {
     return { type: type, payload };
+}
+export function requestAddEventDispatch(data) {
+    return (dispatch) => {
+        dispatch(receiveData(types.REQUEST_ADD_EVENT, data))
+    }
 }
