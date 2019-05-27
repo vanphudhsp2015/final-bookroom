@@ -14,7 +14,7 @@ export function requestGetEvent() {
         dispatch(requestLoading());
         return axios.request({
             method: 'GET',
-            url: `${typeAPI.API_URL}/bookrooms`,
+            url: `${typeAPI.API_URL}/api/v1/bookrooms`,
             headers: {
                 "Accept": "application/json",
                 'Content-Type': 'application/json',
@@ -79,7 +79,7 @@ export function requestAddEvents(data) {
     return (dispatch) => {
         return axios.request({
             method: 'POST',
-            url: `${typeAPI.API_URL}/bookrooms`,
+            url: `${typeAPI.API_URL}/api/v1/bookrooms`,
             headers: {
                 "Accept": "application/json",
                 'Content-Type': 'application/json',
@@ -104,7 +104,7 @@ export function requestDeleteEvent(id) {
     return (dispatch) => {
         return axios.request({
             method: 'DELETE',
-            url: `${typeAPI.API_URL}/bookrooms/${id}`,
+            url: `${typeAPI.API_URL}/api/v1/bookrooms/${id}`,
             headers: {
                 "Accept": "application/json",
                 'Content-Type': 'application/json',
@@ -176,7 +176,7 @@ export function requestUpdateEvent(data) {
     return (dispatch) => {
         return axios.request({
             method: 'PUT',
-            url: `${typeAPI.API_URL}/bookrooms/${data.id}`,
+            url: `${typeAPI.API_URL}/api/v1/bookrooms/${data.id}`,
             params: formDataObject,
             headers: {
                 "Accept": "application/json",
@@ -198,7 +198,7 @@ export function requestGetEventByRoom(id) {
         dispatch(requestLoading());
         return axios.request({
             method: 'GET',
-            url: `${typeAPI.API_URL}/getbrbyid/${id}`,
+            url: `${typeAPI.API_URL}/api/v1/getbrbyid/${id}`,
             headers: {
                 "Accept": "application/json",
                 'Content-Type': 'application/json',
@@ -221,7 +221,7 @@ export function requestSearchEvent(data) {
         dispatch(requestLoading());
         return axios.request({
             method: 'GET',
-            url: `${typeAPI.API_URL}/admin/getbrbyday`,
+            url: `${typeAPI.API_URL}/api/v1/admin/getbrbyday`,
             params,
             headers: {
                 "Accept": "application/json",

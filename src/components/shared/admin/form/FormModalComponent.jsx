@@ -168,7 +168,7 @@ class FormModalComponent extends Component {
             }
             axios.request({
                 method: 'GET',
-                url: `${env.REACT_APP_API_BE}/admin/getbrbyday`,
+                url: `${env.REACT_APP_API_BE}/api/v1/admin/getbrbyday`,
                 headers: {
                     "Accept": "application/json",
                     'Content-Type': 'application/json',
