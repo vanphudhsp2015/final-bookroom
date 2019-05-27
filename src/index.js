@@ -6,7 +6,7 @@ import { createBrowserHistory as createHistory } from 'history';
 import { Router } from 'react-router-dom';
 import configureStore from './constants/config-store';
 import { Provider } from 'react-redux';
-
+require('dotenv').config(); 
 ReactDOM.render(
     <Provider store={configureStore()}>
         <Router history={createHistory()}>

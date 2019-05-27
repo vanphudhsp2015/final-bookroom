@@ -1,30 +1,25 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { HeaderLayout, SiderLayout,FooterLayout } from '../../layouts/admin';
+import { HeaderLayout, SiderLayout, FooterLayout } from '../../layouts/admin';
 import { TableComponent } from '../../shared/admin';
+import { requestGetUsers } from '../../../actions/user';
 
-import {requestGetUsers} from '../../../actions/user';
-// import Cookies from 'universal-cookie';
-// import { Modal } from 'antd';
-// import { message } from 'antd';
-// const cookies = new Cookies();
-// const confirm = Modal.confirm;
 class UserPage extends Component {
-    constructor(props){
+    constructor(props) {
         super(props);
         this.state = {
-            views: 'LIST'
+            views: 'LIST',
         }
     }
-    componentDidMount(){
+    componentDidMount() {
         this.props.requestGetUsers();
     }
-    
-    render() {        
+
+    render() {
         const mainContent = () => {
-            switch(this.state.views){
+            switch (this.state.views) {
                 case "LIST":
-                    return(
+                    return (
                         <TableComponent choice="USER" onChangerView={this.onChangerView} data={this.props.users} onDelete={this.onDelete}></TableComponent>
                     )
 
@@ -47,15 +42,15 @@ class UserPage extends Component {
                     </div>
 
                 </section>
-                
+
             </div>
         );
     }
 }
 function mapStateProps(state) {
     return {
-    
+
         users: state.user.all,
     }
 }
-export default connect(mapStateProps,{requestGetUsers})(UserPage);
+export default connect(mapStateProps, { requestGetUsers })(UserPage);

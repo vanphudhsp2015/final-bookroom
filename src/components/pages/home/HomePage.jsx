@@ -122,7 +122,10 @@ class HomePage extends Component {
                     resourceId: attributes.room.id,
                     id: item.id,
                     title: attributes.content,
-                    className: cookies.get('data') !== undefined && parseInt(attributes.user_id) === parseInt(cookies.get('data').id) ? "is-current" : "",
+                    className: [
+                        attributes.repeat !== null ? `${'room_item_' + attributes.room.id}` : "",
+                        cookies.get('data') !== undefined && parseInt(attributes.user_id) === parseInt(cookies.get('data').id) ? "is-current" : ""
+                    ],
                     start: attributes.daystart,
                     room: attributes.room.name,
                     user: attributes.username,
@@ -183,7 +186,6 @@ class HomePage extends Component {
         })
     }
     render() {
-                
         return (
             <div className="wrapper">
                 <HeaderLayout onResetCheckLogin={this.onResetCheckLogin} isCheck={this.state.isLogin}></HeaderLayout>

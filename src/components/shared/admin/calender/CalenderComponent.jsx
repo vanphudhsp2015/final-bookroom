@@ -216,6 +216,8 @@ class CalenderComponent extends Component {
                     eventDrop={
                         this.oneventDrop
                     }
+                    eventTextColor={'#FEFEF9'}
+                    eventBorderColor={'rgba(0,0,0,1.5)'}
                 />
             </>
         );

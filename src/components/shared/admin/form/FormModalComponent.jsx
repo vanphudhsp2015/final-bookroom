@@ -1,8 +1,11 @@
 import React, { Component } from 'react';
-import { DatePicker, TimePicker, Checkbox, Select } from 'antd';
+import { DatePicker, TimePicker, Checkbox, Select, message } from 'antd';
 import moment from 'moment';
 import 'antd/dist/antd.css';
 import { Modal } from 'antd';
+import axios from 'axios';
+import Cookies from 'universal-cookie';
+const cookies = new Cookies();
 var dateFormatDate = require('dateformat');
 const format = 'HH:mm';
 const dateFormat = 'YYYY-MM-DD';
@@ -17,7 +20,7 @@ const children = [
     { id: '6', name: 'fr' },
     { id: '7', name: 'sa' }
 ];
-
+const env = process.env || {}
 function disabledHours() {
     return [0, 1, 2, 3, 4, 5, 6, 7, 12, 18, 19, 20, 21, 22, 23, 24];
 }
@@ -27,17 +30,20 @@ class FormModalComponent extends Component {
         this.state = {
             visible: false,
             calender: [],
-            title: '',
+            title: 'Đặt Phòng Mới',
             dateStart: dateFormatDate(now, 'yyyy-mm-dd'),
             rooms: this.props.room.length > 0 ? this.props.room[0].id : '',
-            timestart: '08:30',
-            timeend: '09:30',
+            timestart: dateFormatDate(now, 'HH:MM'),
+            timeend: dateFormatDate(now, 'HH:MM'),
             checkbox: false,
             byweekday: ['su', 'mo'],
             count: 1,
             choice: 'daily',
             value: 0,
-
+            validateDate: false,
+            validateTime: false,
+            validateTimeItem: false,
+            validateTimeCompare: false
         }
     }
     componentDidUpdate(prevProps, prevState) {
@@ -81,9 +87,18 @@ class FormModalComponent extends Component {
         })
     }
     onChange = (date, dateString) => {
-        this.setState({
-            dateStart: dateString
-        })
+        if ((moment(dateFormatDate(dateString, 'yyyy-mm-dd HH:mm:ss')).diff(dateFormatDate(now, 'yyyy-mm-dd HH:mm:ss'), 'days')) < 0) {
+            this.setState({
+                validateDate: true
+            })
+        } else {
+            this.setState({
+                dateStart: dateString,
+                validateDate: false,
+                validateTime: false,
+                validateTimeItem: false,
+            })
+        }
     }
     onChangerTime = (value) => {
         this.setState({
@@ -95,23 +110,40 @@ class FormModalComponent extends Component {
             rooms: value
         })
     }
-    onChangeTime = (time, timeString) => {
-        if (timeString >= this.state.timeend) {
+    onChangeTime = (time, dateString) => {
+        let nowCurrent = dateFormatDate(this.state.dateStart, 'yyyy-mm-dd');
+        if ((moment(`${nowCurrent + ' ' + dateString + ':00'}`)).diff(dateFormatDate(now, 'yyyy-mm-dd HH:MM:ss'), 'minutes') < 0) {
             this.setState({
-                timestart: timeString,
-                timeend: timeString
+                validateTime: true
             })
         } else {
             this.setState({
-                timestart: timeString,
-                timeend: timeString
+                timestart: dateString,
+                timeend: dateString,
+                validateTime: false
             })
         }
     }
     onChangeTimeItem = (date, dateString) => {
-        this.setState({
-            timeend: dateString
-        })
+        let nowCurrent = dateFormatDate(this.state.dateStart, 'yyyy-mm-dd');
+        if ((moment(`${nowCurrent + ' ' + dateString + ':00'}`)).diff(dateFormatDate(now, 'yyyy-mm-dd HH:MM:ss'), 'minutes') < 0) {
+            this.setState({
+                validateTimeItem: true
+            })
+        } else {
+            if ((moment(`${nowCurrent + ' ' + dateString + ':00'}`)).diff(`${nowCurrent + ' ' + this.state.timestart + ':00'}`, 'minutes') < 0) {
+                this.setState({
+                    timeend: dateString,
+                    timestart: dateString,
+                    validateTimeItem: false
+                })
+            } else {
+                this.setState({
+                    timeend: dateString,
+                    validateTimeItem: false
+                })
+            }
+        }
     }
     onChangerCheck = (e) => {
         this.setState({
@@ -126,11 +158,38 @@ class FormModalComponent extends Component {
             this.onReset();
             this.props.onCheckModal();
         } else {
-            console.log(this.state);
-
-            this.props.onAddEvent(this.state)
-            this.onReset();
-            this.props.onCheckModal();
+            var self = this;
+            var props = this.props;
+            let data = this.state;
+            let params = {
+                'daystart': data.dateStart,
+                'timestart': data.timestart,
+                'timeend': data.timeend
+            }
+            axios.request({
+                method: 'GET',
+                url: `${env.REACT_APP_API_BE}/admin/getbrbyday`,
+                headers: {
+                    "Accept": "application/json",
+                    'Content-Type': 'application/json',
+                    'Authorization': `${'bearer ' + cookies.get('token')}`
+                },
+                params
+            }).then(function (response) {
+                if (response.data.data.length > 0) {
+                    message.error('Đã Trùng Lịch');
+                } else {
+                    if (data.timestart === data.timeend) {
+                        message.error('Thời Gian Phải Khác Nhau');
+                    } else {
+                        props.onAddEvent(data);
+                        self.onReset();
+                        props.onCheckModal();
+                    }
+                }
+            }).catch(function (error) {
+                message.error('Error');
+            })
         }
     }
     onSubmitSearch = (event) => {
@@ -145,11 +204,11 @@ class FormModalComponent extends Component {
         this.setState({
             visible: false,
             calender: [],
-            title: '',
+            title: 'Đặt Phòng Mới',
             dateStart: dateFormatDate(now, 'yyyy-mm-dd'),
             rooms: this.props.room.length > 0 ? this.props.room[0].id : '',
-            timestart: '08:30',
-            timeend: '09:30',
+            timestart: dateFormatDate(now, 'HH:MM'),
+            timeend: dateFormatDate(now, 'HH:MM'),
             checkbox: false,
             byweekday: ['su', 'mo'],
             count: 1,
@@ -203,19 +262,28 @@ class FormModalComponent extends Component {
                                 <div className="b-content">
                                     <form className="b-form" onSubmit={this.onSubmit}>
                                         <div className="b-form-group">
-                                            <input type="text" placeholder="Nhập Tiêu Đề" name="title" className="b-input" onChange={this.onChanger} value={this.state.title} required/>
+                                            <input type="text" placeholder="Nhập Tiêu Đề" name="title" className="b-input" onChange={this.onChanger} value={this.state.title} required />
                                         </div>
                                         <div className="b-form-group">
                                             <label style={{ paddingRight: '10px' }}>Chọn Ngày</label>
-                                            <DatePicker   allowClear={false} onChange={this.onChange} defaultValue={moment(now, dateFormat)} value={moment(this.state.dateStart, dateFormat)} />
+                                            <DatePicker allowClear={false} onChange={this.onChange} defaultValue={moment(now, dateFormat)} value={moment(this.state.dateStart, dateFormat)} />
+                                            <span className={this.state.validateDate ? "is-error is-check" : "is-error"}>
+                                                * Thời Gian  Phải Lớn Hơn Thời Gian Hiện Tại
+                                            </span>
                                         </div>
                                         <div className="b-form-group">
                                             <label style={{ paddingRight: '10px' }}>Giờ Bắt Đầu</label>
-                                            <TimePicker hideDisabledOptions  allowClear={false} disabledHours={disabledHours} minuteStep={30} defaultValue={moment(this.state.timestart, format)} format={format} onChange={this.onChangeTime} />
+                                            <TimePicker hideDisabledOptions allowClear={false} disabledHours={disabledHours} minuteStep={30} defaultValue={moment(this.state.timestart, format)} format={format} onChange={this.onChangeTime} />
+                                            <span className={this.state.validateTime ? "is-error is-check" : "is-error"}>
+                                                * Thời Gian  Phải  Lớn Hơn Thời Gian Hiện Tại
+                                            </span>
                                         </div>
                                         <div className="b-form-group">
                                             <label style={{ paddingRight: '10px' }}>Giờ Bắt Kết Thúc</label>
-                                            <TimePicker hideDisabledOptions  allowClear={false} disabledHours={disabledHours} minuteStep={30} defaultValue={moment(this.state.timeend, format)} value={moment(this.state.timeend, format)} format={format} onChange={this.onChangeTimeItem} />
+                                            <TimePicker hideDisabledOptions allowClear={false} disabledHours={disabledHours} minuteStep={30} defaultValue={moment(this.state.timeend, format)} value={moment(this.state.timeend, format)} format={format} onChange={this.onChangeTimeItem} />
+                                            <span className={this.state.validateTimeItem ? "is-error is-check" : "is-error"}>
+                                                * Thời Gian  Phải  Lớn Hơn Thời Gian Hiện Tại
+                                            </span>
                                         </div>
                                         <div className="b-form-group">
                                             <label htmlFor="c">Chọn Phòng</label>
@@ -274,7 +342,7 @@ class FormModalComponent extends Component {
                                         </div>
                                         <div className="b-form-button">
                                             <button type="cancel" disabled={this.state.formErrors ? true : false} className="b-btn b-btn-cancel  waves-effect waves-teal" onClick={this.onCancel}>Hủy</button>
-                                            <button type="submit" className="b-btn b-btn-save waves-effect waves-teal">Lưu</button>
+                                            <button type="submit" disabled={this.state.validateDate || this.state.validateTime || this.state.validateTimeItem ? true : false} className="b-btn b-btn-save waves-effect waves-teal">Lưu</button>
                                         </div>
                                     </form>
                                 </div>
