@@ -55,6 +55,8 @@ class FullcalenderComponent extends Component {
     }
 
     onEvent(info) {
+        console.log(info.event);
+        
         this.setState({
             show: true,
             title: info.event.title,

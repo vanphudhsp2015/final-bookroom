@@ -124,7 +124,8 @@ class HomePage extends Component {
                     title: attributes.content,
                     className: [
                         attributes.repeat !== null ? `${'room_item_' + attributes.room.id}` : "",
-                        cookies.get('data') !== undefined && parseInt(attributes.user_id) === parseInt(cookies.get('data').id) ? "is-current" : ""
+                        cookies.get('data') !== undefined && parseInt(attributes.user_id) === parseInt(cookies.get('data').id) ? "is-current" : "",
+                        attributes.repeat !== null ? 'b-repeat' : ''
                     ],
                     start: attributes.daystart,
                     room: attributes.room.name,

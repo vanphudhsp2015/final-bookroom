@@ -355,6 +355,7 @@ class SlideBar extends Component {
                       <option value={8}>8</option>
                       <option value={10}>10</option>
                       <option value={15}>15</option>
+                      <option value={365}>365</option>
                     </select>
                   </div>
                 </div>

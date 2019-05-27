@@ -4,9 +4,9 @@ import axios from 'axios';
 import { message } from 'antd';
 import Cookies from 'universal-cookie';
 const cookies = new Cookies();
-var moment = require('moment');
-var dateFormat = require('dateformat');
-var now = new Date();
+// var moment = require('moment');
+// var dateFormat = require('dateformat');
+// var now = new Date();
 // api
 
 export function requestGetEvent() {
