@@ -21,21 +21,6 @@ export function requestGetEvent() {
             },
         }).then(function (response) {
             dispatch(receiveData(types.REQUEST_GET_EVENTS, response.data.data))
-            if (response.data.data.length > 0) {
-                response.data.data.forEach(data => {
-                    if (data.attributes.daystart === dateFormat(now, 'yyyy-mm-dd')) {
-                        if (moment(data.attributes.daystart + ' ' + data.attributes.timestart).diff(now, 'minutes') < 30) {
-                            if (moment(data.attributes.daystart + ' ' + data.attributes.timestart).diff(now, 'minutes') === 30) {
-                                console.log('Còn 30 phút nữa là cuộc họp ');
-                                message.success('Còn 30 phút nữa là cuộc họp ' + data.attributes.content + ' bắt đầu ');
-                            }
-                            if (moment(data.attributes.daystart + ' ' + data.attributes.timestart).diff(now, 'minutes') === 0) {
-                                message.success('Cuộc họp ' + data.attributes.content + 'đang bắt đầu ');
-                            }
-                        }
-                    }
-                })
-            }
         }).catch(function (error) {
             // noteError(error);
             dispatch(requestRejected(error));
