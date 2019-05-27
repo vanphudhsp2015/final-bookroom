@@ -14,28 +14,13 @@ export function requestGetEvent() {
         dispatch(requestLoading());
         return axios.request({
             method: 'GET',
-            url: `${typeAPI.API_URL}/bookrooms`,
+            url: `${typeAPI.API_URL}/api/v1/bookrooms`,
             headers: {
                 "Accept": "application/json",
                 'Content-Type': 'application/json',
             },
         }).then(function (response) {
             dispatch(receiveData(types.REQUEST_GET_EVENTS, response.data.data))
-            if (response.data.data.length > 0) {
-                response.data.data.forEach(data => {
-                    if (data.attributes.daystart === dateFormat(now, 'yyyy-mm-dd')) {
-                        if (moment(data.attributes.daystart + ' ' + data.attributes.timestart).diff(now, 'minutes') < 30) {
-                            if (moment(data.attributes.daystart + ' ' + data.attributes.timestart).diff(now, 'minutes') === 30) {
-                                console.log('Còn 30 phút nữa là cuộc họp ');
-                                message.success('Còn 30 phút nữa là cuộc họp ' + data.attributes.content + ' bắt đầu ');
-                            }
-                            if (moment(data.attributes.daystart + ' ' + data.attributes.timestart).diff(now, 'minutes') === 0) {
-                                message.success('Cuộc họp ' + data.attributes.content + 'đang bắt đầu ');
-                            }
-                        }
-                    }
-                })
-            }
         }).catch(function (error) {
             // noteError(error);
             dispatch(requestRejected(error));
@@ -79,7 +64,7 @@ export function requestAddEvents(data) {
     return (dispatch) => {
         return axios.request({
             method: 'POST',
-            url: `${typeAPI.API_URL}/bookrooms`,
+            url: `${typeAPI.API_URL}/api/v1/bookrooms`,
             headers: {
                 "Accept": "application/json",
                 'Content-Type': 'application/json',
@@ -104,7 +89,7 @@ export function requestDeleteEvent(id) {
     return (dispatch) => {
         return axios.request({
             method: 'DELETE',
-            url: `${typeAPI.API_URL}/bookrooms/${id}`,
+            url: `${typeAPI.API_URL}/api/v1/bookrooms/${id}`,
             headers: {
                 "Accept": "application/json",
                 'Content-Type': 'application/json',
@@ -176,7 +161,7 @@ export function requestUpdateEvent(data) {
     return (dispatch) => {
         return axios.request({
             method: 'PUT',
-            url: `${typeAPI.API_URL}/bookrooms/${data.id}`,
+            url: `${typeAPI.API_URL}/api/v1/bookrooms/${data.id}`,
             params: formDataObject,
             headers: {
                 "Accept": "application/json",
@@ -198,7 +183,7 @@ export function requestGetEventByRoom(id) {
         dispatch(requestLoading());
         return axios.request({
             method: 'GET',
-            url: `${typeAPI.API_URL}/getbrbyid/${id}`,
+            url: `${typeAPI.API_URL}/api/v1/getbrbyid/${id}`,
             headers: {
                 "Accept": "application/json",
                 'Content-Type': 'application/json',
@@ -221,7 +206,7 @@ export function requestSearchEvent(data) {
         dispatch(requestLoading());
         return axios.request({
             method: 'GET',
-            url: `${typeAPI.API_URL}/admin/getbrbyday`,
+            url: `${typeAPI.API_URL}/api/v1/admin/getbrbyday`,
             params,
             headers: {
                 "Accept": "application/json",

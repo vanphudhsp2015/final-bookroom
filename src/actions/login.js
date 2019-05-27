@@ -13,7 +13,7 @@ export function requestGetLogin(data) {
     return (dispatch) => {
         return axios.request({
             method: 'POST',
-            url: `${API.API_URL}/auth/google`,
+            url: `${API.API_URL}/api/v1/auth/google`,
             headers: {
                 "Accept": "application/json",
                 'Content-Type': 'application/json',
@@ -25,7 +25,7 @@ export function requestGetLogin(data) {
                 cookies.set('token', response.data.access_token);
                 axios.request({
                     method: 'GET',
-                    url: `${API.API_URL}/me`,
+                    url: `${API.API_URL}/api/v1/me`,
                     headers: {
                         "Accept": "application/json",
                         'Content-Type': 'application/json',
@@ -78,7 +78,7 @@ export function requestLogout(data) {
     return (dispatch) => {
         return axios.request({
             method: 'POST',
-            url: `${API.API_URL}/auth/logout`,
+            url: `${API.API_URL}/api/v1/auth/logout`,
             headers: {
                 "Accept": "application/json",
                 'Content-Type': 'application/json',
@@ -103,7 +103,7 @@ export function requestCheckLogin() {
     return (dispatch) => {
         return axios.request({
             method: 'GET',
-            url: `${API.API_URL}/me`,
+            url: `${API.API_URL}/api/v1/me`,
             headers: {
                 "Accept": "application/json",
                 'Content-Type': 'application/json',
