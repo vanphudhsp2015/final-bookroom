@@ -4,6 +4,8 @@ import { HeaderLayout, SlideBar } from '../../layouts/home';
 import { FullcalenderComponent } from '../../shared/home';
 import * as action from '../../../actions/events';
 import * as action_Room from '../../../actions/room';
+import rrulePlugin from '@fullcalendar/rrule';
+
 import Cookies from 'universal-cookie';
 import { message } from 'antd';
 const cookies = new Cookies();
@@ -118,6 +120,7 @@ class HomePage extends Component {
         if (arrA.length) {
             arrB = arrA.map(item => {
                 let attributes = item.attributes;
+
                 return {
                     resourceId: attributes.room.id,
                     id: item.id,
@@ -137,13 +140,14 @@ class HomePage extends Component {
                     reweek: attributes && attributes.repeat !== null ? attributes.repeat.byweekday : '',
                     recount: attributes && attributes.repeat !== null ? attributes.repeat.count : '',
                     repeat: attributes && attributes.repeat !== null ? '1' : '0',
-                    rrule: attributes && attributes.repeat !== null ?
+                    rruleSet: attributes && attributes.repeat !== null ?
                         {
                             freq: attributes.repeat.repeatby,
                             interval: attributes.repeat.interval,
                             byweekday: attributes.repeat.byweekday,
                             dtstart: `${attributes.daystart + ' ' + attributes.timestart}`,
-                            count: attributes.repeat.count
+                            count: attributes.repeat.count,
+                            exrules: [`${attributes.daystart + ' ' + attributes.timestart}`]
                         } : {
                             freq: "daily",
                             interval: 1,
