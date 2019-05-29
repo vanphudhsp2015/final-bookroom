@@ -6,8 +6,18 @@ import * as action from '../../../actions/events';
 import * as action_Room from '../../../actions/room';
 import Cookies from 'universal-cookie';
 import { message } from 'antd';
+// import { RRule, RRuleSet, rrulestr } from 'rrule'
 const cookies = new Cookies();
+// var dateFormatDate = require('dateformat');
 var moment = require('moment');
+// var now = new Date()
+// const rruleSet = new RRuleSet()
+// rruleSet.rrule(new RRule({
+//     freq: RRule.DAILY,
+//     count: 5,
+//     dtstart: new Date(Date.UTC(2019, 5, 29))
+// }))
+// rruleSet.exdate(new Date(Date.UTC(2019, 5, 31)))
 
 class HomePage extends Component {
     constructor(props, context) {
@@ -187,6 +197,8 @@ class HomePage extends Component {
         })
     }
     render() {
+        // console.log(rruleSet.all());
+
         return (
             <div className="wrapper">
                 <HeaderLayout onResetCheckLogin={this.onResetCheckLogin} isCheck={this.state.isLogin}></HeaderLayout>

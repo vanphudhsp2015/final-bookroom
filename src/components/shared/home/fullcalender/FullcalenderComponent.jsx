@@ -204,7 +204,7 @@ class FullcalenderComponent extends Component {
             show: false
         })
     }
-    render() {
+    render() {        
         return (
             <div className="b-fullcalender">
                 <Modal
