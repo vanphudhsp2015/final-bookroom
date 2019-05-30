@@ -8,9 +8,11 @@ import interactionPlugin from '@fullcalendar/interaction' // needed for dayClick
 import resourceTimeGridPlugin from '@fullcalendar/resource-timegrid';
 import allLocales from '@fullcalendar/core/locales-all';
 import '../../../../main.scss'
-import { Modal, Calendar } from 'antd';
+import { Modal, Calendar, Checkbox, message, Select, Spin } from 'antd';
+import debounce from 'lodash/debounce';
 import Cookies from 'universal-cookie';
-import { message } from 'antd';
+import * as typeAPI from '../../../../constants/actionAPI';
+import axios from 'axios';
 const cookies = new Cookies();
 const confirm = Modal.confirm;
 var dateFormat = require('dateformat');
@@ -28,6 +30,9 @@ dateFormat.i18n = {
         'a', 'p', 'am', 'pm', 'A', 'P', 'AM', 'PM'
     ]
 };
+const { Option } = Select;
+
+
 class FullcalenderComponent extends Component {
     calendarComponentRef = React.createRef()
     constructor(props) {
@@ -40,8 +45,46 @@ class FullcalenderComponent extends Component {
             description: '',
             datenow: now,
             isShowCalender: false,
+            checkbox: false,
+            data: [],
+            value: [],
+            fetching: false,
         }
+        this.lastFetchId = 0;
+        this.fetchUser = debounce(this.fetchUser, 800);
+
     }
+
+    fetchUser = value => {
+        var self = this;
+        this.setState({ data: [], fetching: true });
+        axios.request({
+            method: 'GET',
+            url: `${typeAPI.API_URL}/api/v1/admin/users`,
+            headers: {
+                "Accept": "application/json",
+                'Content-Type': 'application/json',
+                'Authorization': `${'bearer ' + cookies.get('token')}`
+            }
+        }).then(function (response) {
+            const data = response.data.map(data => ({
+                text: `${data.attributes.email}`,
+                value: `${data.attributes.email}`,
+            }));
+            self.setState({ data, fetching: false });
+        }).catch(function (error) {
+            console.log(error)
+        })
+    };
+
+    handleChange = value => {
+        this.setState({
+            value,
+            data: [],
+            fetching: false,
+        });
+    };
+
     componentDidUpdate(prevProps, prevState) {
         if (prevProps.datecalender !== this.props.datecalender) {
             let calendarApi = this.calendarComponentRef.current.getApi()
@@ -55,8 +98,6 @@ class FullcalenderComponent extends Component {
     }
 
     onEvent(info) {
-        console.log(info.event);
-        
         this.setState({
             show: true,
             title: info.event.title,
@@ -204,7 +245,24 @@ class FullcalenderComponent extends Component {
             show: false
         })
     }
-    render() {        
+    onChangerCheck = (e) => {
+        this.setState({
+            checkbox: e.target.checked
+        })
+    }
+    onSendMain = () => {
+        let arrayEmail = '';
+        this.state.value.forEach((i, index, item) => {
+            if (index === item.length - 1) {
+                arrayEmail += `${item[index].key}`;
+            } else {
+                arrayEmail += `${item[index].key},`;
+            }
+        })
+        return arrayEmail;
+    }
+    render() {
+        const { fetching, data, value } = this.state;
         return (
             <div className="b-fullcalender">
                 <Modal
@@ -275,6 +333,27 @@ class FullcalenderComponent extends Component {
                             <p>
                                 {this.state.recount ? `${this.state.recount + '  lần lặp lại'}` : ''}
                             </p>
+                            <Checkbox name="checkbox" checked={this.state.checkbox} onChange={this.onChangerCheck} value={this.state.checkbox}>Gửi Mail</Checkbox>
+                            <div className={this.state.checkbox ? "b-sendmail" : "b-sendmail is-disable"} style={{
+                                marginTop: '30px'
+                            }}>
+                                <Select
+                                    mode="multiple"
+                                    labelInValue
+                                    value={value}
+                                    placeholder="Select users"
+                                    notFoundContent={fetching ? <Spin size="small" /> : null}
+                                    filterOption={false}
+                                    onSearch={this.fetchUser}
+                                    onChange={this.handleChange}
+                                    style={{ width: '100%' }}
+                                >
+                                    {data.map(d => (
+                                        <Option key={d.value}>{d.text}</Option>
+                                    ))}
+                                </Select>
+                                <button className="b-btn waves-effect waves-ripple" onClick={this.onSendMain}>Gửi Mail</button>
+                            </div>
                         </div>
                     </div>
 

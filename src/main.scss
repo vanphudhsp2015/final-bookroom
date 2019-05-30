@@ -177,8 +177,8 @@
     border: none !important;
     background-color: #3384e2 !important;
     color: #fff !important;
-    &:focus{
-      box-shadow:  none !important;
+    &:focus {
+      box-shadow: none !important;
     }
   }
 }
@@ -239,5 +239,25 @@
   &:disabled {
     background-color: #4c4c4c !important;
     cursor: no-drop;
+  }
+}
+.b-sendmail {
+  &.is-disable {
+    display: none;
+  }
+  .b-select-search {
+    width: 100%;
+    &.is-disable {
+      display: none;
+    }
+  }
+  .b-btn {
+    margin-top: 30px;
+    border: none;
+    box-shadow: 0 0 10px -2px rgba(0, 0, 0, 0.25);
+    padding: 5px 10px;
+    color: #fff;
+    background-color: #2962ff;
+    border-radius: 4px;
   }
 }

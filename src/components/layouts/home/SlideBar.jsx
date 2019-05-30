@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
-import { Modal, Button, DatePicker, TimePicker, Checkbox, Select, Radio, message } from 'antd';
+import { Modal, Button, DatePicker, TimePicker, Checkbox, Select, Radio, message, Spin } from 'antd';
 import { CalenderComponent } from '../../shared/home';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import 'antd/dist/antd.css';
 import Cookies from 'universal-cookie';
 import axios from 'axios';
+import debounce from 'lodash/debounce';
 const cookies = new Cookies();
 var dateFormatDate = require('dateformat');
 const format = 'HH:mm';
@@ -51,10 +52,44 @@ class SlideBar extends Component {
       validateDate: false,
       validateTime: false,
       validateTimeItem: false,
-      validateTimeCompare: false
+      validateTimeCompare: false,
+      checkboxItem: false,
+      data: [],
+      valueItem: [],
+      fetching: false,
     }
+    this.lastFetchId = 0;
+    this.fetchUser = debounce(this.fetchUser, 800);
   }
+  fetchUser = value => {
+    var self = this;
+    this.setState({ data: [], fetching: true });
+    axios.request({
+      method: 'GET',
+      url: `${env.REACT_APP_API_BE}/api/v1/admin/users`,
+      headers: {
+        "Accept": "application/json",
+        'Content-Type': 'application/json',
+        'Authorization': `${'bearer ' + cookies.get('token')}`
+      }
+    }).then(function (response) {
+      const data = response.data.data.map(data => ({
+        text: `${data.attributes.email}`,
+        value: `${data.attributes.email}`,
+      }));
+      self.setState({ data, fetching: false });
+    }).catch(function (error) {
+      console.log(error)
+    })
+  };
 
+  handleChangeUser = value => {
+    this.setState({
+      valueItem:value,
+      data: [],
+      fetching: false,
+    });
+  };
   componentDidUpdate(prevProps, prevState) {
     if (prevProps.edit !== this.props.edit) {
       let data = this.props.dataEdit.attributes;
@@ -257,7 +292,24 @@ class SlideBar extends Component {
 
     }
   }
+  onChangerCheckUser = (e) => {
+    this.setState({
+      checkboxItem: e.target.checked
+    })
+  }
+  onSendMain = () => {
+    let arrayEmail = '';
+    this.state.value.forEach((i, index, item) => {
+      if (index === item.length - 1) {
+        arrayEmail += `${item[index].key}`;
+      } else {
+        arrayEmail += `${item[index].key},`;
+      }
+    })
+    return arrayEmail;
+  }
   render() {
+    const { fetching, data, valueItem } = this.state;
     return (
       <div className="b-block-left">
         <div className="b-group-btn">
@@ -358,6 +410,27 @@ class SlideBar extends Component {
                       <option value={365}>365</option>
                     </select>
                   </div>
+                </div>
+                <Checkbox name="checkboxItem" checked={this.state.checkboxItem} onChange={this.onChangerCheckUser} value={this.state.checkboxItem}>Gửi Mail</Checkbox>
+                <div className={this.state.checkboxItem ? "b-sendmail" : "b-sendmail is-disable"} style={{
+                  marginTop: '30px'
+                }}>
+                  <Select
+                    mode="multiple"
+                    labelInValue
+                    value={valueItem}
+                    placeholder="Select users"
+                    notFoundContent={fetching ? <Spin size="small" /> : null}
+                    filterOption={false}
+                    onSearch={this.fetchUser}
+                    onChange={this.handleChangeUser}
+                    style={{ width: '100%' }}
+                  >
+                    {data.map(d => (
+                      <Option key={d.value}>{d.text}</Option>
+                    ))}
+                  </Select>
+                  <button className="b-btn waves-effect waves-ripple" onClick={this.onSendMain}>Gửi Mail</button>
                 </div>
                 <div className="b-form-button">
                   <button type="cancel" className="b-btn b-btn-cancel  waves-effect waves-teal" onClick={this.onCancel}>Hủy</button>
