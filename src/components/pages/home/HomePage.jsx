@@ -147,7 +147,7 @@ class HomePage extends Component {
                             byweekday: attributes.repeat.byweekday,
                             dtstart: `${attributes.daystart + ' ' + attributes.timestart}`,
                             count: attributes.repeat.count,
-                            exrules: [`${attributes.daystart + ' ' + attributes.timestart}`]
+                            exrules: [`${attributes.daystart + ' ' + attributes.timestart}`],
                         } : {
                             freq: "daily",
                             interval: 1,

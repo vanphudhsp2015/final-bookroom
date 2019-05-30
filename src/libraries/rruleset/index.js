@@ -34,26 +34,6 @@ let recurring = {
     return null;
   },
   expand: function (rruleSet, framingRange) {
-    // console.log(rruleSet);
-    // const rruleSet = new RRuleSet();
-
-    // // Add a rrule to rruleSet
-    // rruleSet.rrule(new RRule({
-    //   freq: RRule.MONTHLY,
-    //   count: 5,
-    //   dtstart: new Date(Date.UTC(2012, 1, 1, 10, 30))
-    // }))
-
-    // // Add a date to rruleSet
-    // rruleSet.rdate(new Date(Date.UTC(2012, 6, 1, 10, 30)))
-
-    // // Add another date to rruleSet
-    // rruleSet.rdate(new Date(Date.UTC(2012, 6, 2, 10, 30)))
-
-    // // Add a exclusion date to rruleSet
-    // rruleSet.exdate(new Date(Date.UTC(2012, 5, 1, 10, 30)))
-
-    // Get all occurrence dates (Date instances):
     return rruleSet.all();
   }
 }
@@ -97,19 +77,13 @@ function parseRRuleSet(input, dateEnv) {
             refined.byweekday = convertConstants(refined.byweekday); // the plural version
         }
         rruleSet = new RRuleSet(true);
-
-        const rule = new RRule(refined);
-        rruleSet.rrule(rule);
+        rruleSet.rrule(new RRule(refined));
 
         if (Array.isArray(excludes) && excludes.length > 0) {
           for (var i = excludes.length - 1; i >= 0; i--) {
-            // console.log(excludes[i]);
-            // console.log(new Date(excludes[i]));
-            rruleSet.exdate(new Date(2019, 4, 29, 8, 30));
+            rruleSet.exdate(new Date(excludes[i]));
           }
         }
-
-        console.log(rruleSet);
     }
     if (rruleSet) {
         return { rruleSet, allDayGuess: allDayGuess };
