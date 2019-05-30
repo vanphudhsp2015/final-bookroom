@@ -8,7 +8,7 @@ export function requestGetRoom() {
     return (dispatch) => {
         return axios.request({
             method: 'GET',
-            url: `${API.API_URL}/rooms`,
+            url: `${API.API_URL}/api/v1/rooms`,
             headers: {
                 "Accept": "application/json",
                 'Content-Type': 'application/json',
@@ -25,7 +25,7 @@ export function requestDeleteRoom(id) {
     return (dispatch) => {
         return axios.request({
             method: 'DELETE',
-            url: `${API.API_URL}/admin/rooms/${id}`,
+            url: `${API.API_URL}/api/v1/admin/rooms/${id}`,
             headers: {
                 "Accept": "application/json",
                 'Content-Type': 'application/json',
@@ -52,7 +52,7 @@ export function requestAddRoom(data) {
     return (dispatch) => {
         return axios.request({
             method: 'POST',
-            url: `${API.API_URL}/admin/rooms`,
+            url: `${API.API_URL}/api/v1/admin/rooms`,
             headers: {
                 "Accept": "application/json",
                 'Content-Type': 'application/json',
@@ -83,7 +83,7 @@ export function requestEditRoom(data) {
     return (dispatch) => {
         return axios.request({
             method: 'PUT',
-            url: `${API.API_URL}/admin/rooms/${data.id}`,
+            url: `${API.API_URL}/api/v1/admin/rooms/${data.id}`,
             params,
             headers: {
                 "Accept": "application/json",

@@ -8,7 +8,7 @@ export function requestGetUsers(){
     return (dispatch)=>{
         return axios.request({
             method: 'GET',
-            url: `${API.API_URL}/admin/users`,
+            url: `${API.API_URL}/api/v1/admin/users`,
             headers: {
                 "Accept": "application/json",
                 'Content-Type': 'application/json',
