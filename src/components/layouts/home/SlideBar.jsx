@@ -7,6 +7,7 @@ import 'antd/dist/antd.css';
 import Cookies from 'universal-cookie';
 import axios from 'axios';
 import debounce from 'lodash/debounce';
+import { Redirect } from 'react-router-dom';
 const cookies = new Cookies();
 var dateFormatDate = require('dateformat');
 const format = 'HH:mm';
@@ -57,6 +58,7 @@ class SlideBar extends Component {
       data: [],
       valueItem: [],
       fetching: false,
+      isRedirect: false
     }
     this.lastFetchId = 0;
     this.fetchUser = debounce(this.fetchUser, 800);
@@ -85,7 +87,7 @@ class SlideBar extends Component {
 
   handleChangeUser = value => {
     this.setState({
-      valueItem:value,
+      valueItem: value,
       data: [],
       fetching: false,
     });
@@ -308,12 +310,24 @@ class SlideBar extends Component {
     })
     return arrayEmail;
   }
+  onRedirectForm = () => {
+    if (cookies.get('data') === undefined) {
+      this.props.onCheckLogin();
+    } else {
+      this.setState({
+        isRedirect: true
+      })
+    }
+  }
   render() {
     const { fetching, data, valueItem } = this.state;
+    if (this.state.isRedirect) {
+      return <Redirect to='/new'></Redirect>
+    }
     return (
       <div className="b-block-left">
         <div className="b-group-btn">
-          <Button className="b-btn waves-effect waves-light" onClick={this.showModal}>
+          <Button className="b-btn waves-effect waves-light" onClick={this.onRedirectForm}>
             TẠO
           </Button>
         </div>

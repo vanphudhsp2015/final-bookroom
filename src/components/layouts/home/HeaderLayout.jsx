@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import { GoogleLogin, GoogleLogout } from 'react-google-login';
 import Cookies from 'universal-cookie';
 import * as action from '../../../actions/login';
-import { Redirect } from 'react-router-dom';
+import { Redirect, Link } from 'react-router-dom';
 import { API_GG } from '../../../constants/config';
 const cookies = new Cookies();
 class HeaderLayout extends Component {
@@ -51,7 +51,8 @@ class HeaderLayout extends Component {
         });
         this.onResetLogin();
     }
-    responseGoogle = (response) => {                
+    responseGoogle = (response) => {
+
         if (response) {
             this.props.dispatch(action.requestGetLogin(response))
             cookies.set('accessToken', response.accessToken);
@@ -108,7 +109,7 @@ class HeaderLayout extends Component {
         })
     }
 
-    render() {
+    render() {        
         if (this.state.isRedirect) {
             return (
                 <Redirect to="/admin/event"></Redirect>
@@ -199,7 +200,9 @@ class HeaderLayout extends Component {
                 <div className="b-block">
                     <div className="b-block-left">
                         <div className="b-icon">
-                            <img src="/images/logo-light.svg" alt="Logo" />
+                            <Link to="/">
+                                <img src="/images/logo-light.svg" alt="Logo" />
+                            </Link>
                         </div>
                     </div>
                     <div className="b-block-right">

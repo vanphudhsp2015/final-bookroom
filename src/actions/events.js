@@ -41,7 +41,8 @@ export function requestAddEvents(data) {
         })
         formDataObject = {
             'room_id': data.rooms,
-            'content': data.title,
+            'title': data.title,
+            'content': data.content,
             'user_id': cookies.get('data').id,
             'daystart': data.dateStart,
             'timestart': data.timestart,
@@ -54,11 +55,12 @@ export function requestAddEvents(data) {
     } else {
         formDataObject = {
             'room_id': data.rooms,
-            'content': data.title,
+            'content': data.content,
             'user_id': cookies.get('data').id,
             'daystart': data.dateStart,
             'timestart': data.timestart,
-            'timeend': data.timeend
+            'timeend': data.timeend,
+            'title': data.title
         }
     }
     return (dispatch) => {
@@ -219,6 +221,33 @@ export function requestSearchEvent(data) {
             } else {
                 message.warning('Không có lịch nào trong khoảng thời gian này !!!');
             }
+        }).catch(function (error) {
+            dispatch(requestRejected(error));
+        })
+    }
+}
+// add tour 
+export function requestDeleteException(data) {
+    let formDataObject = {};
+    formDataObject = {
+        'content': data.content,
+        'day': data.day,
+        'timestart': data.timestart,
+        'timeend': data.timeend,
+        'title': data.title,
+    }
+    return (dispatch) => {
+        return axios.request({
+            method: 'POST',
+            url: `${typeAPI.API_URL}/api/v1/deletebrrepeat/${data.id}`,
+            headers: {
+                "Accept": "application/json",
+                'Content-Type': 'application/json',
+                'Authorization': `${'bearer ' + cookies.get('token')}`
+            },
+            data: formDataObject
+        }).then(function (response) {
+            dispatch(receiveData(types.REQUEST_DELETE_EVENT_EXCEPTION, response.data.data));
         }).catch(function (error) {
             dispatch(requestRejected(error));
         })

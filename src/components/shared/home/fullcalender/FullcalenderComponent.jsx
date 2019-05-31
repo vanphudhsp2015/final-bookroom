@@ -3,13 +3,13 @@ import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid'
 import listPlugin from '@fullcalendar/list';
-import rrulePlugin from '@fullcalendar/rrule';
+// import rrulePlugin from '@fullcalendar/rrule';
 import rrsetPlugin from '../../../../libraries/rruleset';
 import interactionPlugin from '@fullcalendar/interaction' // needed for dayClick
 import resourceTimeGridPlugin from '@fullcalendar/resource-timegrid';
 import allLocales from '@fullcalendar/core/locales-all';
 import '../../../../main.scss'
-import { Modal, Calendar, Checkbox, message, Select, Spin } from 'antd';
+import { Modal, Calendar, message } from 'antd';
 import debounce from 'lodash/debounce';
 import Cookies from 'universal-cookie';
 import * as typeAPI from '../../../../constants/actionAPI';
@@ -31,7 +31,7 @@ dateFormat.i18n = {
         'a', 'p', 'am', 'pm', 'A', 'P', 'AM', 'PM'
     ]
 };
-const { Option } = Select;
+// const { Option } = Select;
 
 
 class FullcalenderComponent extends Component {
@@ -103,6 +103,7 @@ class FullcalenderComponent extends Component {
             show: true,
             title: info.event.title,
             datestart: dateFormat(info.event.start, "dddd ,  dd mmmm yyyy"),
+            day: dateFormat(info.event.start, "yyyy-mm-dd"),
             timestart: info.event.extendedProps.timestart,
             timeend: info.event.extendedProps.timeend,
             room: info.event.extendedProps.room,
@@ -111,9 +112,10 @@ class FullcalenderComponent extends Component {
             redate: info.event.extendedProps.redate,
             recount: info.event.extendedProps.recount,
             reweek: info.event.extendedProps.reweek,
-            user_id: info.event.extendedProps.user_id
+            user_id: info.event.extendedProps.user_id,
+            content: info.event.extendedProps.content,
+            is_repeat: info.event.extendedProps.is_repeat
         })
-
     }
 
     handleClose = () => {
@@ -132,6 +134,7 @@ class FullcalenderComponent extends Component {
     }
     onDelete(id, user_id) {
         var self = this.props;
+        var self_this = this.state;
         confirm({
             title: 'Bạn Muốn Xóa Sự Kiện?',
             content: 'Bấm Ok để Xóa',
@@ -140,7 +143,11 @@ class FullcalenderComponent extends Component {
                     message.warning('Vui Lòng Đăng Nhập Để Xóa Sự Kiện !')
                 } else {
                     if (parseInt(user_id) === parseInt(cookies.get('data').id)) {
-                        self.onDelete(id);
+                        if (self_this.is_repeat) {
+                            self.onDeleteException(self_this);
+                        } else {
+                            self.onDelete(id);
+                        }
                     } else {
                         message.warning('Bạn không có quyền xóa sự kiện này !')
                     }
@@ -263,7 +270,7 @@ class FullcalenderComponent extends Component {
         return arrayEmail;
     }
     render() {
-        const { fetching, data, value } = this.state;
+        // const { fetching, data, value } = this.state;
         return (
             <div className="b-fullcalender">
                 <Modal
@@ -325,6 +332,8 @@ class FullcalenderComponent extends Component {
                             <p className="b-text-user">
                                 {this.state.user}
                             </p>
+                            <p className="b-text-norm" dangerouslySetInnerHTML={{ __html: this.state.content }}>
+                            </p>
                             <p className={this.state.redate !== 'Không Lặp' ? "b-text-user" : ''}>
                                 {this.state.redate === 'daily' ? 'Lặp Theo Ngày' : ''}
                                 {this.state.redate === 'weekly' ? 'Lặp Theo Tuần' : ''}
@@ -334,7 +343,7 @@ class FullcalenderComponent extends Component {
                             <p>
                                 {this.state.recount ? `${this.state.recount + '  lần lặp lại'}` : ''}
                             </p>
-                            <Checkbox name="checkbox" checked={this.state.checkbox} onChange={this.onChangerCheck} value={this.state.checkbox}>Gửi Mail</Checkbox>
+                            {/* <Checkbox name="checkbox" checked={this.state.checkbox} onChange={this.onChangerCheck} value={this.state.checkbox}>Gửi Mail</Checkbox>
                             <div className={this.state.checkbox ? "b-sendmail" : "b-sendmail is-disable"} style={{
                                 marginTop: '30px'
                             }}>
@@ -354,7 +363,7 @@ class FullcalenderComponent extends Component {
                                     ))}
                                 </Select>
                                 <button className="b-btn waves-effect waves-ripple" onClick={this.onSendMain}>Gửi Mail</button>
-                            </div>
+                            </div> */}
                         </div>
                     </div>
 
