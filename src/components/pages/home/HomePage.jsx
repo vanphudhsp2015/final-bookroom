@@ -5,7 +5,7 @@ import { FullcalenderComponent } from '../../shared/home';
 import * as action from '../../../actions/events';
 import * as action_Room from '../../../actions/room';
 // import rrulePlugin from '@fullcalendar/rrule';
-
+// import _ from "lodash";
 import Cookies from 'universal-cookie';
 import { message } from 'antd';
 // import { RRule, RRuleSet, rrulestr } from 'rrule'
@@ -128,7 +128,7 @@ class HomePage extends Component {
     convertToFrontEnd(arrA) {
         let arrB = []
         if (arrA.length) {
-            arrB = arrA.map(item => {
+            arrB = this.convertArray(arrA).map(item => {
                 let attributes = item.attributes;
                 let excepArray = [];
                 attributes.exception.map(data => (
@@ -208,19 +208,45 @@ class HomePage extends Component {
     onDeleteException = (data) => {
         this.props.dispatch(action.requestDeleteException(data));
     }
+    convertArray(data) {
+        let result = [];
+        let check = false;
+        data.map(item => {
+            result = [...result, item]
+            let dataItem = item.attributes.exception.map(detail => {
+                if (detail.status === 'edit') {
+                    check = true
+                    return {
+                        type: "Bookrooms",
+                        id: item.id,
+                        attributes: {
+                            ...detail,
+                            room: item.attributes.room,
+                            repeat: null,
+                            daystart: detail.day,
+                            user_id: item.attributes.user_id,
+                            exception: []
+                        }
+
+                    }
+                } else {
+                    return null;
+                }
+
+            })
+            if (check === true) {
+                return result = [...result, ...dataItem]
+            } else {
+                return null;
+            }
+        })
+        var filterNotNull = result.filter(function (e) {
+            return e !== null;
+        })
+        return filterNotNull;
+    }
+
     render() {
-        // var isoDate = new Date('2019-05-30 09:40').toUTCString(); //covert local to UTC
-        // var utcString = new Date(2019, 5 - 1, 10, 14, 10).toUTCString();
-        // let utcTimestamp = moment.utc(('2019-12-12').toISOString()).hour(10).minutes(30);
-        // var gmtDateTime = new Date(isoDate); // covert UTC to local
-        // console.log('item1 ='+utcString);
-        // console.log('item2 ='+gmtDateTime);
-        // console.log(isoDate);
-        // console.log(gmtDateTime);
-
-
-
-
         return (
             <div className="wrapper">
                 <HeaderLayout onResetCheckLogin={this.onResetCheckLogin} isCheck={this.state.isLogin}></HeaderLayout>
@@ -228,7 +254,7 @@ class HomePage extends Component {
                     <div className="b-block">
                         <SlideBar onCheckLogin={this.onCheckLogin} room={this.props.room} onCancleEdit={this.onCancleEdit} onChangerRoom={this.onChangerRoom} onUpdate={this.onUpdate} dataEdit={this.state.dataEdit} edit={this.state.edit} onGetDate={this.onGetDate} onAddEvent={this.onAddEvent}></SlideBar>
                         <div className="b-block-right">
-                            <FullcalenderComponent onDeleteException={this.onDeleteException} rooms={this.props.room} room={this.convertArrayRoom(this.props.room)} onCancleEdit={this.onCancleEdit} onUpdate={this.onUpdate} onEdit={this.onEdit} onDelete={this.onDelete} is_checkdate={this.state.is_getdate} datecalender={this.state.datecalender} data={this.convertToFrontEnd(this.props.data)}></FullcalenderComponent>
+                            <FullcalenderComponent onAddEvent={this.onAddEvent} onDeleteException={this.onDeleteException} rooms={this.props.room} room={this.convertArrayRoom(this.props.room)} onCancleEdit={this.onCancleEdit} onUpdate={this.onUpdate} onEdit={this.onEdit} onDelete={this.onDelete} is_checkdate={this.state.is_getdate} datecalender={this.state.datecalender} data={this.convertToFrontEnd(this.props.data)}></FullcalenderComponent>
                         </div>
                     </div>
                 </main>

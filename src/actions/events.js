@@ -29,6 +29,15 @@ export function requestGetEvent() {
 }
 // add tour 
 export function requestAddEvents(data) {
+    // let email = '';
+    // data.value.forEach((i, index, item) => {
+    //     if (index === item.length - 1) {
+    //         email += `${item[index].key}`;
+    //     } else {
+    //         email += `${item[index].key},`;
+    //     }
+    // })
+    // console.log(email);
     let formDataObject = {};
     if (data.checkbox === true) {
         let arrayDay = '';
@@ -53,15 +62,30 @@ export function requestAddEvents(data) {
             'byweekday': data.choice === 'weekly' ? arrayDay : ''
         }
     } else {
-        formDataObject = {
-            'room_id': data.rooms,
-            'content': data.content,
-            'user_id': cookies.get('data').id,
-            'daystart': data.dateStart,
-            'timestart': data.timestart,
-            'timeend': data.timeend,
-            'title': data.title
+        if (data.is_quickly) {
+            formDataObject = {
+                'room_id': data.rooms,
+                'content': data.content,
+                'user_id': cookies.get('data').id,
+                'daystart': data.daystart,
+                'timestart': data.timestart,
+                'timeend': data.timeend,
+                'title': data.title,
+                // 'mail': 'vanphudhsp2015@gmail.com'
+            }
+        } else {
+            formDataObject = {
+                'room_id': data.rooms,
+                'content': data.content,
+                'user_id': cookies.get('data').id,
+                'daystart': data.dateStart,
+                'timestart': data.timestart,
+                'timeend': data.timeend,
+                'title': data.title,
+                // 'mail': 'vanphudhsp2015@gmail.com'
+            }
         }
+
     }
     return (dispatch) => {
         return axios.request({
@@ -136,7 +160,8 @@ export function requestUpdateEvent(data) {
             }
             formDataObject = {
                 'room_id': data.rooms,
-                'content': data.title,
+                'content': data.cotent,
+                'title': data.title,
                 'user_id': cookies.get('data').name,
                 'daystart': data.dateStart,
                 'timestart': data.timestart,
@@ -248,6 +273,35 @@ export function requestDeleteException(data) {
             data: formDataObject
         }).then(function (response) {
             dispatch(receiveData(types.REQUEST_DELETE_EVENT_EXCEPTION, response.data.data));
+        }).catch(function (error) {
+            dispatch(requestRejected(error));
+        })
+    }
+}
+export function requestEditException(data, day) {
+
+    let formDataObject = {};
+    formDataObject = {
+        'content': data.content,
+        'day': day,
+        'timestart': data.timestart,
+        'timeend': data.timeend,
+        'title': data.title,
+    }
+
+    return (dispatch) => {
+        return axios.request({
+            method: 'POST',
+            url: `${typeAPI.API_URL}/api/v1/editbrrepeat/${data.id}`,
+            headers: {
+                "Accept": "application/json",
+                'Content-Type': 'application/json',
+                'Authorization': `${'bearer ' + cookies.get('token')}`
+            },
+            data: formDataObject
+        }).then(function (response) {
+            message.success('Sửa Ngoại Lệ Thành Công');
+            dispatch(receiveData(types.REQUEST_EDIT_EVENT_EXCEPTION, response.data.data));
         }).catch(function (error) {
             dispatch(requestRejected(error));
         })

@@ -9,11 +9,13 @@ import interactionPlugin from '@fullcalendar/interaction' // needed for dayClick
 import resourceTimeGridPlugin from '@fullcalendar/resource-timegrid';
 import allLocales from '@fullcalendar/core/locales-all';
 import '../../../../main.scss'
-import { Modal, Calendar, message } from 'antd';
+import { Modal, Calendar, message, Radio } from 'antd';
 import debounce from 'lodash/debounce';
 import Cookies from 'universal-cookie';
 import * as typeAPI from '../../../../constants/actionAPI';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
+import moment from 'moment';
 const cookies = new Cookies();
 const confirm = Modal.confirm;
 var dateFormat = require('dateformat');
@@ -50,6 +52,11 @@ class FullcalenderComponent extends Component {
             data: [],
             value: [],
             fetching: false,
+            isShowDelete: false,
+            valueDelete: 1,
+            isShowEdit: false,
+            isRedirect: false,
+            isException: false
         }
         this.lastFetchId = 0;
         this.fetchUser = debounce(this.fetchUser, 800);
@@ -133,34 +140,12 @@ class FullcalenderComponent extends Component {
         });
     }
     onDelete(id, user_id) {
-        var self = this.props;
-        var self_this = this.state;
-        confirm({
-            title: 'Bạn Muốn Xóa Sự Kiện?',
-            content: 'Bấm Ok để Xóa',
-            onOk() {
-                if (cookies.get('data') === undefined) {
-                    message.warning('Vui Lòng Đăng Nhập Để Xóa Sự Kiện !')
-                } else {
-                    if (parseInt(user_id) === parseInt(cookies.get('data').id)) {
-                        if (self_this.is_repeat) {
-                            self.onDeleteException(self_this);
-                        } else {
-                            self.onDelete(id);
-                        }
-                    } else {
-                        message.warning('Bạn không có quyền xóa sự kiện này !')
-                    }
-
-                }
-            },
-            onCancel() {
-                self.onCancleEdit();
-            },
-        });
         this.setState({
-            show: !this.state.show
+            isShowDelete: true,
+            id: id,
+            user_id: user_id
         })
+
     }
     onEdit(id, user_id) {
         var self = this.props;
@@ -210,6 +195,8 @@ class FullcalenderComponent extends Component {
 
     }
     oneventDrop = (eventDropInfo) => {
+        console.log('dịch chuyển');
+
         let data = {
             id: eventDropInfo.event.id,
             daystart: dateFormat(eventDropInfo.event.start, 'yyyy-mm-dd'),
@@ -269,16 +256,126 @@ class FullcalenderComponent extends Component {
         })
         return arrayEmail;
     }
+    handleDeleteOk = () => {
+        const { id } = this.state;
+        var self = this.props;
+        if (this.state.valueDelete === 2) {
+            self.onDeleteException(this.state);
+            this.setState({
+                isShowDelete: false,
+                show: !this.state.show
+            })
+        } else {
+            self.onDelete(id);
+            this.setState({
+                isShowDelete: false,
+                show: !this.state.show
+            })
+        }
+
+    }
+    onCloseDelete = () => {
+        this.setState({
+            isShowDelete: false
+        })
+    }
+    onChangeDeleteEvent = (e) => {
+        this.setState({
+            valueDelete: e.target.value,
+        });
+    }
+    handleEditOk = () => {
+        if (this.state.valueDelete === 2) {
+            this.setState({
+                isShowDelete: false,
+                show: !this.state.show,
+                isException: true
+            })
+        } else {
+            this.setState({
+                isShowDelete: false,
+                show: !this.state.show,
+                isRedirect: true
+            })
+        }
+    }
+    onCloseEdit = () => {
+        this.setState({
+            isShowEdit: false
+        })
+    }
+    onShowModalEdit = () => {
+        this.setState({
+            isShowEdit: true
+        })
+    }
+    roundMinutesDate(data, add) {
+        const start = moment(data);
+        const remainder = 30 - (start.minute() % 30) + add;
+        const dateTime = moment(start).add(remainder, "minutes").format("HH:mm");
+        return dateTime;
+    }
+    onClickDate = (e) => {
+        let data = {
+            daystart: dateFormat(e.dateStr, 'yyyy-mm-dd'),
+            timestart: dateFormat(e.dateStr, 'HH:mm'),
+            timeend: this.roundMinutesDate(e.dateStr, 60),
+            title: 'Cuộc Họp',
+            content: 'Cuộc Họp',
+            is_quickly: true,
+            rooms: this.props.room[0].id
+        }
+        this.props.onAddEvent(data);
+    }
     render() {
-        // const { fetching, data, value } = this.state;
+
+        const radioStyle = {
+            display: 'block',
+            height: '30px',
+            lineHeight: '30px',
+        };
         return (
             <div className="b-fullcalender">
+                <Modal
+                    header={null}
+                    visible={this.state.isShowDelete}
+                    onOk={this.handleDeleteOk}
+                    onCancel={this.onCloseDelete}
+                    closable={false}
+                    okText="Xác Nhận"
+                    cancelText="Hủy"
+                >
+                    <div className="b-events">
+                        <Radio.Group onChange={this.onChangeDeleteEvent} value={this.state.valueDelete}>
+                            {this.state.is_repeat ?
+                                <>
+                                    <Radio style={radioStyle} value={1}>
+                                        Xóa Tất Cả Sự Kiện Này
+                                    </Radio>
+                                    <Radio style={radioStyle} value={2}>
+                                        Chỉ Xóa Sự Kiện Này
+                                    </Radio>
+                                </>
+                                :
+                                <div className="b-check-delete">
+                                    <p className="b-text-norm">
+                                        <i className="fas fa-exclamation-triangle"></i>  Xóa Đặt Phòng Này
+                                    </p>
+                                </div>
+                            }
+
+                        </Radio.Group>
+                    </div>
+                </Modal>
                 <Modal
                     header={null}
                     visible={this.state.isShowCalender}
                     onOk={this.handleOk}
                     onCancel={this.onCloseCanlender}
-                    footer={null}>
+                    footer={null}
+                    okText="Xác Nhận"
+                    cancelText="Hủy"
+                >
                     <div className="b-events">
                         <Calendar fullscreen={false} onSelect={this.onSelect} />
                     </div>
@@ -290,14 +387,16 @@ class FullcalenderComponent extends Component {
                     // onCancel={this.handleCancel}
                     footer={null}
                     closable={false}
+                    okText="Xác Nhận"
+                    cancelText="Hủy"
                 >
                     <div className="b-events">
                         {cookies.get('data') !== undefined && parseInt(this.state.user_id) === parseInt(cookies.get('data').id) ?
                             <div className="b-button-funtion">
                                 <div className="b-item">
-                                    <button className="b-btn" onClick={this.onEdit.bind(this, this.state.id, this.state.user_id)}>
+                                    <Link to={'/' + this.state.id + '/' + this.state.day} className="b-btn">
                                         <i className="fas fa-pencil-alt" />
-                                    </button>
+                                    </Link>
                                 </div>
                                 <div className="b-item">
                                     <button className="b-btn" onClick={this.onDelete.bind(this, this.state.id, this.state.user_id)}>
@@ -343,27 +442,7 @@ class FullcalenderComponent extends Component {
                             <p>
                                 {this.state.recount ? `${this.state.recount + '  lần lặp lại'}` : ''}
                             </p>
-                            {/* <Checkbox name="checkbox" checked={this.state.checkbox} onChange={this.onChangerCheck} value={this.state.checkbox}>Gửi Mail</Checkbox>
-                            <div className={this.state.checkbox ? "b-sendmail" : "b-sendmail is-disable"} style={{
-                                marginTop: '30px'
-                            }}>
-                                <Select
-                                    mode="multiple"
-                                    labelInValue
-                                    value={value}
-                                    placeholder="Select users"
-                                    notFoundContent={fetching ? <Spin size="small" /> : null}
-                                    filterOption={false}
-                                    onSearch={this.fetchUser}
-                                    onChange={this.handleChange}
-                                    style={{ width: '100%' }}
-                                >
-                                    {data.map(d => (
-                                        <Option key={d.value}>{d.text}</Option>
-                                    ))}
-                                </Select>
-                                <button className="b-btn waves-effect waves-ripple" onClick={this.onSendMain}>Gửi Mail</button>
-                            </div> */}
+
                         </div>
                     </div>
 
@@ -400,7 +479,7 @@ class FullcalenderComponent extends Component {
                     }
                     defaultDate={dateFormat(this.state.datenow, 'yyyy-mm-dd')}
                     navLinks
-                    editable
+                    editable={false}
                     eventLimit
                     viewObject={{
                         currentStart: '2019-05-07'
@@ -419,8 +498,12 @@ class FullcalenderComponent extends Component {
                     eventDrop={
                         this.oneventDrop
                     }
+                    droppable={false}
                     eventTextColor={'#FEFEF9'}
                     eventBorderColor={'rgba(0,0,0,1.5)'}
+                    dateClick={
+                        this.onClickDate
+                    }
                 />
             </div>
         );
