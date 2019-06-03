@@ -134,54 +134,41 @@ export function requestDeleteEvent(id) {
 }
 export function requestUpdateEvent(data) {
     let formDataObject = {};
-    if (data.is_resize) {
-        if (data.is_drop) {
-            formDataObject = {
-                'daystart': data.daystart,
-                'timestart': data.timestart,
-                'timeend': data.timeend,
-            }
-        } else {
-            formDataObject = {
-                'timeend': data.timeEnd
-            }
+    if (data.checkbox === true) {
+        let arrayDay = '';
+        if (data.byweekday !== null) {
+            data.byweekday.forEach((i, index, item) => {
+                if (index === item.length - 1) {
+                    arrayDay += `${item[index]}`;
+                } else {
+                    arrayDay += `${item[index]},`;
+                }
+            })
+        }
+        formDataObject = {
+            'room_id': data.rooms,
+            'content': data.cotent,
+            'title': data.title,
+            'user_id': cookies.get('data').id,
+            'daystart': data.dateStart,
+            'timestart': data.timestart,
+            'timeend': data.timeend,
+            'check': '1',
+            'repeatby': data.choice,
+            'interval': 1,
+            'count': data.count,
+            'byweekday': data.choice === 'weekly' ? arrayDay : ''
         }
     } else {
-        if (data.checkbox === true) {
-            let arrayDay = '';
-            if (data.byweekday !== null) {
-                data.byweekday.forEach((i, index, item) => {
-                    if (index === item.length - 1) {
-                        arrayDay += `${item[index]}`;
-                    } else {
-                        arrayDay += `${item[index]},`;
-                    }
-                })
-            }
-            formDataObject = {
-                'room_id': data.rooms,
-                'content': data.cotent,
-                'title': data.title,
-                'user_id': cookies.get('data').name,
-                'daystart': data.dateStart,
-                'timestart': data.timestart,
-                'timeend': data.timeend,
-                'check': '1',
-                'repeatby': data.choice,
-                'interval': 1,
-                'count': data.count,
-                'byweekday': data.choice === 'weekly' ? arrayDay : ''
-            }
-        } else {
-            formDataObject = {
-                'room_id': data.rooms,
-                'content': data.title,
-                'user_id': cookies.get('data').name,
-                'daystart': data.dateStart,
-                'timestart': data.timestart,
-                'timeend': data.timeend,
-                'check': '0'
-            }
+        formDataObject = {
+            'room_id': data.rooms,
+            'content': data.content,
+            'user_id': cookies.get('data').id,
+            'daystart': data.dateStart,
+            'timestart': data.timestart,
+            'timeend': data.timeend,
+            'check': '0',
+            'title': data.title
         }
     }
 

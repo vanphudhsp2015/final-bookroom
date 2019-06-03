@@ -60,7 +60,8 @@ class CalenderInfoPage extends Component {
             validateTime: false,
             validateTimeItem: false,
             isShowEdit: false,
-            valueEdit: 1
+            valueEdit: 1,
+            isRepeat: false
 
         };
         this.lastFetchId = 0;
@@ -84,6 +85,7 @@ class CalenderInfoPage extends Component {
                     this.onAddSelectDate(data[0].attributes.repeat.repeatby, data[0].attributes.repeat.count)
                 }
                 this.setState({
+                    isRepeat: data[0].attributes.repeat !== null ? true : false,
                     id: data[0].id,
                     title: data[0].attributes.title,
                     content: data[0].attributes.content,
@@ -402,7 +404,7 @@ class CalenderInfoPage extends Component {
         }
     }
     handleEditOk = () => {
-        if (this.state.valueEdit === 1) {
+        if (this.state.valueEdit === 1) {            
             this.props.dispatch(action.requestUpdateEvent(this.state));
             this.props.history.push("/");
         } else {
@@ -446,12 +448,23 @@ class CalenderInfoPage extends Component {
                         >
                             <div className="b-events">
                                 <Radio.Group onChange={this.onChangeEditEvent} value={this.state.valueEdit}>
-                                    <Radio style={radioStyle} value={1}>
-                                        Sửa Tất Cả Sự Kiện Này
-                                    </Radio>
-                                    <Radio style={radioStyle} value={2}>
-                                        Chỉ Sửa Sự Kiện Này
-                                    </Radio>
+                                    {this.state.isRepeat ?
+                                        <>
+                                            <Radio style={radioStyle} value={1}>
+                                                Sửa Tất Cả Sự Kiện Này
+                                            </Radio>
+                                            <Radio style={radioStyle} value={2}>
+                                                Chỉ Sửa Sự Kiện Này
+                                            </Radio>
+                                        </>
+                                        :
+                                        <>
+                                            <Radio style={radioStyle} value={1}>
+                                                Sửa  Sự Kiện Này
+                                            </Radio>
+                                        </>
+                                    }
+
                                 </Radio.Group>
                             </div>
                         </Modal>
