@@ -10,6 +10,7 @@ import * as action from '../../../actions/events';
 import * as actionRoom from '../../../actions/room';
 import Cookies from 'universal-cookie';
 import { connect } from 'react-redux';
+import queryString from 'query-string'
 const cookies = new Cookies();
 const dateFormat = 'YYYY/MM/DD';
 const format = 'HH:mm';
@@ -76,8 +77,17 @@ class CalenderInfoPage extends Component {
     componentDidMount() {
         this.props.dispatch(action.requestGetEvent());
         this.props.dispatch(actionRoom.requestGetRoom());
+        const values = queryString.parse(this.props.location.search)
+        if (values.date !== undefined) {
+            this.setState({
+                dateStart: values.date,
+                timestart: values.time,
+                timeend: this.roundMinutesDate(`${values.date} ${values.time}`, 30)
+            })
+        }
     }
     componentDidUpdate(prevProps, prevState) {
+
         if (this.props.match.params.calender !== undefined) {
             if (this.props.data !== prevProps.data) {
                 let data = this.props.data.filter(item => parseInt(item.id) === parseInt(this.props.match.params.calender))
@@ -404,7 +414,7 @@ class CalenderInfoPage extends Component {
         }
     }
     handleEditOk = () => {
-        if (this.state.valueEdit === 1) {            
+        if (this.state.valueEdit === 1) {
             this.props.dispatch(action.requestUpdateEvent(this.state));
             this.props.history.push("/");
         } else {
@@ -426,6 +436,7 @@ class CalenderInfoPage extends Component {
         });
     }
     render() {
+
         const { fetching, data, value } = this.state;
         const radioStyle = {
             display: 'block',

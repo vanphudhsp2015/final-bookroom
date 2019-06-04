@@ -9,7 +9,7 @@ import interactionPlugin from '@fullcalendar/interaction' // needed for dayClick
 import resourceTimeGridPlugin from '@fullcalendar/resource-timegrid';
 import allLocales from '@fullcalendar/core/locales-all';
 import '../../../../main.scss'
-import { Modal, Calendar, message, Radio } from 'antd';
+import { Modal, Calendar, Radio, DatePicker, TimePicker, message } from 'antd';
 import debounce from 'lodash/debounce';
 import Cookies from 'universal-cookie';
 import * as typeAPI from '../../../../constants/actionAPI';
@@ -19,6 +19,8 @@ import moment from 'moment';
 const cookies = new Cookies();
 const confirm = Modal.confirm;
 var dateFormat = require('dateformat');
+const dateFormatCalender = 'YYYY/MM/DD';
+const format = 'HH:mm';
 var now = new Date()
 dateFormat.i18n = {
     dayNames: [
@@ -33,9 +35,9 @@ dateFormat.i18n = {
         'a', 'p', 'am', 'pm', 'A', 'P', 'AM', 'PM'
     ]
 };
-// const { Option } = Select;
-
-
+function disabledHours() {
+    return [0, 1, 2, 3, 4, 5, 6, 7, 12, 18, 19, 20, 21, 22, 23, 24];
+}
 class FullcalenderComponent extends Component {
     calendarComponentRef = React.createRef()
     constructor(props) {
@@ -56,13 +58,20 @@ class FullcalenderComponent extends Component {
             valueDelete: 1,
             isShowEdit: false,
             isRedirect: false,
-            isException: false
+            isException: false,
+            visible: false,
+            rooms: this.props.rooms.length > 0 ? this.props.rooms[0].id : '1',
+            dateStart: dateFormat(now, 'yyyy-mm-dd'),
+            timestart: this.roundMinutesDate(now, 0),
+            timeend: this.roundMinutesDate(now, 60),
+            validateDate: false,
+            validateTime: false,
+            validateTimeItem: false,
         }
         this.lastFetchId = 0;
         this.fetchUser = debounce(this.fetchUser, 800);
 
     }
-
     fetchUser = value => {
         var self = this;
         this.setState({ data: [], fetching: true });
@@ -97,6 +106,11 @@ class FullcalenderComponent extends Component {
         if (prevProps.datecalender !== this.props.datecalender) {
             let calendarApi = this.calendarComponentRef.current.getApi()
             calendarApi.gotoDate(dateFormat(this.props.datecalender, 'yyyy-mm-dd'))
+        }
+        if (this.props.rooms !== prevProps.rooms) {
+            this.setState({
+                rooms: this.props.rooms[0].id
+            })
         }
     }
     toggleWeekends = () => {
@@ -315,17 +329,113 @@ class FullcalenderComponent extends Component {
         const dateTime = moment(start).add(remainder, "minutes").format("HH:mm");
         return dateTime;
     }
+    onChanger = (event) => {
+        this.setState({
+            [event.target.name]: event.target.value
+        })
+    }
+    onChangeDate = (date, dateString) => {
+        if ((moment(dateFormat(dateString, 'yyyy-mm-dd HH:mm')).diff(dateFormat(now, 'yyyy-mm-dd HH:mm'), 'days')) < 0) {
+            this.setState({
+                validateDate: true
+            })
+        } else {
+            this.setState({
+                dateStart: dateString,
+                validateDate: false,
+            })
+        }
+    }
+    onChangeTime = (time, dateString) => {
+        let nowCurrent = dateFormat(this.state.dateStart, 'yyyy-mm-dd');
+        if ((moment(`${nowCurrent + ' ' + dateString + ':00'}`)).diff(dateFormat(now, 'yyyy-mm-dd HH:MM:ss'), 'minutes') < 0) {
+            this.setState({
+                validateTime: true
+            })
+        } else {
+            this.setState({
+                timestart: dateString,
+                timeend: this.roundMinutesDate(`${nowCurrent + ' ' + dateString + ':00'}`, 30),
+                validateTime: false
+            })
+        }
+    }
+    onChangeTimeItem = (time, dateString) => {
+        let nowCurrent = dateFormat(this.state.dateStart, 'yyyy-mm-dd');
+        if ((moment(`${nowCurrent + ' ' + dateString + ':00'}`)).diff(dateFormat(now, 'yyyy-mm-dd HH:MM:ss'), 'minutes') < 0) {
+            this.setState({
+                validateTimeItem: true
+            })
+        } else {
+            if ((moment(`${nowCurrent + ' ' + dateString + ':00'}`)).diff(`${nowCurrent + ' ' + this.state.timestart + ':00'}`, 'minutes') < 0) {
+                this.setState({
+                    timeend: dateString,
+                    timestart: dateString,
+                    validateTimeItem: false
+                })
+            } else {
+                this.setState({
+                    timeend: dateString,
+                    validateTimeItem: false
+                })
+            }
+        }
+    }
     onClickDate = (e) => {
+        if (cookies.get('data') === undefined) {
+            message.error('Vui Lòng Đăng Nhập')
+        } else {
+            this.setState({
+                visible: true,
+                dateStart: dateFormat(e.dateStr, 'yyyy-mm-dd'),
+                timestart: dateFormat(e.dateStr, 'HH:MM'),
+                timeend: this.roundMinutesDate(e.dateStr, 30),
+            })
+        }
+    }
+    showModal = () => {
+        this.setState({
+            visible: true,
+        });
+    };
+
+    handleOk = e => {
+        this.setState({
+            visible: false,
+        });
+    };
+
+    handleCancel = e => {
+        this.setState({
+            visible: false,
+        });
+        this.resetData();
+    };
+    onCancelForm = (event) => {
+        event.preventDefault();
+        this.setState({
+            visible: false
+        })
+        this.resetData();
+    }
+    onSubmit = (event) => {
+        event.preventDefault();
         let data = {
-            daystart: dateFormat(e.dateStr, 'yyyy-mm-dd'),
-            timestart: dateFormat(e.dateStr, 'HH:mm'),
-            timeend: this.roundMinutesDate(e.dateStr, 60),
-            title: 'Cuộc Họp',
-            content: 'Cuộc Họp',
-            is_quickly: true,
-            rooms: this.props.room[0].id
+            title: this.state.title,
+            dateStart: this.state.dateStart,
+            timestart: this.state.timestart,
+            timeend: this.state.timeend,
+            rooms: this.state.rooms,
+            content: 'null'
         }
         this.props.onAddEvent(data);
+        this.resetData();
+    }
+    resetData() {
+        this.setState({
+            title: '',
+            visible: false,
+        })
     }
     render() {
 
@@ -336,6 +446,61 @@ class FullcalenderComponent extends Component {
         };
         return (
             <div className="b-fullcalender">
+                <Modal
+                    visible={this.state.visible}
+                    onOk={this.handleOk}
+                    // onCancel={this.handleCancel}
+                    footer={null}
+                    closable={false}>
+                    <div className="b-book">
+                        <div className="b-content">
+                            <form className="b-form" onSubmit={this.onSubmit}>
+                                <div className="b-form-group">
+                                    <input type="text" placeholder="Nhập Tiêu Đề" name="title" className="b-input" value={this.state.title} onChange={this.onChanger} />
+                                    <span className={this.state.title.length > 0 ? "is-error" : "is-error  is-check"}>
+                                        * Vui Lòng Nhập Tên Cuộc Họp
+                                    </span>
+                                </div>
+                                <div className="b-form-group">
+                                    <label style={{ paddingRight: '10px' }}>Chọn Ngày</label>
+                                    <DatePicker onChange={this.onChangeDate} allowClear={false} value={moment(this.state.dateStart, dateFormatCalender)} format={dateFormatCalender} />
+                                    <span className={this.state.validateDate ? "is-error is-check" : "is-error"}>
+                                        * Thời Gian  Phải Lớn Hơn Thời Gian Hiện Tại
+                                    </span>
+                                </div>
+                                <div className="b-form-group">
+                                    <label style={{ paddingRight: '10px' }}>Giờ Bắt Đầu</label>
+                                    <TimePicker hideDisabledOptions disabledHours={disabledHours} onChange={this.onChangeTime} value={moment(this.state.timestart, format)} allowClear={false} minuteStep={30} defaultValue={moment(this.state.timestart, format)} format={format} />
+                                    <span className={this.state.validateTime ? "is-error is-check" : "is-error"}>
+                                        * Thời Gian  Phải  Lớn Hơn Thời Gian Hiện Tại
+                                    </span>
+                                </div>
+                                <div className="b-form-group">
+                                    <label style={{ paddingRight: '10px' }}>Giờ Bắt Đầu</label>
+                                    <TimePicker hideDisabledOptions disabledHours={disabledHours} onChange={this.onChangeTimeItem} value={moment(this.state.timeend, format)} allowClear={false} minuteStep={30} defaultValue={moment(this.state.timeend, format)} format={format} />
+                                    <span className={this.state.validateTime ? "is-error is-check" : "is-error"}>
+                                        * Thời Gian  Phải  Lớn Hơn Thời Gian Hiện Tại
+                                    </span>
+                                </div>
+                                <div className="b-form-group">
+                                    <label htmlFor="c">Chọn Phòng</label>
+                                    <select className="b-select" value={this.state.rooms} name="rooms" onChange={this.onChanger} onBlur={this.handleBlur}>
+                                        {this.props.rooms.map(data => (
+                                            <option value={data.id} key={data.id}>{data.attributes.name} - {data.attributes.seats} Ghế</option>
+                                        ))}
+                                    </select>
+                                </div>
+                                <div className="b-form-group">
+                                    <Link className="b-btn" to={`/new?date=` + this.state.dateStart + `&time=` + this.state.timestart}>Lựa Chọn Khác</Link>
+                                </div>
+                                <div className="b-form-button">
+                                    <button type="cancel" className="b-btn b-btn-cancel  waves-effect waves-teal" onClick={this.onCancelForm}>Hủy</button>
+                                    <button type="submit" disabled={this.state.title.length > 0 ? false : true} className="b-btn b-btn-save waves-effect waves-teal">Đặt Phòng</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </Modal>
                 <Modal
                     header={null}
                     visible={this.state.isShowDelete}
