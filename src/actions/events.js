@@ -71,7 +71,7 @@ export function requestAddEvents(data) {
                 'timestart': data.timestart,
                 'timeend': data.timeend,
                 'title': data.title,
-                // 'mail': 'vanphudhsp2015@gmail.com'
+                'mail': 'vanphudhsp2015@gmail.com'
             }
         } else {
             formDataObject = {
@@ -82,7 +82,7 @@ export function requestAddEvents(data) {
                 'timestart': data.timestart,
                 'timeend': data.timeend,
                 'title': data.title,
-                // 'mail': 'vanphudhsp2015@gmail.com'
+                'mail': 'vanphudhsp2015@gmail.com'
             }
         }
 

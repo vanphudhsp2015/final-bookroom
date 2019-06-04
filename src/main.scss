@@ -101,16 +101,7 @@
 }
 .is-current {
   position: relative;
-  border: 1.5px dashed rgba(0, 0, 0, 1) !important;
-  &::after {
-    position: absolute;
-    content: "me";
-    right: -10px;
-    top: -10px;
-    background-color: #3384e2;
-    border-radius: 4px;
-    padding: 2px 4px;
-  }
+  border: 1.5px dashed #4c4c4c !important;
 }
 .b-pagination {
   padding-top: 40px;
@@ -262,12 +253,15 @@
   }
 }
 .b-check-delete {
-  p{
+  p {
     color: #4c4c4c;
-    font-size:20px;
+    font-size: 20px;
   }
   i {
     font-size: 30px;
-    color: 	#cc3300;
+    color: #cc3300;
   }
+}
+.ck-content {
+  min-height: 150px !important;
 }

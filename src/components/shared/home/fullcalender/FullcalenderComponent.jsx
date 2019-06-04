@@ -9,18 +9,16 @@ import interactionPlugin from '@fullcalendar/interaction' // needed for dayClick
 import resourceTimeGridPlugin from '@fullcalendar/resource-timegrid';
 import allLocales from '@fullcalendar/core/locales-all';
 import '../../../../main.scss'
-import { Modal, Calendar, Radio, DatePicker, TimePicker, message } from 'antd';
+import { Modal, Calendar, Radio, message } from 'antd';
 import debounce from 'lodash/debounce';
 import Cookies from 'universal-cookie';
 import * as typeAPI from '../../../../constants/actionAPI';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 import moment from 'moment';
 const cookies = new Cookies();
 const confirm = Modal.confirm;
 var dateFormat = require('dateformat');
-const dateFormatCalender = 'YYYY/MM/DD';
-const format = 'HH:mm';
 var now = new Date()
 dateFormat.i18n = {
     dayNames: [
@@ -35,9 +33,6 @@ dateFormat.i18n = {
         'a', 'p', 'am', 'pm', 'A', 'P', 'AM', 'PM'
     ]
 };
-function disabledHours() {
-    return [0, 1, 2, 3, 4, 5, 6, 7, 12, 18, 19, 20, 21, 22, 23, 24];
-}
 class FullcalenderComponent extends Component {
     calendarComponentRef = React.createRef()
     constructor(props) {
@@ -60,13 +55,11 @@ class FullcalenderComponent extends Component {
             isRedirect: false,
             isException: false,
             visible: false,
-            rooms: this.props.rooms.length > 0 ? this.props.rooms[0].id : '1',
             dateStart: dateFormat(now, 'yyyy-mm-dd'),
             timestart: this.roundMinutesDate(now, 0),
             timeend: this.roundMinutesDate(now, 60),
-            validateDate: false,
-            validateTime: false,
-            validateTimeItem: false,
+            isShowForm: false,
+            countClick: 0
         }
         this.lastFetchId = 0;
         this.fetchUser = debounce(this.fetchUser, 800);
@@ -107,11 +100,15 @@ class FullcalenderComponent extends Component {
             let calendarApi = this.calendarComponentRef.current.getApi()
             calendarApi.gotoDate(dateFormat(this.props.datecalender, 'yyyy-mm-dd'))
         }
-        if (this.props.rooms !== prevProps.rooms) {
-            this.setState({
-                rooms: this.props.rooms[0].id
-            })
-        }
+        this.interval = setInterval(() => (this.onResetDouble()), 10000);
+    }
+    componentWillUnmount() {
+        clearInterval(this.interval);
+    }
+    onResetDouble() {
+        this.setState({
+            countClick: 0
+        })
     }
     toggleWeekends = () => {
         this.setState({ // update a property
@@ -386,59 +383,23 @@ class FullcalenderComponent extends Component {
             message.error('Vui Lòng Đăng Nhập')
         } else {
             this.setState({
-                visible: true,
-                dateStart: dateFormat(e.dateStr, 'yyyy-mm-dd'),
-                timestart: dateFormat(e.dateStr, 'HH:MM'),
-                timeend: this.roundMinutesDate(e.dateStr, 30),
+                countClick: this.state.countClick + 1
             })
-        }
-    }
-    showModal = () => {
-        this.setState({
-            visible: true,
-        });
-    };
+            if (this.state.countClick === 2) {
+                this.setState({
+                    isShowForm: true,
+                    dateStart: dateFormat(e.dateStr, 'yyyy-mm-dd'),
+                    timestart: dateFormat(e.dateStr, 'HH:MM'),
+                    timeend: this.roundMinutesDate(e.dateStr, 30),
+                })
+            }
 
-    handleOk = e => {
-        this.setState({
-            visible: false,
-        });
-    };
-
-    handleCancel = e => {
-        this.setState({
-            visible: false,
-        });
-        this.resetData();
-    };
-    onCancelForm = (event) => {
-        event.preventDefault();
-        this.setState({
-            visible: false
-        })
-        this.resetData();
-    }
-    onSubmit = (event) => {
-        event.preventDefault();
-        let data = {
-            title: this.state.title,
-            dateStart: this.state.dateStart,
-            timestart: this.state.timestart,
-            timeend: this.state.timeend,
-            rooms: this.state.rooms,
-            content: 'null'
         }
-        this.props.onAddEvent(data);
-        this.resetData();
-    }
-    resetData() {
-        this.setState({
-            title: '',
-            visible: false,
-        })
     }
     render() {
-
+        if (this.state.isShowForm) {
+            return <Redirect to={`/new?date=` + this.state.dateStart + `&time=` + this.state.timestart}></Redirect>
+        }
         const radioStyle = {
             display: 'block',
             height: '30px',
@@ -446,61 +407,6 @@ class FullcalenderComponent extends Component {
         };
         return (
             <div className="b-fullcalender">
-                <Modal
-                    visible={this.state.visible}
-                    onOk={this.handleOk}
-                    // onCancel={this.handleCancel}
-                    footer={null}
-                    closable={false}>
-                    <div className="b-book">
-                        <div className="b-content">
-                            <form className="b-form" onSubmit={this.onSubmit}>
-                                <div className="b-form-group">
-                                    <input type="text" placeholder="Nhập Tiêu Đề" name="title" className="b-input" value={this.state.title} onChange={this.onChanger} />
-                                    <span className={this.state.title.length > 0 ? "is-error" : "is-error  is-check"}>
-                                        * Vui Lòng Nhập Tên Cuộc Họp
-                                    </span>
-                                </div>
-                                <div className="b-form-group">
-                                    <label style={{ paddingRight: '10px' }}>Chọn Ngày</label>
-                                    <DatePicker onChange={this.onChangeDate} allowClear={false} value={moment(this.state.dateStart, dateFormatCalender)} format={dateFormatCalender} />
-                                    <span className={this.state.validateDate ? "is-error is-check" : "is-error"}>
-                                        * Thời Gian  Phải Lớn Hơn Thời Gian Hiện Tại
-                                    </span>
-                                </div>
-                                <div className="b-form-group">
-                                    <label style={{ paddingRight: '10px' }}>Giờ Bắt Đầu</label>
-                                    <TimePicker hideDisabledOptions disabledHours={disabledHours} onChange={this.onChangeTime} value={moment(this.state.timestart, format)} allowClear={false} minuteStep={30} defaultValue={moment(this.state.timestart, format)} format={format} />
-                                    <span className={this.state.validateTime ? "is-error is-check" : "is-error"}>
-                                        * Thời Gian  Phải  Lớn Hơn Thời Gian Hiện Tại
-                                    </span>
-                                </div>
-                                <div className="b-form-group">
-                                    <label style={{ paddingRight: '10px' }}>Giờ Bắt Đầu</label>
-                                    <TimePicker hideDisabledOptions disabledHours={disabledHours} onChange={this.onChangeTimeItem} value={moment(this.state.timeend, format)} allowClear={false} minuteStep={30} defaultValue={moment(this.state.timeend, format)} format={format} />
-                                    <span className={this.state.validateTime ? "is-error is-check" : "is-error"}>
-                                        * Thời Gian  Phải  Lớn Hơn Thời Gian Hiện Tại
-                                    </span>
-                                </div>
-                                <div className="b-form-group">
-                                    <label htmlFor="c">Chọn Phòng</label>
-                                    <select className="b-select" value={this.state.rooms} name="rooms" onChange={this.onChanger} onBlur={this.handleBlur}>
-                                        {this.props.rooms.map(data => (
-                                            <option value={data.id} key={data.id}>{data.attributes.name} - {data.attributes.seats} Ghế</option>
-                                        ))}
-                                    </select>
-                                </div>
-                                <div className="b-form-group">
-                                    <Link className="b-btn" to={`/new?date=` + this.state.dateStart + `&time=` + this.state.timestart}>Lựa Chọn Khác</Link>
-                                </div>
-                                <div className="b-form-button">
-                                    <button type="cancel" className="b-btn b-btn-cancel  waves-effect waves-teal" onClick={this.onCancelForm}>Hủy</button>
-                                    <button type="submit" disabled={this.state.title.length > 0 ? false : true} className="b-btn b-btn-save waves-effect waves-teal">Đặt Phòng</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </Modal>
                 <Modal
                     header={null}
                     visible={this.state.isShowDelete}

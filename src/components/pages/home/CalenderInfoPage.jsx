@@ -44,9 +44,6 @@ class CalenderInfoPage extends Component {
             selectRepeat: [
                 { id: '2', name: 'Không Lặp Lại' },
                 { id: '0', name: 'Tùy Chỉnh' },
-                { id: '8', name: 'Ngày Này Tháng Sau' },
-                { id: '9', name: 'Ngày Này Năm Sau' },
-                { id: '10', name: 'Ngày Này Tuần Sau' },
                 { id: '1', name: 'Hằng Ngày', count: 10 },
             ],
             visible: false,
@@ -55,7 +52,7 @@ class CalenderInfoPage extends Component {
             choice: 'daily',
             count: 1,
             rooms: this.props.room.length > 0 ? this.props.room[0].id : 1,
-            content: "<p>Mô Tả</p>",
+            content: "",
             checkbox: false,
             validateDate: false,
             validateTime: false,
@@ -250,7 +247,7 @@ class CalenderInfoPage extends Component {
             case '1':
                 this.setState({
                     [event.target.name]: event.target.value,
-                    count: 7,
+                    count: 365,
                     checkbox: true
                 })
                 break;
@@ -275,6 +272,16 @@ class CalenderInfoPage extends Component {
                     checkbox: true,
                     choice: 'yearly'
                 })
+                break;
+            case '99':
+                this.setState({
+                    [event.target.name]: event.target.value,
+                    count: 2,
+                    checkbox: true,
+                    choice: 'daily'
+                })
+                console.log(this.state);
+
                 break;
             case '10':
                 let dateOfWeek = '';
@@ -309,7 +316,6 @@ class CalenderInfoPage extends Component {
                     checkbox: true,
                     choice: 'weekly',
                     byweekday: [dateOfWeek]
-
                 })
                 break;
             default:
@@ -330,12 +336,21 @@ class CalenderInfoPage extends Component {
         switch (this.state.choice) {
             case "daily":
                 covertName = "Lặp Lại Hằng Ngày "
+                this.setState({
+                    choice: 'daily'
+                })
                 break;
             case "monthly":
                 covertName = "Lặp Lại  Hằng Tháng "
+                this.setState({
+                    choice: 'monthly'
+                })
                 break;
             case "yearly":
                 covertName = "Lặp Lại  Hằng Năm "
+                this.setState({
+                    choice: 'yearly'
+                })
                 break;
             case "weekly":
                 let nameWeek = '';
@@ -347,17 +362,24 @@ class CalenderInfoPage extends Component {
                     }
                 })
                 covertName = `Các Ngày ${nameWeek} Trong Tuần`
+                this.setState({
+                    choice: 'weekly',
+                    count: this.state.byweekday.length * this.state.count
+                })
                 break;
             default:
                 covertName = 'daily'
+                this.setState({
+                    choice: 'yearly'
+                })
                 break;
         }
-        let data = [...this.state.selectRepeat, { id: '99', name: `${covertName + ` ${this.state.count} Lần `}`, count: this.state.count }]
+        let data = [...this.state.selectRepeat.filter(data => data.id !== "99"), { id: '99', name: `${covertName + ` ${this.state.count} Lần `}`, count: this.state.count }]
         this.setState({
             selectRepeat: data,
             repeat: '99',
             visible: false,
-            checkbox: true
+            checkbox: true,
         })
     }
     onAddSelectDate(choice, count) {
@@ -387,10 +409,10 @@ class CalenderInfoPage extends Component {
                 covertName = 'daily'
                 break;
         }
-        let data = [...this.state.selectRepeat, { id: '12', name: `${covertName + ` ${count} Lần `}`, count: count }]
+        let data = [...this.state.selectRepeat, { id: '99', name: `${covertName + ` ${count} Lần `}`, count: count }]
         this.setState({
             selectRepeat: data,
-            repeat: '9',
+            repeat: '99',
             visible: false,
             checkbox: true
         })
@@ -404,13 +426,10 @@ class CalenderInfoPage extends Component {
                 this.setState({
                     isShowEdit: true
                 })
-
             } else {
                 this.props.dispatch(action.requestAddEvents(this.state));
                 this.props.history.push("/");
             }
-
-
         }
     }
     handleEditOk = () => {
@@ -436,7 +455,6 @@ class CalenderInfoPage extends Component {
         });
     }
     render() {
-
         const { fetching, data, value } = this.state;
         const radioStyle = {
             display: 'block',
@@ -648,6 +666,9 @@ class CalenderInfoPage extends Component {
                                                         // console.log('Focus.', editor);
                                                     }}
                                                 />
+                                                <span className={this.state.content.length > 0 ? "is-error" : "is-error is-check"}>
+                                                    * Vui Lòng Nhập Mô Tả Cuộc Họp
+                                                </span>
                                             </div>
                                         </div>
                                     </div>
@@ -655,7 +676,7 @@ class CalenderInfoPage extends Component {
                                 <div className="b-description-right">
                                     <div className="b-heading">
                                         <h2 className="b-text-title">
-                                            khách
+                                            Thành Phần Tham Dự
                                         </h2>
                                     </div>
                                     <div className="b-description-content">
@@ -668,7 +689,7 @@ class CalenderInfoPage extends Component {
                                             filterOption={false}
                                             onSearch={this.fetchUser}
                                             onChange={this.handleChange}
-                                            style={{ width: '100%' }}
+                                            style={{ width: '50%' }}
                                         >
                                             {data.map(d => (
                                                 <Option key={d.value}>{d.text}</Option>

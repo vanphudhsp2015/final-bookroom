@@ -40,13 +40,22 @@ class EventAdminPage extends Component {
     convertToFrontEnd(arrA) {
         let arrB = []
         if (arrA.length) {
-            arrB = arrA.map(item => {
+            arrB = this.convertArray(arrA).map(item => {
                 let attributes = item.attributes;
+                let excepArray = [];
+                attributes.exception.map(data => (
+                    excepArray = [...excepArray, `${data.day + ` ${data.timestart} UTC`}`]
+                ))
                 return {
                     resourceId: attributes.room.id,
                     id: item.id,
-                    title: attributes.content,
-                    className: cookies.get('data') !== undefined && parseInt(attributes.user_id) === parseInt(cookies.get('data').id) ? "is-current" : "",
+                    title: attributes.title,
+                    content: attributes.content,
+                    className: [
+                        attributes.repeat !== null ? `${'room_item_' + attributes.room.id}` : "",
+                        cookies.get('data') !== undefined && parseInt(attributes.user_id) === parseInt(cookies.get('data').id) ? "is-current" : "",
+                        attributes.repeat !== null ? 'b-repeat' : ''
+                    ],
                     start: attributes.daystart,
                     room: attributes.room.name,
                     user: attributes.username,
@@ -58,13 +67,15 @@ class EventAdminPage extends Component {
                     reweek: attributes && attributes.repeat !== null ? attributes.repeat.byweekday : '',
                     recount: attributes && attributes.repeat !== null ? attributes.repeat.count : '',
                     repeat: attributes && attributes.repeat !== null ? '1' : '0',
-                    rrule: attributes && attributes.repeat !== null ?
+                    is_repeat: attributes && attributes.repeat !== null ? true : false,
+                    rruleSet: attributes && attributes.repeat !== null ?
                         {
                             freq: attributes.repeat.repeatby,
                             interval: attributes.repeat.interval,
                             byweekday: attributes.repeat.byweekday,
                             dtstart: `${attributes.daystart + ' ' + attributes.timestart}`,
-                            count: attributes.repeat.count
+                            count: attributes.repeat.count,
+                            exrules: excepArray,
                         } : {
                             freq: "daily",
                             interval: 1,
@@ -76,6 +87,43 @@ class EventAdminPage extends Component {
             })
         }
         return arrB;
+    }
+    convertArray(data) {
+        let result = [];
+        let check = false;
+        data.map(item => {
+            result = [...result, item]
+            let dataItem = item.attributes.exception.map(detail => {
+                if (detail.status === 'edit') {
+                    check = true
+                    return {
+                        type: "Bookrooms",
+                        id: item.id,
+                        attributes: {
+                            ...detail,
+                            room: item.attributes.room,
+                            repeat: null,
+                            daystart: detail.day,
+                            user_id: item.attributes.user_id,
+                            exception: []
+                        }
+
+                    }
+                } else {
+                    return null;
+                }
+
+            })
+            if (check === true) {
+                return result = [...result, ...dataItem]
+            } else {
+                return null;
+            }
+        })
+        var filterNotNull = result.filter(function (e) {
+            return e !== null;
+        })
+        return filterNotNull;
     }
     convertArrayRoom(arrA) {
         let arrB = []
