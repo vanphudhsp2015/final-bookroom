@@ -100,11 +100,11 @@ class FullcalenderComponent extends Component {
             let calendarApi = this.calendarComponentRef.current.getApi()
             calendarApi.gotoDate(dateFormat(this.props.datecalender, 'yyyy-mm-dd'))
         }
-        this.interval = setInterval(() => (this.onResetDouble()), 10000);
+        // this.interval = setInterval(() => (this.onResetDouble()), 10000);
     }
-    componentWillUnmount() {
-        clearInterval(this.interval);
-    }
+    // componentWillUnmount() {
+    //     clearInterval(this.interval);
+    // }
     onResetDouble() {
         this.setState({
             countClick: 0
@@ -379,22 +379,27 @@ class FullcalenderComponent extends Component {
         }
     }
     onClickDate = (e) => {
-        if (cookies.get('data') === undefined) {
-            message.error('Vui Lòng Đăng Nhập')
-        } else {
-            this.setState({
-                countClick: this.state.countClick + 1
-            })
-            if (this.state.countClick === 2) {
-                this.setState({
-                    isShowForm: true,
-                    dateStart: dateFormat(e.dateStr, 'yyyy-mm-dd'),
-                    timestart: dateFormat(e.dateStr, 'HH:MM'),
-                    timeend: this.roundMinutesDate(e.dateStr, 30),
-                })
-            }
+        // if (cookies.get('data') === undefined) {
+        //     message.error('Vui Lòng Đăng Nhập')
+        // } else {
+        //     this.setState({
+        //         countClick: this.state.countClick + 1
+        //     })
+        //     if (this.state.countClick === 2) {
+        //         this.setState({
+        //             isShowForm: true,
+        //             dateStart: dateFormat(e.dateStr, 'yyyy-mm-dd'),
+        //             timestart: dateFormat(e.dateStr, 'HH:MM'),
+        //             timeend: this.roundMinutesDate(e.dateStr, 30),
+        //         })
+        //     }
 
-        }
+        // }
+    }
+    onDoubleClickDate = (date, allDay, jsEvent, view) => {
+        console.log('123');
+
+
     }
     render() {
         if (this.state.isShowForm) {
@@ -574,6 +579,9 @@ class FullcalenderComponent extends Component {
                     eventBorderColor={'rgba(0,0,0,1.5)'}
                     dateClick={
                         this.onClickDate
+                    }
+                    dayDblClick={
+                        this.onDoubleClickDate
                     }
                 />
             </div>
