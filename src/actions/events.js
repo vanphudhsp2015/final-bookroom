@@ -4,6 +4,7 @@ import axios from 'axios';
 import { message } from 'antd';
 import Cookies from 'universal-cookie';
 const cookies = new Cookies();
+const htmlToText = require('html-to-text');
 // var moment = require('moment');
 // var dateFormat = require('dateformat');
 // var now = new Date();
@@ -29,15 +30,14 @@ export function requestGetEvent() {
 }
 // add tour 
 export function requestAddEvents(data) {
-    // let email = '';
-    // data.value.forEach((i, index, item) => {
-    //     if (index === item.length - 1) {
-    //         email += `${item[index].key}`;
-    //     } else {
-    //         email += `${item[index].key},`;
-    //     }
-    // })
-    // console.log(email);
+    let email = '';
+    data.arrayEmail.forEach((i, index, item) => {
+        if (index === item.length - 1) {
+            email += `${item[index].email}`;
+        } else {
+            email += `${item[index].email},`;
+        }
+    })
     let formDataObject = {};
     if (data.checkbox === true) {
         let arrayDay = '';
@@ -51,7 +51,7 @@ export function requestAddEvents(data) {
         formDataObject = {
             'room_id': data.rooms,
             'title': data.title,
-            'content': data.content,
+            'content':  htmlToText.fromString(data.content),
             'user_id': cookies.get('data').id,
             'daystart': data.dateStart,
             'timestart': data.timestart,
@@ -59,33 +59,20 @@ export function requestAddEvents(data) {
             'repeatby': data.choice,
             'interval': 1,
             'count': data.count,
-            'byweekday': data.choice === 'weekly' ? arrayDay : ''
+            'byweekday': data.choice === 'weekly' ? arrayDay : '',
+            'mail': email
         }
     } else {
-        if (data.is_quickly) {
-            formDataObject = {
-                'room_id': data.rooms,
-                'content': data.content,
-                'user_id': cookies.get('data').id,
-                'daystart': data.daystart,
-                'timestart': data.timestart,
-                'timeend': data.timeend,
-                'title': data.title,
-                'mail': 'vanphudhsp2015@gmail.com'
-            }
-        } else {
-            formDataObject = {
-                'room_id': data.rooms,
-                'content': data.content,
-                'user_id': cookies.get('data').id,
-                'daystart': data.dateStart,
-                'timestart': data.timestart,
-                'timeend': data.timeend,
-                'title': data.title,
-                'mail': 'vanphudhsp2015@gmail.com'
-            }
+        formDataObject = {
+            'room_id': data.rooms,
+            'content': htmlToText.fromString(data.content),
+            'user_id': cookies.get('data').id,
+            'daystart': data.dateStart,
+            'timestart': data.timestart,
+            'timeend': data.timeend,
+            'title': data.title,
+            'mail': email
         }
-
     }
     return (dispatch) => {
         return axios.request({
@@ -147,7 +134,7 @@ export function requestUpdateEvent(data) {
         }
         formDataObject = {
             'room_id': data.rooms,
-            'content': data.cotent,
+            'content':  htmlToText.fromString(data.content),
             'title': data.title,
             'user_id': cookies.get('data').id,
             'daystart': data.dateStart,
@@ -162,7 +149,7 @@ export function requestUpdateEvent(data) {
     } else {
         formDataObject = {
             'room_id': data.rooms,
-            'content': data.content,
+            'content':  htmlToText.fromString(data.content),
             'user_id': cookies.get('data').id,
             'daystart': data.dateStart,
             'timestart': data.timestart,

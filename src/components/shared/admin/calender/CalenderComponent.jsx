@@ -3,7 +3,7 @@ import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid'
 import interactionPlugin from '@fullcalendar/interaction' // needed for dayClick
-import rrulePlugin from '@fullcalendar/rrule';
+import rrsetPlugin from '../../../../libraries/rruleset';
 import listPlugin from '@fullcalendar/list';
 import resourceTimeGridPlugin from '@fullcalendar/resource-timegrid';
 import allLocales from '@fullcalendar/core/locales-all';
@@ -12,7 +12,6 @@ import Cookies from 'universal-cookie';
 import { message } from 'antd';
 const cookies = new Cookies();
 var dateFormat = require('dateformat');
-var now = new Date()
 const confirm = Modal.confirm;
 class CalenderComponent extends Component {
     calendarComponentRef = React.createRef()
@@ -175,49 +174,50 @@ class CalenderComponent extends Component {
                 </Modal>
                 <FullCalendar
                     schedulerLicenseKey={'GPL-My-Project-Is-Open-Source'}
-                    locales={allLocales}
-                    locale={'vi'}
-                    height={'parent'}
-                    contentHeight={600}
-                    timeZone={'local'}
-                    defaultView={"timeGridDay"}
-                    handleWindowResize
-                    listDayFormat
-                    aspectRatio={1}
-                    header={{
-                        left: 'prev,next today',
-                        center: 'title',
-                        right: 'dayGridMonth,timeGridWeek,resourceTimeGridDay',
+                    defaultView="timeGridWeek"
+
+                    customButtons={{
+                        custom: {
+                            text: 'Chọn Ngày',
+                            click: this.onShowCalender
+                        }
                     }}
-                    dayNames={['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado']}
-                    plugins={[resourceTimeGridPlugin, rrulePlugin, dayGridPlugin, timeGridPlugin, interactionPlugin, listPlugin]}
-                    datesAboveResources
+                    header={{
+                        right: 'custom prev,next today',
+                        center: 'title ',
+                        left: 'dayGridMonth,timeGridWeek,resourceTimeGridDay',
+                    }}
+                    listDayFormat
+                    height={'parent'}
+                    timeZone={'local'}
+                    contentHeight={600}
+                    aspectRatio={1}
+                    handleWindowResize
+                    allDayText={'Giờ'}
+                    allDaySlot
+                    plugins={[resourceTimeGridPlugin, rrsetPlugin, dayGridPlugin, timeGridPlugin, interactionPlugin, listPlugin]}
                     ref={this.calendarComponentRef}
+                    weekends={this.state.calendarWeekends}
                     events={this.props.data}
                     resources={
                         this.props.room
                     }
-                    defaultDate={now}
+                    defaultDate={dateFormat(this.state.datenow, 'yyyy-mm-dd')}
                     navLinks
-                    editable
+                    editable={false}
                     eventLimit
-                    minTime={'07:30:00'}
-
-                    maxTime={'18:30:00'}
-                    eventClick={
-                        this.onEvent
-                    }
-                    eventOverlap={function (stillEvent, movingEvent) {
-                        return stillEvent.allDay && movingEvent.allDay;
+                    viewObject={{
+                        currentStart: '2019-05-07'
                     }}
-                    eventResize={
-                        this.onResize
-                    }
-                    eventDrop={
-                        this.oneventDrop
-                    }
+                    minTime={'07:30:00'}
+                    maxTime={'19:30:00'}
+                    eventClick={this.onEvent.bind(this)}
+                    locales={allLocales}
+                    locale={'vi'}
+                    droppable={false}
                     eventTextColor={'#FEFEF9'}
                     eventBorderColor={'rgba(0,0,0,1.5)'}
+
                 />
             </>
         );

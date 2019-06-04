@@ -58,6 +58,10 @@
   &.fc-today-button {
     background-color: #f0f0f0;
     color: #4c4c4c;
+    &:hover{
+      background-color: #2962ff;
+      color: #fff;
+    }
   }
 }
 .ant-modal-close-icon {
@@ -163,6 +167,19 @@
     }
   }
 }
+.fc-next-button {
+  border: none !important;
+  &:focus {
+    box-shadow: none !important;
+  }
+}
+.fc-prev-button {
+  border: none !important;
+  &:focus {
+    box-shadow: none !important;
+  }
+}
+
 .fc-button {
   &.fc-button-active {
     border: none !important;
@@ -171,6 +188,9 @@
     &:focus {
       box-shadow: none !important;
     }
+  }
+  &:hover {
+    background: #3384e2 !important;
   }
 }
 .b-dashboard-content {
@@ -255,10 +275,10 @@
 .b-check-delete {
   p {
     color: #4c4c4c;
-    font-size: 20px;
+    font-size: 16px;
   }
   i {
-    font-size: 30px;
+    font-size: 16px;
     color: #cc3300;
   }
 }

@@ -109,7 +109,7 @@ class HeaderLayout extends Component {
         })
     }
 
-    render() {        
+    render() {
         if (this.state.isRedirect) {
             return (
                 <Redirect to="/admin/event"></Redirect>
@@ -123,7 +123,9 @@ class HeaderLayout extends Component {
                             <></>
                             :
                             <li className="b-item">
-                                <button className="b-btn" onClick={this.onRedirect}><i className="fas fa-cog" /></button>
+                                <button className="b-btn" onClick={this.onRedirect}><i className="fas fa-cog" style={{
+                                    transform: 'translateY(3px)'
+                                }} /></button>
                             </li>
                         }
                         <li className={this.state.is_dropdown ? "b-item b-dropdown is-active" : "b-item b-dropdown"}>

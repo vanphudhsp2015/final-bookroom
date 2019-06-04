@@ -1,17 +1,14 @@
 import React, { Component } from 'react';
 import { HeaderLayout } from '../../layouts/home';
-import { DatePicker, TimePicker, Select, Spin, Modal, message, Radio } from 'antd';
-import debounce from 'lodash/debounce';
+import { DatePicker, TimePicker, Select, Modal, message, Radio } from 'antd';
+import { SearchComponent } from '../../shared/home';
 import moment from 'moment';
 import CKEditor from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-import axios from 'axios';
 import * as action from '../../../actions/events';
 import * as actionRoom from '../../../actions/room';
-import Cookies from 'universal-cookie';
 import { connect } from 'react-redux';
 import queryString from 'query-string'
-const cookies = new Cookies();
 const dateFormat = 'YYYY/MM/DD';
 const format = 'HH:mm';
 const { Option } = Select;
@@ -26,7 +23,6 @@ const children = [
     { id: '6', name: 'fr' },
     { id: '7', name: 'sa' }
 ];
-const env = process.env || {}
 function disabledHours() {
     return [0, 1, 2, 3, 4, 5, 6, 7, 12, 18, 19, 20, 21, 22, 23, 24];
 }
@@ -44,6 +40,7 @@ class CalenderInfoPage extends Component {
             selectRepeat: [
                 { id: '2', name: 'Không Lặp Lại' },
                 { id: '0', name: 'Tùy Chỉnh' },
+                { id: '3', name: 'Mọi Ngày Trong Tuần Từ Thứ 2 Đến Thứ 6' },
                 { id: '1', name: 'Hằng Ngày', count: 10 },
             ],
             visible: false,
@@ -59,11 +56,9 @@ class CalenderInfoPage extends Component {
             validateTimeItem: false,
             isShowEdit: false,
             valueEdit: 1,
-            isRepeat: false
-
+            isRepeat: false,
+            arrayEmail: []
         };
-        this.lastFetchId = 0;
-        this.fetchUser = debounce(this.fetchUser, 800);
     }
     roundMinutesDate(data, add) {
         const start = moment(data);
@@ -84,7 +79,6 @@ class CalenderInfoPage extends Component {
         }
     }
     componentDidUpdate(prevProps, prevState) {
-
         if (this.props.match.params.calender !== undefined) {
             if (this.props.data !== prevProps.data) {
                 let data = this.props.data.filter(item => parseInt(item.id) === parseInt(this.props.match.params.calender))
@@ -95,7 +89,7 @@ class CalenderInfoPage extends Component {
                     isRepeat: data[0].attributes.repeat !== null ? true : false,
                     id: data[0].id,
                     title: data[0].attributes.title,
-                    content: data[0].attributes.content,
+                    content: data[0].attributes.content !== null ? data[0].attributes.content : "",
                     dateStart: dateFormatDate(this.props.match.params.date, 'yyyy-mm-dd'),
                     timestart: data[0].attributes.timestart,
                     timeend: data[0].attributes.timeend,
@@ -132,35 +126,6 @@ class CalenderInfoPage extends Component {
         }
 
     }
-    fetchUser = value => {
-        var self = this;
-        this.setState({ data: [], fetching: true });
-        axios.request({
-            method: 'GET',
-            url: `${env.REACT_APP_API_BE}/api/v1/admin/users`,
-            headers: {
-                "Accept": "application/json",
-                'Content-Type': 'application/json',
-                'Authorization': `${'bearer ' + cookies.get('token')}`
-            }
-        }).then(function (response) {
-            const data = response.data.data.map(data => ({
-                text: `${data.attributes.email}`,
-                value: `${data.attributes.email}`,
-            }));
-            self.setState({ data, fetching: false });
-        }).catch(function (error) {
-            console.log(error)
-        })
-    };
-
-    handleChange = value => {
-        this.setState({
-            value,
-            data: [],
-            fetching: false,
-        });
-    };
     handleChangeByWeek = (value) => {
         this.setState({
             byweekday: value
@@ -257,20 +222,13 @@ class CalenderInfoPage extends Component {
                     [event.target.name]: event.target.value
                 })
                 break;
-            case '8':
+            case '3':
                 this.setState({
                     [event.target.name]: event.target.value,
-                    count: 2,
+                    count: 5,
+                    byweekday: ['mo', 'tu', 'we', 'th', 'fr'],
                     checkbox: true,
-                    choice: 'monthly'
-                })
-                break;
-            case '9':
-                this.setState({
-                    [event.target.name]: event.target.value,
-                    count: 2,
-                    checkbox: true,
-                    choice: 'yearly'
+                    choice: 'weekly'
                 })
                 break;
             case '99':
@@ -278,44 +236,7 @@ class CalenderInfoPage extends Component {
                     [event.target.name]: event.target.value,
                     count: 2,
                     checkbox: true,
-                    choice: 'daily'
-                })
-                console.log(this.state);
-
-                break;
-            case '10':
-                let dateOfWeek = '';
-                switch (dateFormatDate(now, 'ddd').trim()) {
-                    case 'T2':
-                        dateOfWeek = 'mo';
-                        break;
-                    case 'T3':
-                        dateOfWeek = 'tu';
-                        break;
-                    case 'T4':
-                        dateOfWeek = 'we';
-                        break;
-                    case 'T5':
-                        dateOfWeek = 'th';
-                        break;
-                    case 'T6':
-                        dateOfWeek = 'fr';
-                        break;
-                    case 'T7':
-                        dateOfWeek = 'sa';
-                        break;
-                    case 'CN':
-                        dateOfWeek = 'su';
-                        break;
-                    default:
-                        dateOfWeek = 'mo';
-                }
-                this.setState({
-                    [event.target.name]: event.target.value,
-                    count: 2,
-                    checkbox: true,
-                    choice: 'weekly',
-                    byweekday: [dateOfWeek]
+                    choice: this.state.choice
                 })
                 break;
             default:
@@ -454,8 +375,17 @@ class CalenderInfoPage extends Component {
             valueEdit: e.target.value,
         });
     }
+    _handleKeyDown = (e) => {
+        if (e.key === 'Enter') {
+            console.log('do validate');
+        }
+    }
+    onGetArrayEmail = (data) => {
+        this.setState({
+            arrayEmail: data
+        })
+    }
     render() {
-        const { fetching, data, value } = this.state;
         const radioStyle = {
             display: 'block',
             height: '30px',
@@ -618,90 +548,64 @@ class CalenderInfoPage extends Component {
                                     <button className="b-btn waves-effect waves-ripple" type="submit">Lưu</button>
                                 </div>
                             </div>
-                            <div className="b-page-description">
-                                <div className="b-description-left">
-                                    <div className="b-heading">
-                                        <h2 className="b-text-title">
-                                            Chi tiết sự kiện
+                        </form>
+                        <div className="b-page-description">
+                            <div className="b-description-left">
+                                <div className="b-heading">
+                                    <h2 className="b-text-title">
+                                        Chi tiết sự kiện
                                         </h2>
-                                    </div>
-                                    <div className="b-description-content">
-                                        <div className="b-form-group">
-                                            <div className="b-icon">
-                                                <i className="fas fa-bell" />
-                                            </div>
-                                            <div className="b-form-control">
-                                                <select className='b-input' name="rooms" value={this.state.rooms} onChange={this.onChanger}>
-                                                    {this.props.room.map(data => (
-                                                        <option key={data.id} value={data.id}>{data.attributes.name} - {data.attributes.seats} Chổ ngồi</option>
-                                                    ))}
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div className="b-form-group">
-                                            <div className="b-icon">
-                                                <i className="fas fa-align-right" />
-                                            </div>
-                                            <div className="b-form-control b-editor">
-                                                <CKEditor
-                                                    style={{
-                                                        height: '300px'
-                                                    }}
-                                                    editor={ClassicEditor}
-                                                    data={this.state.content}
-                                                    onInit={editor => {
-                                                        // You can store the "editor" and use when it is needed.
-                                                        // console.log('Editor is ready to use!', editor);
-                                                    }}
-                                                    onChange={(event, editor) => {
-                                                        const data = editor.getData();
-                                                        this.setState({
-                                                            content: data
-                                                        })
-                                                    }}
-                                                    onBlur={editor => {
-                                                        // console.log('Blur.', editor);
-                                                    }}
-                                                    onFocus={editor => {
-                                                        // console.log('Focus.', editor);
-                                                    }}
-                                                />
-                                                <span className={this.state.content.length > 0 ? "is-error" : "is-error is-check"}>
-                                                    * Vui Lòng Nhập Mô Tả Cuộc Họp
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </div>
                                 </div>
-                                <div className="b-description-right">
-                                    <div className="b-heading">
-                                        <h2 className="b-text-title">
-                                            Thành Phần Tham Dự
-                                        </h2>
+                                <div className="b-description-content">
+                                    <div className="b-form-group">
+                                        <div className="b-icon">
+                                            <i className="fas fa-bell" />
+                                        </div>
+                                        <div className="b-form-control">
+                                            <select className='b-input' name="rooms" value={this.state.rooms} onChange={this.onChanger}>
+                                                {this.props.room.map(data => (
+                                                    <option key={data.id} value={data.id}>{data.attributes.name} - {data.attributes.seats} Chổ ngồi</option>
+                                                ))}
+                                            </select>
+                                        </div>
                                     </div>
-                                    <div className="b-description-content">
-                                        <Select
-                                            mode="multiple"
-                                            labelInValue
-                                            value={value}
-                                            placeholder="Select users"
-                                            notFoundContent={fetching ? <Spin size="small" /> : null}
-                                            filterOption={false}
-                                            onSearch={this.fetchUser}
-                                            onChange={this.handleChange}
-                                            style={{ width: '50%' }}
-                                        >
-                                            {data.map(d => (
-                                                <Option key={d.value}>{d.text}</Option>
-                                            ))}
-                                        </Select>
+                                    <div className="b-form-group">
+                                        <div className="b-icon">
+                                            <i className="fas fa-align-right" />
+                                        </div>
+                                        <div className="b-form-control b-editor">
+                                            <CKEditor
+                                                style={{
+                                                    height: '300px'
+                                                }}
+                                                editor={ClassicEditor}
+                                                data={this.state.content}
+                                                onInit={editor => {
+                                                    // You can store the "editor" and use when it is needed.
+                                                    // console.log('Editor is ready to use!', editor);
+                                                }}
+                                                onChange={(event, editor) => {
+                                                    const data = editor.getData();
+                                                    this.setState({
+                                                        content: data
+                                                    })
+                                                }}
+                                                onBlur={editor => {
+                                                    // console.log('Blur.', editor);
+                                                }}
+                                                onFocus={editor => {
+                                                    // console.log('Focus.', editor);
+                                                }}
+                                            />
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </form>
+                            <SearchComponent onGetArrayEmail={this.onGetArrayEmail}></SearchComponent>
+                        </div>
                     </div>
-                </main>
-            </div>
+                </main >
+            </div >
         );
     }
 }
