@@ -18,32 +18,35 @@ class SearchComponent extends Component {
         }
     }
     onChanger = (event) => {
+        var timeout = null;
+        clearTimeout(timeout);
         var self = this;
-        if (event.target.value.trim() === "") {
-            this.setState({
-                isChanger: false
-            })
-        } else {
-            this.setState({
-                isChanger: true
-            })
-        }
-        axios.request({
-            method: 'GET',
-            url: `${env.REACT_APP_API_BE}/api/v1/search/${event.target.value.trim() === '' ? 's' : event.target.value.trim()}`,
-            headers: {
-                "Accept": "application/json",
-                'Content-Type': 'application/json',
-                'Authorization': `${'bearer ' + cookies.get('token')}`
-            },
-        }).then(function (response) {
-            self.setState({
-                data: response.data.data
-            })
+        var value = event.target.value.trim();
+        timeout = setTimeout(function () {
+            axios.request({
+                method: 'GET',
+                url: `${env.REACT_APP_API_BE}/api/v1/search/${value === '' ? 's' : value}`,
+                headers: {
+                    "Accept": "application/json",
+                    'Content-Type': 'application/json',
+                    'Authorization': `${'bearer ' + cookies.get('token')}`
+                },
+            }).then(function (response) {
+                if (response.data.data.length > 0) {
+                    self.setState({
+                        isChanger: true,
+                        data: response.data.data
+                    })
+                } else {
+                    self.setState({
+                        isChanger: false
+                    })
+                }
+            }).catch(function (error) {
 
-        }).catch(function (error) {
+            })
+        }, 500);
 
-        })
     }
     onAddEmail = (data) => {
         let arrayNew = [];
