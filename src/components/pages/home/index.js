@@ -1,2 +1,3 @@
 import HomePage from './HomePage';
-export { HomePage };
+import CalenderInfoPage from './CalenderInfoPage'
+export { HomePage, CalenderInfoPage };

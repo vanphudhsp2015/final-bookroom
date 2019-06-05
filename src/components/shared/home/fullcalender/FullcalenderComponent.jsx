@@ -3,15 +3,19 @@ import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid'
 import listPlugin from '@fullcalendar/list';
-import rrulePlugin from '@fullcalendar/rrule';
+// import rrulePlugin from '@fullcalendar/rrule';
 import rrsetPlugin from '../../../../libraries/rruleset';
 import interactionPlugin from '@fullcalendar/interaction' // needed for dayClick
 import resourceTimeGridPlugin from '@fullcalendar/resource-timegrid';
 import allLocales from '@fullcalendar/core/locales-all';
 import '../../../../main.scss'
-import { Modal, Calendar } from 'antd';
+import { Modal, Calendar, Radio, message } from 'antd';
+import debounce from 'lodash/debounce';
 import Cookies from 'universal-cookie';
-import { message } from 'antd';
+import * as typeAPI from '../../../../constants/actionAPI';
+import axios from 'axios';
+import { Link, Redirect } from 'react-router-dom';
+import moment from 'moment';
 const cookies = new Cookies();
 const confirm = Modal.confirm;
 var dateFormat = require('dateformat');
@@ -30,7 +34,9 @@ dateFormat.i18n = {
     ]
 };
 class FullcalenderComponent extends Component {
+    clickCount = 0
     calendarComponentRef = React.createRef()
+
     constructor(props) {
         super(props);
         this.state = {
@@ -41,13 +47,69 @@ class FullcalenderComponent extends Component {
             description: '',
             datenow: now,
             isShowCalender: false,
+            checkbox: false,
+            data: [],
+            value: [],
+            fetching: false,
+            isShowDelete: false,
+            valueDelete: 1,
+            isShowEdit: false,
+            isRedirect: false,
+            isException: false,
+            visible: false,
+            dateStart: dateFormat(now, 'yyyy-mm-dd'),
+            timestart: this.roundMinutesDate(now, 0),
+            timeend: this.roundMinutesDate(now, 60),
+            isShowForm: false,
         }
+        this.lastFetchId = 0;
+        this.fetchUser = debounce(this.fetchUser, 800);
+
     }
+    fetchUser = value => {
+        var self = this;
+        this.setState({ data: [], fetching: true });
+        axios.request({
+            method: 'GET',
+            url: `${typeAPI.API_URL}/api/v1/admin/users`,
+            headers: {
+                "Accept": "application/json",
+                'Content-Type': 'application/json',
+                'Authorization': `${'bearer ' + cookies.get('token')}`
+            }
+        }).then(function (response) {
+            const data = response.data.map(data => ({
+                text: `${data.attributes.email}`,
+                value: `${data.attributes.email}`,
+            }));
+            self.setState({ data, fetching: false });
+        }).catch(function (error) {
+            console.log(error)
+        })
+    };
+
+    handleChange = value => {
+        this.setState({
+            value,
+            data: [],
+            fetching: false,
+        });
+    };
+
     componentDidUpdate(prevProps, prevState) {
         if (prevProps.datecalender !== this.props.datecalender) {
             let calendarApi = this.calendarComponentRef.current.getApi()
             calendarApi.gotoDate(dateFormat(this.props.datecalender, 'yyyy-mm-dd'))
         }
+        // this.interval = setInterval(() => (this.onResetDouble()), 10000);
+    }
+    // componentWillUnmount() {
+    //     clearInterval(this.interval);
+    // }
+    onResetDouble() {
+        this.setState({
+            countClick: 0
+        })
     }
     toggleWeekends = () => {
         this.setState({ // update a property
@@ -56,10 +118,12 @@ class FullcalenderComponent extends Component {
     }
 
     onEvent(info) {
+        
         this.setState({
             show: true,
             title: info.event.title,
             datestart: dateFormat(info.event.start, "dddd ,  dd mmmm yyyy"),
+            day: dateFormat(info.event.start, "yyyy-mm-dd"),
             timestart: info.event.extendedProps.timestart,
             timeend: info.event.extendedProps.timeend,
             room: info.event.extendedProps.room,
@@ -68,9 +132,10 @@ class FullcalenderComponent extends Component {
             redate: info.event.extendedProps.redate,
             recount: info.event.extendedProps.recount,
             reweek: info.event.extendedProps.reweek,
-            user_id: info.event.extendedProps.user_id
+            user_id: info.event.extendedProps.user_id,
+            content: info.event.extendedProps.content,
+            is_repeat: info.event.extendedProps.is_repeat
         })
-
     }
 
     handleClose = () => {
@@ -88,29 +153,12 @@ class FullcalenderComponent extends Component {
         });
     }
     onDelete(id, user_id) {
-        var self = this.props;
-        confirm({
-            title: 'Bạn Muốn Xóa Sự Kiện?',
-            content: 'Bấm Ok để Xóa',
-            onOk() {
-                if (cookies.get('data') === undefined) {
-                    message.warning('Vui Lòng Đăng Nhập Để Xóa Sự Kiện !')
-                } else {
-                    if (parseInt(user_id) === parseInt(cookies.get('data').id)) {
-                        self.onDelete(id);
-                    } else {
-                        message.warning('Bạn không có quyền xóa sự kiện này !')
-                    }
-
-                }
-            },
-            onCancel() {
-                self.onCancleEdit();
-            },
-        });
         this.setState({
-            show: !this.state.show
+            isShowDelete: true,
+            id: id,
+            user_id: user_id
         })
+
     }
     onEdit(id, user_id) {
         var self = this.props;
@@ -160,6 +208,8 @@ class FullcalenderComponent extends Component {
 
     }
     oneventDrop = (eventDropInfo) => {
+        console.log('dịch chuyển');
+
         let data = {
             id: eventDropInfo.event.id,
             daystart: dateFormat(eventDropInfo.event.start, 'yyyy-mm-dd'),
@@ -203,15 +253,212 @@ class FullcalenderComponent extends Component {
             show: false
         })
     }
+    onChangerCheck = (e) => {
+        this.setState({
+            checkbox: e.target.checked
+        })
+    }
+    onSendMain = () => {
+        let arrayEmail = '';
+        this.state.value.forEach((i, index, item) => {
+            if (index === item.length - 1) {
+                arrayEmail += `${item[index].key}`;
+            } else {
+                arrayEmail += `${item[index].key},`;
+            }
+        })
+        return arrayEmail;
+    }
+    handleDeleteOk = () => {
+        const { id } = this.state;
+        var self = this.props;
+        if (this.state.valueDelete === 2) {
+            self.onDeleteException(this.state);
+            this.setState({
+                isShowDelete: false,
+                show: !this.state.show,
+                valueDelete:1
+            })
+        } else {
+            self.onDelete(id);
+            this.setState({
+                isShowDelete: false,
+                show: !this.state.show,
+                valueDelete:1
+            })
+        }
+
+    }
+    onCloseDelete = () => {
+        this.setState({
+            isShowDelete: false
+        })
+    }
+    onChangeDeleteEvent = (e) => {
+        this.setState({
+            valueDelete: e.target.value,
+        });
+    }
+    handleEditOk = () => {
+        if (this.state.valueDelete === 2) {
+            this.setState({
+                isShowDelete: false,
+                show: !this.state.show,
+                isException: true
+            })
+        } else {
+            this.setState({
+                isShowDelete: false,
+                show: !this.state.show,
+                isRedirect: true
+            })
+        }
+    }
+    onCloseEdit = () => {
+        this.setState({
+            isShowEdit: false
+        })
+    }
+    onShowModalEdit = () => {
+        this.setState({
+            isShowEdit: true
+        })
+    }
+    roundMinutesDate(data, add) {
+        const start = moment(data);
+        const remainder = 30 - (start.minute() % 30) + add;
+        const dateTime = moment(start).add(remainder, "minutes").format("HH:mm");
+        return dateTime;
+    }
+    onChanger = (event) => {
+        this.setState({
+            [event.target.name]: event.target.value
+        })
+    }
+    onChangeDate = (date, dateString) => {
+        if ((moment(dateFormat(dateString, 'yyyy-mm-dd HH:mm')).diff(dateFormat(now, 'yyyy-mm-dd HH:mm'), 'days')) < 0) {
+            this.setState({
+                validateDate: true
+            })
+        } else {
+            this.setState({
+                dateStart: dateString,
+                validateDate: false,
+            })
+        }
+    }
+    onChangeTime = (time, dateString) => {
+        let nowCurrent = dateFormat(this.state.dateStart, 'yyyy-mm-dd');
+        if ((moment(`${nowCurrent + ' ' + dateString + ':00'}`)).diff(dateFormat(now, 'yyyy-mm-dd HH:MM:ss'), 'minutes') < 0) {
+            this.setState({
+                validateTime: true
+            })
+        } else {
+            this.setState({
+                timestart: dateString,
+                timeend: this.roundMinutesDate(`${nowCurrent + ' ' + dateString + ':00'}`, 30),
+                validateTime: false
+            })
+        }
+    }
+    onChangeTimeItem = (time, dateString) => {
+        let nowCurrent = dateFormat(this.state.dateStart, 'yyyy-mm-dd');
+        if ((moment(`${nowCurrent + ' ' + dateString + ':00'}`)).diff(dateFormat(now, 'yyyy-mm-dd HH:MM:ss'), 'minutes') < 0) {
+            this.setState({
+                validateTimeItem: true
+            })
+        } else {
+            if ((moment(`${nowCurrent + ' ' + dateString + ':00'}`)).diff(`${nowCurrent + ' ' + this.state.timestart + ':00'}`, 'minutes') < 0) {
+                this.setState({
+                    timeend: dateString,
+                    timestart: dateString,
+                    validateTimeItem: false
+                })
+            } else {
+                this.setState({
+                    timeend: dateString,
+                    validateTimeItem: false
+                })
+            }
+        }
+    }
+    componentWillUnmount() {
+        this.setState({
+            clickCount: 0
+        })
+    }
+    onClickDate = (e) => {
+        this.clickCount += 1;
+        var self = this;
+        if (this.clickCount === 1) {
+            setTimeout(function () {
+                self.clickCount = 0;
+            }, 1000);
+        } else if (this.clickCount === 2) {
+            if (cookies.get('data') === undefined) {
+                message.error('Vui Lòng Đăng Nhập')
+            } else {
+                this.setState({
+                    isShowForm: true,
+                    dateStart: dateFormat(e.dateStr, 'yyyy-mm-dd'),
+                    timestart: dateFormat(e.dateStr, 'HH:MM'),
+                    timeend: this.roundMinutesDate(e.dateStr, 30),
+                })
+            }
+        }
+    }
+
     render() {
+        if (this.state.isShowForm) {
+            return <Redirect to={`/new?date=` + this.state.dateStart + `&time=` + this.state.timestart}></Redirect>
+        }
+        const radioStyle = {
+            display: 'block',
+            height: '30px',
+            lineHeight: '30px',
+        };
         return (
             <div className="b-fullcalender">
+                <Modal
+                    header={null}
+                    visible={this.state.isShowDelete}
+                    onOk={this.handleDeleteOk}
+                    onCancel={this.onCloseDelete}
+                    closable={false}
+                    okText="Xác Nhận"
+                    cancelText="Hủy"
+                >
+                    <div className="b-events">
+                        <Radio.Group onChange={this.onChangeDeleteEvent} value={this.state.valueDelete}>
+                            {this.state.is_repeat ?
+                                <>
+                                    <Radio style={radioStyle} value={1}>
+                                        Xóa Tất Cả Sự Kiện Này
+                                    </Radio>
+                                    <Radio style={radioStyle} value={2}>
+                                        Chỉ Xóa Sự Kiện Này
+                                    </Radio>
+                                </>
+                                :
+                                <div className="b-check-delete">
+                                    <p className="b-text-norm">
+                                        <i className="fas fa-exclamation-triangle"></i>  Xóa Đặt Phòng Này
+                                    </p>
+                                </div>
+                            }
+
+                        </Radio.Group>
+                    </div>
+                </Modal>
                 <Modal
                     header={null}
                     visible={this.state.isShowCalender}
                     onOk={this.handleOk}
                     onCancel={this.onCloseCanlender}
-                    footer={null}>
+                    footer={null}
+                    okText="Xác Nhận"
+                    cancelText="Hủy"
+                >
                     <div className="b-events">
                         <Calendar fullscreen={false} onSelect={this.onSelect} />
                     </div>
@@ -223,14 +470,16 @@ class FullcalenderComponent extends Component {
                     // onCancel={this.handleCancel}
                     footer={null}
                     closable={false}
+                    okText="Xác Nhận"
+                    cancelText="Hủy"
                 >
                     <div className="b-events">
                         {cookies.get('data') !== undefined && parseInt(this.state.user_id) === parseInt(cookies.get('data').id) ?
                             <div className="b-button-funtion">
                                 <div className="b-item">
-                                    <button className="b-btn" onClick={this.onEdit.bind(this, this.state.id, this.state.user_id)}>
+                                    <Link to={'/' + this.state.id + '/' + this.state.day} className="b-btn">
                                         <i className="fas fa-pencil-alt" />
-                                    </button>
+                                    </Link>
                                 </div>
                                 <div className="b-item">
                                     <button className="b-btn" onClick={this.onDelete.bind(this, this.state.id, this.state.user_id)}>
@@ -265,6 +514,8 @@ class FullcalenderComponent extends Component {
                             <p className="b-text-user">
                                 {this.state.user}
                             </p>
+                            <p className="b-text-norm" dangerouslySetInnerHTML={{ __html: this.state.content }}>
+                            </p>
                             <p className={this.state.redate !== 'Không Lặp' ? "b-text-user" : ''}>
                                 {this.state.redate === 'daily' ? 'Lặp Theo Ngày' : ''}
                                 {this.state.redate === 'weekly' ? 'Lặp Theo Tuần' : ''}
@@ -274,6 +525,7 @@ class FullcalenderComponent extends Component {
                             <p>
                                 {this.state.recount ? `${this.state.recount + '  lần lặp lại'}` : ''}
                             </p>
+
                         </div>
                     </div>
 
@@ -310,7 +562,7 @@ class FullcalenderComponent extends Component {
                     }
                     defaultDate={dateFormat(this.state.datenow, 'yyyy-mm-dd')}
                     navLinks
-                    editable
+                    editable={false}
                     eventLimit
                     viewObject={{
                         currentStart: '2019-05-07'
@@ -329,8 +581,12 @@ class FullcalenderComponent extends Component {
                     eventDrop={
                         this.oneventDrop
                     }
+                    droppable={false}
                     eventTextColor={'#FEFEF9'}
                     eventBorderColor={'rgba(0,0,0,1.5)'}
+                    dateClick={
+                        this.onClickDate
+                    }
                 />
             </div>
         );

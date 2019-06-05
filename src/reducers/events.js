@@ -25,7 +25,7 @@ export default function (state = INITIAL_STATE, action = {}) {
                 fetching: INITIAL_STATE.fetching,
                 fetched: true
             })
-        case types.REQUEST_ADD_EVENT:            
+        case types.REQUEST_ADD_EVENT:
             return Object.assign({}, state, {
                 all: [...state.all, action.payload]
             })
@@ -34,6 +34,14 @@ export default function (state = INITIAL_STATE, action = {}) {
                 all: state.all.filter(item => item.id !== action.payload)
             })
         case types.REQUEST_UPDATE_EVENT:
+            return Object.assign({}, state, {
+                all: state.all.map(data => data.id === action.payload.id ? action.payload : data)
+            })
+        case types.REQUEST_DELETE_EVENT_EXCEPTION:
+            return Object.assign({}, state, {
+                all: state.all.map(data => data.id === action.payload.id ? action.payload : data)
+            })
+        case types.REQUEST_EDIT_EVENT_EXCEPTION:
             return Object.assign({}, state, {
                 all: state.all.map(data => data.id === action.payload.id ? action.payload : data)
             })

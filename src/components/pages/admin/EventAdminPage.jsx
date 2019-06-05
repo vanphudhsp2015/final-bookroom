@@ -25,8 +25,8 @@ class EventAdminPage extends Component {
             dataEdit: {},
             onDate: dateFormatDate(now, 'yyyy-mm-dd'),
             dateStart: dateFormatDate(now, 'yyyy-mm-dd'),
-            timestart: '08:30',
-            timeend: '09:30',
+            timestart: this.roundMinutesDate(now, 0),
+            timeend: this.roundMinutesDate(now, 60),
         }
     }
     componentDidMount() {
@@ -36,17 +36,30 @@ class EventAdminPage extends Component {
         this.props.dispatch(action.requestGetEvent());
         this.props.dispatch(action_Room.requestGetRoom());
     }
-
+    roundMinutesDate(data, add) {
+        const start = moment(data);
+        const remainder = 30 - (start.minute() % 30) + add;
+        const dateTime = moment(start).add(remainder, "minutes").format("HH:mm");
+        return dateTime;
+    }
     convertToFrontEnd(arrA) {
         let arrB = []
         if (arrA.length) {
-            arrB = arrA.map(item => {
+            arrB = this.convertArray(arrA).map(item => {
                 let attributes = item.attributes;
+                let excepArray = [];
+                attributes.exception.map(data => (
+                    excepArray = [...excepArray, `${data.day + ` ${data.timestart} UTC`}`]
+                ))
                 return {
                     resourceId: attributes.room.id,
                     id: item.id,
-                    title: attributes.content,
-                    className: cookies.get('data') !== undefined && parseInt(attributes.user_id) === parseInt(cookies.get('data').id) ? "is-current" : "",
+                    title: attributes.title,
+                    content: attributes.content,
+                    className: [
+                        attributes.repeat !== null ? `${'room_item_' + attributes.room.id}` : "",
+                        attributes.repeat !== null ? 'b-repeat' : ''
+                    ],
                     start: attributes.daystart,
                     room: attributes.room.name,
                     user: attributes.username,
@@ -58,13 +71,15 @@ class EventAdminPage extends Component {
                     reweek: attributes && attributes.repeat !== null ? attributes.repeat.byweekday : '',
                     recount: attributes && attributes.repeat !== null ? attributes.repeat.count : '',
                     repeat: attributes && attributes.repeat !== null ? '1' : '0',
-                    rrule: attributes && attributes.repeat !== null ?
+                    is_repeat: attributes && attributes.repeat !== null ? true : false,
+                    rruleSet: attributes && attributes.repeat !== null ?
                         {
                             freq: attributes.repeat.repeatby,
                             interval: attributes.repeat.interval,
                             byweekday: attributes.repeat.byweekday,
                             dtstart: `${attributes.daystart + ' ' + attributes.timestart}`,
-                            count: attributes.repeat.count
+                            count: attributes.repeat.count,
+                            exrules: excepArray,
                         } : {
                             freq: "daily",
                             interval: 1,
@@ -76,6 +91,43 @@ class EventAdminPage extends Component {
             })
         }
         return arrB;
+    }
+    convertArray(data) {
+        let result = [];
+        let check = false;
+        data.map(item => {
+            result = [...result, item]
+            let dataItem = item.attributes.exception.map(detail => {
+                if (detail.status === 'edit') {
+                    check = true
+                    return {
+                        type: "Bookrooms",
+                        id: item.id,
+                        attributes: {
+                            ...detail,
+                            room: item.attributes.room,
+                            repeat: null,
+                            daystart: detail.day,
+                            user_id: item.attributes.user_id,
+                            exception: []
+                        }
+
+                    }
+                } else {
+                    return null;
+                }
+
+            })
+            if (check === true) {
+                return result = [...result, ...dataItem]
+            } else {
+                return null;
+            }
+        })
+        var filterNotNull = result.filter(function (e) {
+            return e !== null;
+        })
+        return filterNotNull;
     }
     convertArrayRoom(arrA) {
         let arrB = []
@@ -111,7 +163,7 @@ class EventAdminPage extends Component {
         }
 
     }
-    onUpdate = (data) => {
+    onUpdate = (data) => {        
         this.props.dispatch(action.requestUpdateEvent(data));
         this.setState({
             visible: false,
@@ -197,6 +249,9 @@ class EventAdminPage extends Component {
     onReloadData = () => {
         this.onGetData();
     }
+    onDeleteException = (data) => {
+        this.props.dispatch(action.requestDeleteException(data));
+    }
     render() {
         if (cookies.get('data') !== undefined) {
             if (cookies.get('data').attributes.roles[0] !== 'super_admin') {
@@ -230,13 +285,13 @@ class EventAdminPage extends Component {
                                             <div className="b-block-center">
                                                 <form className="b-form-filter" onSubmit={this.onSearchEvent}>
                                                     <div className="b-form-group">
-                                                        <DatePicker onChange={this.onChange} defaultValue={moment(now, dateFormat)} value={moment(this.state.dateStart, dateFormat)} className="b-input" />
+                                                        <DatePicker allowClear={false} hideDisabledOptions onChange={this.onChange} defaultValue={moment(now, dateFormat)} value={moment(this.state.dateStart, dateFormat)} className="b-input" />
                                                     </div>
                                                     <div className="b-form-group">
-                                                        <TimePicker disabledHours={disabledHours} minuteStep={30} defaultValue={moment(this.state.timestart, format)} format={format} onChange={this.onChangeTime} className="b-input" />
+                                                        <TimePicker allowClear={false} hideDisabledOptions disabledHours={disabledHours} minuteStep={30} defaultValue={moment(this.state.timestart, format)} format={format} onChange={this.onChangeTime} className="b-input" />
                                                     </div>
                                                     <div className="b-form-group">
-                                                        <TimePicker disabledHours={disabledHours} minuteStep={30} defaultValue={moment(this.state.timeend, format)} value={moment(this.state.timeend, format)} format={format} onChange={this.onChangeTimeItem} className="b-input" />
+                                                        <TimePicker allowClear={false} hideDisabledOptions disabledHours={disabledHours} minuteStep={30} defaultValue={moment(this.state.timeend, format)} value={moment(this.state.timeend, format)} format={format} onChange={this.onChangeTimeItem} className="b-input" />
                                                     </div>
                                                     <div className="b-form-group">
                                                         <button type="submit" className="b-btn">
@@ -257,7 +312,7 @@ class EventAdminPage extends Component {
                                         </div>
                                     </div>
                                     <div className="b-content-main">
-                                        <CalenderComponent room={this.convertArrayRoom(this.props.room)} onDate={this.state.onDate} onUpdate={this.onUpdate} onEdit={this.onEdit} onDelete={this.onDelete} data={this.convertToFrontEnd(this.props.data)}></CalenderComponent>
+                                        <CalenderComponent onDeleteException={this.onDeleteException} room={this.convertArrayRoom(this.props.room)} onDate={this.state.onDate} onUpdate={this.onUpdate} onEdit={this.onEdit} onDelete={this.onDelete} data={this.convertToFrontEnd(this.props.data)}></CalenderComponent>
                                     </div>
                                 </div>
 

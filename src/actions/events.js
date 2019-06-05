@@ -4,9 +4,10 @@ import axios from 'axios';
 import { message } from 'antd';
 import Cookies from 'universal-cookie';
 const cookies = new Cookies();
-var moment = require('moment');
-var dateFormat = require('dateformat');
-var now = new Date();
+const htmlToText = require('html-to-text');
+// var moment = require('moment');
+// var dateFormat = require('dateformat');
+// var now = new Date();
 // api
 
 export function requestGetEvent() {
@@ -29,6 +30,17 @@ export function requestGetEvent() {
 }
 // add tour 
 export function requestAddEvents(data) {
+    let email = '';
+    if (data.arrayEmail !== undefined) {
+        data.arrayEmail.forEach((i, index, item) => {
+            if (index === item.length - 1) {
+                email += `${item[index].email}`;
+            } else {
+                email += `${item[index].email},`;
+            }
+        })
+    }
+
     let formDataObject = {};
     if (data.checkbox === true) {
         let arrayDay = '';
@@ -41,7 +53,8 @@ export function requestAddEvents(data) {
         })
         formDataObject = {
             'room_id': data.rooms,
-            'content': data.title,
+            'title': data.title,
+            'content': htmlToText.fromString(data.content),
             'user_id': cookies.get('data').id,
             'daystart': data.dateStart,
             'timestart': data.timestart,
@@ -49,16 +62,19 @@ export function requestAddEvents(data) {
             'repeatby': data.choice,
             'interval': 1,
             'count': data.count,
-            'byweekday': data.choice === 'weekly' ? arrayDay : ''
+            'byweekday': data.choice === 'weekly' ? arrayDay : '',
+            'mail': data.arrayEmail === undefined ? '' : email
         }
     } else {
         formDataObject = {
             'room_id': data.rooms,
-            'content': data.title,
+            'content': htmlToText.fromString(data.content),
             'user_id': cookies.get('data').id,
             'daystart': data.dateStart,
             'timestart': data.timestart,
-            'timeend': data.timeend
+            'timeend': data.timeend,
+            'title': data.title,
+            'mail': data.arrayEmail === undefined ? '' : email
         }
     }
     return (dispatch) => {
@@ -108,53 +124,41 @@ export function requestDeleteEvent(id) {
 }
 export function requestUpdateEvent(data) {
     let formDataObject = {};
-    if (data.is_resize) {
-        if (data.is_drop) {
-            formDataObject = {
-                'daystart': data.daystart,
-                'timestart': data.timestart,
-                'timeend': data.timeend,
-            }
-        } else {
-            formDataObject = {
-                'timeend': data.timeEnd
-            }
+    if (data.checkbox === true) {
+        let arrayDay = '';
+        if (data.byweekday !== null) {
+            data.byweekday.forEach((i, index, item) => {
+                if (index === item.length - 1) {
+                    arrayDay += `${item[index]}`;
+                } else {
+                    arrayDay += `${item[index]},`;
+                }
+            })
+        }
+        formDataObject = {
+            'room_id': data.rooms,
+            'content': htmlToText.fromString(data.content),
+            'title': data.title,
+            'user_id': cookies.get('data').id,
+            'daystart': data.dateStart,
+            'timestart': data.timestart,
+            'timeend': data.timeend,
+            'check': '1',
+            'repeatby': data.choice,
+            'interval': 1,
+            'count': data.count,
+            'byweekday': data.choice === 'weekly' ? arrayDay : ''
         }
     } else {
-        if (data.checkbox === true) {
-            let arrayDay = '';
-            if (data.byweekday !== null) {
-                data.byweekday.forEach((i, index, item) => {
-                    if (index === item.length - 1) {
-                        arrayDay += `${item[index]}`;
-                    } else {
-                        arrayDay += `${item[index]},`;
-                    }
-                })
-            }
-            formDataObject = {
-                'room_id': data.rooms,
-                'content': data.title,
-                'user_id': cookies.get('data').name,
-                'daystart': data.dateStart,
-                'timestart': data.timestart,
-                'timeend': data.timeend,
-                'check': '1',
-                'repeatby': data.choice,
-                'interval': 1,
-                'count': data.count,
-                'byweekday': data.choice === 'weekly' ? arrayDay : ''
-            }
-        } else {
-            formDataObject = {
-                'room_id': data.rooms,
-                'content': data.title,
-                'user_id': cookies.get('data').name,
-                'daystart': data.dateStart,
-                'timestart': data.timestart,
-                'timeend': data.timeend,
-                'check': '0'
-            }
+        formDataObject = {
+            'room_id': data.rooms,
+            'content': htmlToText.fromString(data.content),
+            'user_id': cookies.get('data').id,
+            'daystart': data.dateStart,
+            'timestart': data.timestart,
+            'timeend': data.timeend,
+            'check': '0',
+            'title': data.title
         }
     }
 
@@ -172,6 +176,7 @@ export function requestUpdateEvent(data) {
             message.success('Sửa Sự Kiện Thành Công');
             dispatch(receiveData(types.REQUEST_UPDATE_EVENT, response.data.data))
         }).catch(function (error) {
+
             dispatch(requestRejected(error));
         })
     }
@@ -219,6 +224,62 @@ export function requestSearchEvent(data) {
             } else {
                 message.warning('Không có lịch nào trong khoảng thời gian này !!!');
             }
+        }).catch(function (error) {
+            dispatch(requestRejected(error));
+        })
+    }
+}
+// add tour 
+export function requestDeleteException(data) {
+    let formDataObject = {};
+    formDataObject = {
+        'content': data.content,
+        'day': data.day,
+        'timestart': data.timestart,
+        'timeend': data.timeend,
+        'title': data.title,
+    }
+    return (dispatch) => {
+        return axios.request({
+            method: 'POST',
+            url: `${typeAPI.API_URL}/api/v1/deletebrrepeat/${data.id}`,
+            headers: {
+                "Accept": "application/json",
+                'Content-Type': 'application/json',
+                'Authorization': `${'bearer ' + cookies.get('token')}`
+            },
+            data: formDataObject
+        }).then(function (response) {
+            dispatch(receiveData(types.REQUEST_DELETE_EVENT_EXCEPTION, response.data.data));
+        }).catch(function (error) {
+            dispatch(requestRejected(error));
+        })
+    }
+}
+export function requestEditException(data, day) {
+
+    let formDataObject = {};
+    formDataObject = {
+        'content': data.content,
+        'day': day,
+        'timestart': data.timestart,
+        'timeend': data.timeend,
+        'title': data.title,
+    }
+
+    return (dispatch) => {
+        return axios.request({
+            method: 'POST',
+            url: `${typeAPI.API_URL}/api/v1/editbrrepeat/${data.id}`,
+            headers: {
+                "Accept": "application/json",
+                'Content-Type': 'application/json',
+                'Authorization': `${'bearer ' + cookies.get('token')}`
+            },
+            data: formDataObject
+        }).then(function (response) {
+            message.success('Sửa Ngoại Lệ Thành Công');
+            dispatch(receiveData(types.REQUEST_EDIT_EVENT_EXCEPTION, response.data.data));
         }).catch(function (error) {
             dispatch(requestRejected(error));
         })

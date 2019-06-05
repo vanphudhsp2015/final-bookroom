@@ -4,12 +4,22 @@ import { HeaderLayout, SlideBar } from '../../layouts/home';
 import { FullcalenderComponent } from '../../shared/home';
 import * as action from '../../../actions/events';
 import * as action_Room from '../../../actions/room';
-import rrulePlugin from '@fullcalendar/rrule';
-
+// import rrulePlugin from '@fullcalendar/rrule';
+// import _ from "lodash";
 import Cookies from 'universal-cookie';
 import { message } from 'antd';
+// import { RRule, RRuleSet, rrulestr } from 'rrule'
 const cookies = new Cookies();
+// var dateFormatDate = require('dateformat');
 var moment = require('moment');
+// var now = new Date()
+// const rruleSet = new RRuleSet()
+// rruleSet.rrule(new RRule({
+//     freq: RRule.DAILY,
+//     count: 5,
+//     dtstart: new Date(Date.UTC(2019, 5, 29))
+// }))
+// rruleSet.exdate(new Date(Date.UTC(2019, 5, 31)))
 
 class HomePage extends Component {
     constructor(props, context) {
@@ -118,16 +128,21 @@ class HomePage extends Component {
     convertToFrontEnd(arrA) {
         let arrB = []
         if (arrA.length) {
-            arrB = arrA.map(item => {
+            arrB = this.convertArray(arrA).map(item => {
                 let attributes = item.attributes;
-
+                let excepArray = [];
+                attributes.exception.map(data => (
+                    excepArray = [...excepArray, `${data.day + ` ${data.timestart} UTC`}`]
+                ))
                 return {
                     resourceId: attributes.room.id,
                     id: item.id,
-                    title: attributes.content,
+                    title: attributes.title,
+                    content: attributes.content,
                     className: [
                         attributes.repeat !== null ? `${'room_item_' + attributes.room.id}` : "",
-                        cookies.get('data') !== undefined && parseInt(attributes.user_id) === parseInt(cookies.get('data').id) ? "is-current" : ""
+                        cookies.get('data') !== undefined && parseInt(attributes.user_id) === parseInt(cookies.get('data').id) ? "is-current" : "",
+                        attributes.repeat !== null ? 'b-repeat' : ''
                     ],
                     start: attributes.daystart,
                     room: attributes.room.name,
@@ -140,6 +155,7 @@ class HomePage extends Component {
                     reweek: attributes && attributes.repeat !== null ? attributes.repeat.byweekday : '',
                     recount: attributes && attributes.repeat !== null ? attributes.repeat.count : '',
                     repeat: attributes && attributes.repeat !== null ? '1' : '0',
+                    is_repeat: attributes && attributes.repeat !== null ? true : false,
                     rruleSet: attributes && attributes.repeat !== null ?
                         {
                             freq: attributes.repeat.repeatby,
@@ -147,7 +163,7 @@ class HomePage extends Component {
                             byweekday: attributes.repeat.byweekday,
                             dtstart: `${attributes.daystart + ' ' + attributes.timestart}`,
                             count: attributes.repeat.count,
-                            exrules: [`${attributes.daystart + ' ' + attributes.timestart}`],
+                            exrules: excepArray,
                         } : {
                             freq: "daily",
                             interval: 1,
@@ -189,6 +205,47 @@ class HomePage extends Component {
             isLogin: false
         })
     }
+    onDeleteException = (data) => {
+        this.props.dispatch(action.requestDeleteException(data));
+    }
+    convertArray(data) {
+        let result = [];
+        let check = false;
+        data.map(item => {
+            result = [...result, item]
+            let dataItem = item.attributes.exception.map(detail => {
+                if (detail.status === 'edit') {
+                    check = true
+                    return {
+                        type: "Bookrooms",
+                        id: item.id,
+                        attributes: {
+                            ...detail,
+                            room: item.attributes.room,
+                            repeat: null,
+                            daystart: detail.day,
+                            user_id: item.attributes.user_id,
+                            exception: []
+                        }
+
+                    }
+                } else {
+                    return null;
+                }
+
+            })
+            if (check === true) {
+                return result = [...result, ...dataItem]
+            } else {
+                return null;
+            }
+        })
+        var filterNotNull = result.filter(function (e) {
+            return e !== null;
+        })
+        return filterNotNull;
+    }
+
     render() {
         return (
             <div className="wrapper">
@@ -197,7 +254,7 @@ class HomePage extends Component {
                     <div className="b-block">
                         <SlideBar onCheckLogin={this.onCheckLogin} room={this.props.room} onCancleEdit={this.onCancleEdit} onChangerRoom={this.onChangerRoom} onUpdate={this.onUpdate} dataEdit={this.state.dataEdit} edit={this.state.edit} onGetDate={this.onGetDate} onAddEvent={this.onAddEvent}></SlideBar>
                         <div className="b-block-right">
-                            <FullcalenderComponent rooms={this.props.room} room={this.convertArrayRoom(this.props.room)} onCancleEdit={this.onCancleEdit} onUpdate={this.onUpdate} onEdit={this.onEdit} onDelete={this.onDelete} is_checkdate={this.state.is_getdate} datecalender={this.state.datecalender} data={this.convertToFrontEnd(this.props.data)}></FullcalenderComponent>
+                            <FullcalenderComponent onAddEvent={this.onAddEvent} onDeleteException={this.onDeleteException} rooms={this.props.room} room={this.convertArrayRoom(this.props.room)} onCancleEdit={this.onCancleEdit} onUpdate={this.onUpdate} onEdit={this.onEdit} onDelete={this.onDelete} is_checkdate={this.state.is_getdate} datecalender={this.state.datecalender} data={this.convertToFrontEnd(this.props.data)}></FullcalenderComponent>
                         </div>
                     </div>
                 </main>

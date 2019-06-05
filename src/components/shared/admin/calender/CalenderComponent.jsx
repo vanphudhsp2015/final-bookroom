@@ -3,23 +3,23 @@ import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid'
 import interactionPlugin from '@fullcalendar/interaction' // needed for dayClick
-import rrulePlugin from '@fullcalendar/rrule';
+import rrsetPlugin from '../../../../libraries/rruleset';
 import listPlugin from '@fullcalendar/list';
 import resourceTimeGridPlugin from '@fullcalendar/resource-timegrid';
 import allLocales from '@fullcalendar/core/locales-all';
-import { Modal } from 'antd';
+import { Modal, Radio } from 'antd';
 import Cookies from 'universal-cookie';
 import { message } from 'antd';
 const cookies = new Cookies();
 var dateFormat = require('dateformat');
-var now = new Date()
-const confirm = Modal.confirm;
 class CalenderComponent extends Component {
     calendarComponentRef = React.createRef()
     constructor(props) {
         super(props);
         this.state = {
-            show: false
+            show: false,
+            isShowDelete: false,
+            valueDelete: 1,
         }
     }
     componentDidUpdate(prevProps, prevState) {
@@ -41,15 +41,18 @@ class CalenderComponent extends Component {
             show: true,
             title: info.event.title,
             datestart: dateFormat(info.event.start, "dddd ,  dd mmmm yyyy"),
+            day: dateFormat(info.event.start, "yyyy-mm-dd"),
             timestart: info.event.extendedProps.timestart,
             timeend: info.event.extendedProps.timeend,
             room: info.event.extendedProps.room,
-            color: info.event.extendedProps.color,
             user: info.event.extendedProps.user,
             id: info.event.id,
             redate: info.event.extendedProps.redate,
             recount: info.event.extendedProps.recount,
-            reweek: info.event.extendedProps.reweek
+            reweek: info.event.extendedProps.reweek,
+            user_id: info.event.extendedProps.user_id,
+            content: info.event.extendedProps.content,
+            is_repeat: info.event.extendedProps.is_repeat
         })
 
     }
@@ -67,19 +70,11 @@ class CalenderComponent extends Component {
             show: false,
         });
     }
-    onDelete(id) {
-        var self = this.props;
-        confirm({
-            title: 'Bạn Muốn Xóa Sự Kiện?',
-            onOk() {
-                self.onDelete(id);
-            },
-            onCancel() {
-                // self.onCancleEdit();
-            },
-        });
+    onDelete(id, user_id) {
         this.setState({
-            show: !this.state.show
+            isShowDelete: true,
+            id: id,
+            user_id: user_id
         })
     }
     onEdit(id) {
@@ -117,10 +112,75 @@ class CalenderComponent extends Component {
             show: !this.state.show
         })
     }
-    render() {
+    onChangeDeleteEvent = (e) => {
+        this.setState({
+            valueDelete: e.target.value,
+        });
+    }
+    handleDeleteOk = () => {
+        const { id } = this.state;
+        var self = this.props;
+        if (this.state.valueDelete === 2) {
+            self.onDeleteException(this.state);
+            this.setState({
+                isShowDelete: false,
+                show: !this.state.show,
+                valueDelete: 1
+            })
+        } else {
+            self.onDelete(id);
+            this.setState({
+                isShowDelete: false,
+                show: !this.state.show,
+                valueDelete: 1
+            })
+        }
 
+    }
+    onCloseDelete = () => {
+        this.setState({
+            isShowDelete: false
+        })
+    }
+    render() {
+        const radioStyle = {
+            display: 'block',
+            height: '30px',
+            lineHeight: '30px',
+        };
         return (
             <>
+                <Modal
+                    header={null}
+                    visible={this.state.isShowDelete}
+                    onOk={this.handleDeleteOk}
+                    onCancel={this.onCloseDelete}
+                    closable={false}
+                    okText="Xác Nhận"
+                    cancelText="Hủy"
+                >
+                    <div className="b-events">
+                        <Radio.Group onChange={this.onChangeDeleteEvent} value={this.state.valueDelete}>
+                            {this.state.is_repeat ?
+                                <>
+                                    <Radio style={radioStyle} value={1}>
+                                        Xóa Tất Cả Sự Kiện Này
+                                    </Radio>
+                                    <Radio style={radioStyle} value={2}>
+                                        Chỉ Xóa Sự Kiện Này
+                                    </Radio>
+                                </>
+                                :
+                                <div className="b-check-delete">
+                                    <p className="b-text-norm">
+                                        <i className="fas fa-exclamation-triangle"></i>  Xóa Đặt Phòng Này
+                                    </p>
+                                </div>
+                            }
+
+                        </Radio.Group>
+                    </div>
+                </Modal>
                 <Modal
                     header={null}
                     visible={this.state.show}
@@ -175,49 +235,50 @@ class CalenderComponent extends Component {
                 </Modal>
                 <FullCalendar
                     schedulerLicenseKey={'GPL-My-Project-Is-Open-Source'}
-                    locales={allLocales}
-                    locale={'vi'}
-                    height={'parent'}
-                    contentHeight={600}
-                    timeZone={'local'}
-                    defaultView={"timeGridDay"}
-                    handleWindowResize
-                    listDayFormat
-                    aspectRatio={1}
-                    header={{
-                        left: 'prev,next today',
-                        center: 'title',
-                        right: 'dayGridMonth,timeGridWeek,resourceTimeGridDay',
+                    defaultView="timeGridWeek"
+
+                    customButtons={{
+                        custom: {
+                            text: 'Chọn Ngày',
+                            click: this.onShowCalender
+                        }
                     }}
-                    dayNames={['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado']}
-                    plugins={[resourceTimeGridPlugin, rrulePlugin, dayGridPlugin, timeGridPlugin, interactionPlugin, listPlugin]}
-                    datesAboveResources
+                    header={{
+                        right: 'custom prev,next today',
+                        center: 'title ',
+                        left: 'dayGridMonth,timeGridWeek,resourceTimeGridDay',
+                    }}
+                    listDayFormat
+                    height={'parent'}
+                    timeZone={'local'}
+                    contentHeight={600}
+                    aspectRatio={1}
+                    handleWindowResize
+                    allDayText={'Giờ'}
+                    allDaySlot
+                    plugins={[resourceTimeGridPlugin, rrsetPlugin, dayGridPlugin, timeGridPlugin, interactionPlugin, listPlugin]}
                     ref={this.calendarComponentRef}
+                    weekends={this.state.calendarWeekends}
                     events={this.props.data}
                     resources={
                         this.props.room
                     }
-                    defaultDate={now}
+                    defaultDate={dateFormat(this.state.datenow, 'yyyy-mm-dd')}
                     navLinks
-                    editable
+                    editable={false}
                     eventLimit
-                    minTime={'07:30:00'}
-
-                    maxTime={'18:30:00'}
-                    eventClick={
-                        this.onEvent
-                    }
-                    eventOverlap={function (stillEvent, movingEvent) {
-                        return stillEvent.allDay && movingEvent.allDay;
+                    viewObject={{
+                        currentStart: '2019-05-07'
                     }}
-                    eventResize={
-                        this.onResize
-                    }
-                    eventDrop={
-                        this.oneventDrop
-                    }
+                    minTime={'07:30:00'}
+                    maxTime={'19:30:00'}
+                    eventClick={this.onEvent.bind(this)}
+                    locales={allLocales}
+                    locale={'vi'}
+                    droppable={false}
                     eventTextColor={'#FEFEF9'}
                     eventBorderColor={'rgba(0,0,0,1.5)'}
+
                 />
             </>
         );
