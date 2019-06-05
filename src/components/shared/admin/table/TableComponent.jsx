@@ -75,7 +75,7 @@ class TableComponent extends Component {
                                                     <td>{dateFormat(data.attributes.updated_at, "dd-mm-yyyy HH:MM:ss")}</td>
                                                     <td>
                                                         <button className="btn_edit" onClick={this.onEdit.bind(this, data.id)}>Edit</button>&nbsp;
-    
+
                                                 </td>
                                                     <td>
                                                         <button
@@ -126,7 +126,9 @@ class TableComponent extends Component {
                                                             </div>
                                                         </td>
                                                         <td>{data.attributes.email}</td>
-                                                        <td>{data.attributes.roles}</td>
+                                                        <td>{data.attributes.roles.map((data, item) => (
+                                                            <span key={item} className={item % 2 === 0 ? 'b-item' : 'b-item is-current'}>{data} </span>
+                                                        ))}</td>
                                                     </tr>
                                                 ))
                                             }

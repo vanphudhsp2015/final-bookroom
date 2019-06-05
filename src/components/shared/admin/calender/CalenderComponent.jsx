@@ -7,18 +7,19 @@ import rrsetPlugin from '../../../../libraries/rruleset';
 import listPlugin from '@fullcalendar/list';
 import resourceTimeGridPlugin from '@fullcalendar/resource-timegrid';
 import allLocales from '@fullcalendar/core/locales-all';
-import { Modal } from 'antd';
+import { Modal, Radio } from 'antd';
 import Cookies from 'universal-cookie';
 import { message } from 'antd';
 const cookies = new Cookies();
 var dateFormat = require('dateformat');
-const confirm = Modal.confirm;
 class CalenderComponent extends Component {
     calendarComponentRef = React.createRef()
     constructor(props) {
         super(props);
         this.state = {
-            show: false
+            show: false,
+            isShowDelete: false,
+            valueDelete: 1,
         }
     }
     componentDidUpdate(prevProps, prevState) {
@@ -40,15 +41,18 @@ class CalenderComponent extends Component {
             show: true,
             title: info.event.title,
             datestart: dateFormat(info.event.start, "dddd ,  dd mmmm yyyy"),
+            day: dateFormat(info.event.start, "yyyy-mm-dd"),
             timestart: info.event.extendedProps.timestart,
             timeend: info.event.extendedProps.timeend,
             room: info.event.extendedProps.room,
-            color: info.event.extendedProps.color,
             user: info.event.extendedProps.user,
             id: info.event.id,
             redate: info.event.extendedProps.redate,
             recount: info.event.extendedProps.recount,
-            reweek: info.event.extendedProps.reweek
+            reweek: info.event.extendedProps.reweek,
+            user_id: info.event.extendedProps.user_id,
+            content: info.event.extendedProps.content,
+            is_repeat: info.event.extendedProps.is_repeat
         })
 
     }
@@ -66,19 +70,11 @@ class CalenderComponent extends Component {
             show: false,
         });
     }
-    onDelete(id) {
-        var self = this.props;
-        confirm({
-            title: 'Bạn Muốn Xóa Sự Kiện?',
-            onOk() {
-                self.onDelete(id);
-            },
-            onCancel() {
-                // self.onCancleEdit();
-            },
-        });
+    onDelete(id, user_id) {
         this.setState({
-            show: !this.state.show
+            isShowDelete: true,
+            id: id,
+            user_id: user_id
         })
     }
     onEdit(id) {
@@ -116,10 +112,75 @@ class CalenderComponent extends Component {
             show: !this.state.show
         })
     }
-    render() {
+    onChangeDeleteEvent = (e) => {
+        this.setState({
+            valueDelete: e.target.value,
+        });
+    }
+    handleDeleteOk = () => {
+        const { id } = this.state;
+        var self = this.props;
+        if (this.state.valueDelete === 2) {
+            self.onDeleteException(this.state);
+            this.setState({
+                isShowDelete: false,
+                show: !this.state.show,
+                valueDelete: 1
+            })
+        } else {
+            self.onDelete(id);
+            this.setState({
+                isShowDelete: false,
+                show: !this.state.show,
+                valueDelete: 1
+            })
+        }
 
+    }
+    onCloseDelete = () => {
+        this.setState({
+            isShowDelete: false
+        })
+    }
+    render() {
+        const radioStyle = {
+            display: 'block',
+            height: '30px',
+            lineHeight: '30px',
+        };
         return (
             <>
+                <Modal
+                    header={null}
+                    visible={this.state.isShowDelete}
+                    onOk={this.handleDeleteOk}
+                    onCancel={this.onCloseDelete}
+                    closable={false}
+                    okText="Xác Nhận"
+                    cancelText="Hủy"
+                >
+                    <div className="b-events">
+                        <Radio.Group onChange={this.onChangeDeleteEvent} value={this.state.valueDelete}>
+                            {this.state.is_repeat ?
+                                <>
+                                    <Radio style={radioStyle} value={1}>
+                                        Xóa Tất Cả Sự Kiện Này
+                                    </Radio>
+                                    <Radio style={radioStyle} value={2}>
+                                        Chỉ Xóa Sự Kiện Này
+                                    </Radio>
+                                </>
+                                :
+                                <div className="b-check-delete">
+                                    <p className="b-text-norm">
+                                        <i className="fas fa-exclamation-triangle"></i>  Xóa Đặt Phòng Này
+                                    </p>
+                                </div>
+                            }
+
+                        </Radio.Group>
+                    </div>
+                </Modal>
                 <Modal
                     header={null}
                     visible={this.state.show}

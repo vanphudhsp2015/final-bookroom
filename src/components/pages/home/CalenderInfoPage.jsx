@@ -225,7 +225,7 @@ class CalenderInfoPage extends Component {
             case '3':
                 this.setState({
                     [event.target.name]: event.target.value,
-                    count: 5,
+                    count: 365,
                     byweekday: ['mo', 'tu', 'we', 'th', 'fr'],
                     checkbox: true,
                     choice: 'weekly'

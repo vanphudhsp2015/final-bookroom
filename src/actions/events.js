@@ -31,13 +31,16 @@ export function requestGetEvent() {
 // add tour 
 export function requestAddEvents(data) {
     let email = '';
-    data.arrayEmail.forEach((i, index, item) => {
-        if (index === item.length - 1) {
-            email += `${item[index].email}`;
-        } else {
-            email += `${item[index].email},`;
-        }
-    })
+    if (data.arrayEmail !== undefined) {
+        data.arrayEmail.forEach((i, index, item) => {
+            if (index === item.length - 1) {
+                email += `${item[index].email}`;
+            } else {
+                email += `${item[index].email},`;
+            }
+        })
+    }
+
     let formDataObject = {};
     if (data.checkbox === true) {
         let arrayDay = '';
@@ -51,7 +54,7 @@ export function requestAddEvents(data) {
         formDataObject = {
             'room_id': data.rooms,
             'title': data.title,
-            'content':  htmlToText.fromString(data.content),
+            'content': htmlToText.fromString(data.content),
             'user_id': cookies.get('data').id,
             'daystart': data.dateStart,
             'timestart': data.timestart,
@@ -60,7 +63,7 @@ export function requestAddEvents(data) {
             'interval': 1,
             'count': data.count,
             'byweekday': data.choice === 'weekly' ? arrayDay : '',
-            'mail': email
+            'mail': data.arrayEmail === undefined ? '' : email
         }
     } else {
         formDataObject = {
@@ -71,7 +74,7 @@ export function requestAddEvents(data) {
             'timestart': data.timestart,
             'timeend': data.timeend,
             'title': data.title,
-            'mail': email
+            'mail': data.arrayEmail === undefined ? '' : email
         }
     }
     return (dispatch) => {
@@ -134,7 +137,7 @@ export function requestUpdateEvent(data) {
         }
         formDataObject = {
             'room_id': data.rooms,
-            'content':  htmlToText.fromString(data.content),
+            'content': htmlToText.fromString(data.content),
             'title': data.title,
             'user_id': cookies.get('data').id,
             'daystart': data.dateStart,
@@ -149,7 +152,7 @@ export function requestUpdateEvent(data) {
     } else {
         formDataObject = {
             'room_id': data.rooms,
-            'content':  htmlToText.fromString(data.content),
+            'content': htmlToText.fromString(data.content),
             'user_id': cookies.get('data').id,
             'daystart': data.dateStart,
             'timestart': data.timestart,
@@ -173,6 +176,7 @@ export function requestUpdateEvent(data) {
             message.success('Sửa Sự Kiện Thành Công');
             dispatch(receiveData(types.REQUEST_UPDATE_EVENT, response.data.data))
         }).catch(function (error) {
+
             dispatch(requestRejected(error));
         })
     }

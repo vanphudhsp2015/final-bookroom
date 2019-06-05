@@ -34,7 +34,9 @@ dateFormat.i18n = {
     ]
 };
 class FullcalenderComponent extends Component {
+    clickCount = 0
     calendarComponentRef = React.createRef()
+
     constructor(props) {
         super(props);
         this.state = {
@@ -59,7 +61,6 @@ class FullcalenderComponent extends Component {
             timestart: this.roundMinutesDate(now, 0),
             timeend: this.roundMinutesDate(now, 60),
             isShowForm: false,
-            countClick: 0
         }
         this.lastFetchId = 0;
         this.fetchUser = debounce(this.fetchUser, 800);
@@ -117,6 +118,7 @@ class FullcalenderComponent extends Component {
     }
 
     onEvent(info) {
+        
         this.setState({
             show: true,
             title: info.event.title,
@@ -274,13 +276,15 @@ class FullcalenderComponent extends Component {
             self.onDeleteException(this.state);
             this.setState({
                 isShowDelete: false,
-                show: !this.state.show
+                show: !this.state.show,
+                valueDelete:1
             })
         } else {
             self.onDelete(id);
             this.setState({
                 isShowDelete: false,
-                show: !this.state.show
+                show: !this.state.show,
+                valueDelete:1
             })
         }
 
@@ -378,14 +382,22 @@ class FullcalenderComponent extends Component {
             }
         }
     }
+    componentWillUnmount() {
+        this.setState({
+            clickCount: 0
+        })
+    }
     onClickDate = (e) => {
-        if (cookies.get('data') === undefined) {
-            message.error('Vui Lòng Đăng Nhập')
-        } else {
-            this.setState({
-                countClick: this.state.countClick + 1
-            })
-            if (this.state.countClick === 2) {
+        this.clickCount += 1;
+        var self = this;
+        if (this.clickCount === 1) {
+            setTimeout(function () {
+                self.clickCount = 0;
+            }, 1000);
+        } else if (this.clickCount === 2) {
+            if (cookies.get('data') === undefined) {
+                message.error('Vui Lòng Đăng Nhập')
+            } else {
                 this.setState({
                     isShowForm: true,
                     dateStart: dateFormat(e.dateStr, 'yyyy-mm-dd'),
@@ -393,7 +405,6 @@ class FullcalenderComponent extends Component {
                     timeend: this.roundMinutesDate(e.dateStr, 30),
                 })
             }
-
         }
     }
 

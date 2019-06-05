@@ -1,11 +1,8 @@
 import React, { Component } from 'react';
-import { DatePicker, TimePicker, Checkbox, Select, message } from 'antd';
+import { DatePicker, TimePicker, Checkbox, Select } from 'antd';
 import moment from 'moment';
 import 'antd/dist/antd.css';
 import { Modal } from 'antd';
-import axios from 'axios';
-import Cookies from 'universal-cookie';
-const cookies = new Cookies();
 var dateFormatDate = require('dateformat');
 const format = 'HH:mm';
 const dateFormat = 'YYYY-MM-DD';
@@ -20,7 +17,6 @@ const children = [
     { id: '6', name: 'fr' },
     { id: '7', name: 'sa' }
 ];
-const env = process.env || {}
 function disabledHours() {
     return [0, 1, 2, 3, 4, 5, 6, 7, 12, 18, 19, 20, 21, 22, 23, 24];
 }
@@ -31,20 +27,27 @@ class FormModalComponent extends Component {
             visible: false,
             calender: [],
             title: 'Đặt Phòng Mới',
-            dateStart: dateFormatDate(now, 'yyyy-mm-dd'),
             rooms: this.props.room.length > 0 ? this.props.room[0].id : '',
-            timestart: dateFormatDate(now, 'HH:MM'),
-            timeend: dateFormatDate(now, 'HH:MM'),
+            dateStart: dateFormatDate(now, 'yyyy-mm-dd'),
+            timestart: this.roundMinutesDate(now, 0),
+            timeend: this.roundMinutesDate(now, 60),
             checkbox: false,
             byweekday: ['su', 'mo'],
             count: 1,
             choice: 'daily',
+            content: '',
             value: 0,
             validateDate: false,
             validateTime: false,
             validateTimeItem: false,
             validateTimeCompare: false
         }
+    }
+    roundMinutesDate(data, add) {
+        const start = moment(data);
+        const remainder = 30 - (start.minute() % 30) + add;
+        const dateTime = moment(start).add(remainder, "minutes").format("HH:mm");
+        return dateTime;
     }
     componentDidUpdate(prevProps, prevState) {
         if (this.props.room !== prevProps.room && !this.state.rooms && this.props.room.length) {
@@ -58,11 +61,12 @@ class FormModalComponent extends Component {
                 this.setState({
                     id: this.props.dataEdit.id,
                     visible: this.props.edit,
-                    title: data.content,
+                    title: data.title,
                     dateStart: dateFormatDate(data.daystart, 'yyyy-mm-dd'),
                     timestart: data.timestart,
                     timeend: data.timeend,
                     rooms: data.room.id,
+                    content: data.content,
                     checkbox: data.repeat === null ? false : true,
                     choice: data.repeat === null ? 'daily' : data.repeat.repeatby,
                     count: data.repeat === null ? 1 : data.repeat.count,
@@ -119,7 +123,7 @@ class FormModalComponent extends Component {
         } else {
             this.setState({
                 timestart: dateString,
-                timeend: dateString,
+                timeend: this.roundMinutesDate(`${nowCurrent + ' ' + dateString + ':00'}`, 30),
                 validateTime: false
             })
         }
@@ -158,38 +162,9 @@ class FormModalComponent extends Component {
             this.onReset();
             this.props.onCheckModal();
         } else {
-            var self = this;
-            var props = this.props;
-            let data = this.state;
-            let params = {
-                'daystart': data.dateStart,
-                'timestart': data.timestart,
-                'timeend': data.timeend
-            }
-            axios.request({
-                method: 'GET',
-                url: `${env.REACT_APP_API_BE}/api/v1/admin/getbrbyday`,
-                headers: {
-                    "Accept": "application/json",
-                    'Content-Type': 'application/json',
-                    'Authorization': `${'bearer ' + cookies.get('token')}`
-                },
-                params
-            }).then(function (response) {
-                if (response.data.data.length > 0) {
-                    message.error('Đã Trùng Lịch');
-                } else {
-                    if (data.timestart === data.timeend) {
-                        message.error('Thời Gian Phải Khác Nhau');
-                    } else {
-                        props.onAddEvent(data);
-                        self.onReset();
-                        props.onCheckModal();
-                    }
-                }
-            }).catch(function (error) {
-                message.error('Error');
-            })
+            this.props.onAddEvent(this.state);
+            this.onReset();
+            this.props.onCheckModal();
         }
     }
     onSubmitSearch = (event) => {
@@ -205,15 +180,20 @@ class FormModalComponent extends Component {
             visible: false,
             calender: [],
             title: 'Đặt Phòng Mới',
-            dateStart: dateFormatDate(now, 'yyyy-mm-dd'),
             rooms: this.props.room.length > 0 ? this.props.room[0].id : '',
-            timestart: dateFormatDate(now, 'HH:MM'),
-            timeend: dateFormatDate(now, 'HH:MM'),
+            dateStart: dateFormatDate(now, 'yyyy-mm-dd'),
+            timestart: this.roundMinutesDate(now, 0),
+            timeend: this.roundMinutesDate(now, 60),
             checkbox: false,
             byweekday: ['su', 'mo'],
             count: 1,
             choice: 'daily',
             value: 0,
+            validateDate: false,
+            validateTime: false,
+            validateTimeItem: false,
+            validateTimeCompare: false,
+            content: '',
         })
     }
     showModal = () => {
@@ -266,14 +246,14 @@ class FormModalComponent extends Component {
                                         </div>
                                         <div className="b-form-group">
                                             <label style={{ paddingRight: '10px' }}>Chọn Ngày</label>
-                                            <DatePicker allowClear={false} onChange={this.onChange} defaultValue={moment(now, dateFormat)} value={moment(this.state.dateStart, dateFormat)} />
+                                            <DatePicker  hideDisabledOptions allowClear={false} onChange={this.onChange} defaultValue={moment(now, dateFormat)} value={moment(this.state.dateStart, dateFormat)} />
                                             <span className={this.state.validateDate ? "is-error is-check" : "is-error"}>
                                                 * Thời Gian  Phải Lớn Hơn Thời Gian Hiện Tại
                                             </span>
                                         </div>
                                         <div className="b-form-group">
                                             <label style={{ paddingRight: '10px' }}>Giờ Bắt Đầu</label>
-                                            <TimePicker hideDisabledOptions allowClear={false} disabledHours={disabledHours} minuteStep={30} defaultValue={moment(this.state.timestart, format)} format={format} onChange={this.onChangeTime} />
+                                            <TimePicker hideDisabledOptions disabledHours={disabledHours} onChange={this.onChangeTime} value={moment(this.state.timestart, format)} allowClear={false} minuteStep={30} defaultValue={moment(this.state.timestart, format)} format={format} />
                                             <span className={this.state.validateTime ? "is-error is-check" : "is-error"}>
                                                 * Thời Gian  Phải  Lớn Hơn Thời Gian Hiện Tại
                                             </span>

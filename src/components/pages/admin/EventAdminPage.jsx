@@ -25,8 +25,8 @@ class EventAdminPage extends Component {
             dataEdit: {},
             onDate: dateFormatDate(now, 'yyyy-mm-dd'),
             dateStart: dateFormatDate(now, 'yyyy-mm-dd'),
-            timestart: '08:30',
-            timeend: '09:30',
+            timestart: this.roundMinutesDate(now, 0),
+            timeend: this.roundMinutesDate(now, 60),
         }
     }
     componentDidMount() {
@@ -36,7 +36,12 @@ class EventAdminPage extends Component {
         this.props.dispatch(action.requestGetEvent());
         this.props.dispatch(action_Room.requestGetRoom());
     }
-
+    roundMinutesDate(data, add) {
+        const start = moment(data);
+        const remainder = 30 - (start.minute() % 30) + add;
+        const dateTime = moment(start).add(remainder, "minutes").format("HH:mm");
+        return dateTime;
+    }
     convertToFrontEnd(arrA) {
         let arrB = []
         if (arrA.length) {
@@ -53,7 +58,6 @@ class EventAdminPage extends Component {
                     content: attributes.content,
                     className: [
                         attributes.repeat !== null ? `${'room_item_' + attributes.room.id}` : "",
-                        cookies.get('data') !== undefined && parseInt(attributes.user_id) === parseInt(cookies.get('data').id) ? "is-current" : "",
                         attributes.repeat !== null ? 'b-repeat' : ''
                     ],
                     start: attributes.daystart,
@@ -159,7 +163,7 @@ class EventAdminPage extends Component {
         }
 
     }
-    onUpdate = (data) => {
+    onUpdate = (data) => {        
         this.props.dispatch(action.requestUpdateEvent(data));
         this.setState({
             visible: false,
@@ -245,6 +249,9 @@ class EventAdminPage extends Component {
     onReloadData = () => {
         this.onGetData();
     }
+    onDeleteException = (data) => {
+        this.props.dispatch(action.requestDeleteException(data));
+    }
     render() {
         if (cookies.get('data') !== undefined) {
             if (cookies.get('data').attributes.roles[0] !== 'super_admin') {
@@ -278,13 +285,13 @@ class EventAdminPage extends Component {
                                             <div className="b-block-center">
                                                 <form className="b-form-filter" onSubmit={this.onSearchEvent}>
                                                     <div className="b-form-group">
-                                                        <DatePicker onChange={this.onChange} defaultValue={moment(now, dateFormat)} value={moment(this.state.dateStart, dateFormat)} className="b-input" />
+                                                        <DatePicker allowClear={false} hideDisabledOptions onChange={this.onChange} defaultValue={moment(now, dateFormat)} value={moment(this.state.dateStart, dateFormat)} className="b-input" />
                                                     </div>
                                                     <div className="b-form-group">
-                                                        <TimePicker disabledHours={disabledHours} minuteStep={30} defaultValue={moment(this.state.timestart, format)} format={format} onChange={this.onChangeTime} className="b-input" />
+                                                        <TimePicker allowClear={false} hideDisabledOptions disabledHours={disabledHours} minuteStep={30} defaultValue={moment(this.state.timestart, format)} format={format} onChange={this.onChangeTime} className="b-input" />
                                                     </div>
                                                     <div className="b-form-group">
-                                                        <TimePicker disabledHours={disabledHours} minuteStep={30} defaultValue={moment(this.state.timeend, format)} value={moment(this.state.timeend, format)} format={format} onChange={this.onChangeTimeItem} className="b-input" />
+                                                        <TimePicker allowClear={false} hideDisabledOptions disabledHours={disabledHours} minuteStep={30} defaultValue={moment(this.state.timeend, format)} value={moment(this.state.timeend, format)} format={format} onChange={this.onChangeTimeItem} className="b-input" />
                                                     </div>
                                                     <div className="b-form-group">
                                                         <button type="submit" className="b-btn">
@@ -305,7 +312,7 @@ class EventAdminPage extends Component {
                                         </div>
                                     </div>
                                     <div className="b-content-main">
-                                        <CalenderComponent room={this.convertArrayRoom(this.props.room)} onDate={this.state.onDate} onUpdate={this.onUpdate} onEdit={this.onEdit} onDelete={this.onDelete} data={this.convertToFrontEnd(this.props.data)}></CalenderComponent>
+                                        <CalenderComponent onDeleteException={this.onDeleteException} room={this.convertArrayRoom(this.props.room)} onDate={this.state.onDate} onUpdate={this.onUpdate} onEdit={this.onEdit} onDelete={this.onDelete} data={this.convertToFrontEnd(this.props.data)}></CalenderComponent>
                                     </div>
                                 </div>
 

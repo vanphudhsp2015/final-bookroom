@@ -84,7 +84,7 @@ class SearchComponent extends Component {
                 </div>
                 <div className="b-description-content">
                     <div className="b-form-group">
-                        <input type="text" className="b-input" name='email' autoComplete="off" placeholder="Enter Email" onChange={this.onChanger} onKeyPress={this._handleKeyDown} />
+                        <input type="text" className="b-input" name='email' autoComplete="off" placeholder="Thêm Khách" onChange={this.onChanger} onKeyPress={this._handleKeyDown} />
                         <div className={this.state.isChanger ? "b-list-user  is-active" : "b-list-user"}>
                             {this.state.data.map(data => (
                                 <div className="b-item" key={data.id} onClick={this.onAddEmail.bind(this, data)}>
