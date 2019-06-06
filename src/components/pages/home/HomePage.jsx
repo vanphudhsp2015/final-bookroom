@@ -251,7 +251,7 @@ class HomePage extends Component {
         const dateTime = moment(start).add(remainder, "minutes").format("HH:mm");
         return dateTime;
     }
-    render() {
+    render() {        
         // var isoDate = new Date('2019-06-05 14:00').toUTCString(); //covert local to UTC
         // console.log(isoDate);
 

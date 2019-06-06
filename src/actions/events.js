@@ -69,7 +69,7 @@ export function requestAddEvents(data) {
             url: `/bookrooms`,
             method: 'POST',
             data: formDataObject
-        }).then(function (response) {
+        }).then(function (response) {            
             message.success('Đặt Thành Công')
             dispatch(receiveData(types.REQUEST_ADD_EVENT, response))
         }).catch(function (error) {
