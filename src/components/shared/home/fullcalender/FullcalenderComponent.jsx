@@ -118,7 +118,7 @@ class FullcalenderComponent extends Component {
     }
 
     onEvent(info) {
-        
+
         this.setState({
             show: true,
             title: info.event.title,
@@ -277,14 +277,14 @@ class FullcalenderComponent extends Component {
             this.setState({
                 isShowDelete: false,
                 show: !this.state.show,
-                valueDelete:1
+                valueDelete: 1
             })
         } else {
             self.onDelete(id);
             this.setState({
                 isShowDelete: false,
                 show: !this.state.show,
-                valueDelete:1
+                valueDelete: 1
             })
         }
 
@@ -503,26 +503,33 @@ class FullcalenderComponent extends Component {
 
                         <div className="b-content">
                             <h2 className="b-text-title">
-                                [{this.state.title}]
+                                Tên Sự kiện: {this.state.title}
                             </h2>
                             <p className="b-text-norm">
-                                {this.state.datestart} ( {this.state.timestart} - {this.state.timeend} )
+                                Thời Gian: {this.state.datestart} ( {this.state.timestart} - {this.state.timeend} )
                             </p>
                             <span className="b-text-rom">
-                                {this.state.room}
+                                Địa điểm/Phòng: {this.state.room}
                             </span>
-                            <p className="b-text-user">
-                                {this.state.user}
+                            <p className="b-text-user" style={{
+                                marginTop:'10px'
+                            }}>
+                                Người Tạo: {this.state.user}
                             </p>
+                            <span className="b-text-rom">
+                                Nội Dung/Ghi Chú:
+                            </span>
                             <p className="b-text-norm" dangerouslySetInnerHTML={{ __html: this.state.content }}>
                             </p>
-                            <p className={this.state.redate !== 'Không Lặp' ? "b-text-user" : ''}>
+                            <p className={this.state.redate !== 'Không Lặp' ? "b-text-user" : ''} style={{
+                                marginTop:'-10px'
+                            }}>
                                 {this.state.redate === 'daily' ? 'Lặp Theo Ngày' : ''}
                                 {this.state.redate === 'weekly' ? 'Lặp Theo Tuần' : ''}
                                 {this.state.redate === 'monthly' ? 'Lặp Theo Tháng' : ''}
                                 {this.state.redate === 'yearly' ? 'Lặp Theo Năm' : ''}
                             </p>
-                            <p>
+                            <p >
                                 {this.state.recount ? `${this.state.recount + '  lần lặp lại'}` : ''}
                             </p>
 

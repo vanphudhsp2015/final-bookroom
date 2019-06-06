@@ -1,39 +1,28 @@
 import axios from 'axios';
 import { message } from 'antd';
 import * as types from '../constants/actionType';
-import * as API from '../constants/actionAPI';
 import Cookies from 'universal-cookie';
+import { http, httpItem } from '../libraries/http/http';
 const cookies = new Cookies();
 export function requestGetLogin(data) {
-    
     let token = {
         'token': data.accessToken,
         'email': data.profileObj.email
     }
     return (dispatch) => {
-        return axios.request({
+        return httpItem.request({
             method: 'POST',
-            url: `${API.API_URL}/api/v1/auth/google`,
-            headers: {
-                "Accept": "application/json",
-                'Content-Type': 'application/json',
-            },
+            url: `/auth/google`,
             data: token
         }).then(function (response) {
-            
             if (response !== undefined) {
-                cookies.set('token', response.data.access_token);
-                axios.request({
+                cookies.set('token', response.access_token);
+                httpItem.request({
                     method: 'GET',
-                    url: `${API.API_URL}/api/v1/me`,
-                    headers: {
-                        "Accept": "application/json",
-                        'Content-Type': 'application/json',
-                        'Authorization': `${'bearer  ' + response.data.access_token}`
-                    }
+                    url: `/me`,
                 }).then(function (response) {
                     if (response) {
-                        cookies.set('data', response.data.data);
+                        cookies.set('data', response.data);
                         message.success('Đăng Nhập Thành Công !!');
                         dispatch(receiveData(types.REQUEST_LOGIN, response.data.data))
                     }
@@ -76,14 +65,9 @@ export function requestLogout(data) {
         'token': data
     }
     return (dispatch) => {
-        return axios.request({
+        return http.request({
             method: 'POST',
-            url: `${API.API_URL}/api/v1/auth/logout`,
-            headers: {
-                "Accept": "application/json",
-                'Content-Type': 'application/json',
-                'Authorization': `${'bearer ' + cookies.get('token')}`
-            },
+            url: `/auth/logout`,
             data: body
         }).then(function (response) {
             cookies.remove('token');
@@ -103,12 +87,7 @@ export function requestCheckLogin() {
     return (dispatch) => {
         return axios.request({
             method: 'GET',
-            url: `${API.API_URL}/api/v1/me`,
-            headers: {
-                "Accept": "application/json",
-                'Content-Type': 'application/json',
-                'Authorization': `${'bearer ' + cookies.get('token')}`
-            },
+            url: `/me`,
         }).then(function (response) {
             dispatch(receiveData(types.REQUEST_CHECK_LOGIN, response.data))
         }).catch(function (error) {

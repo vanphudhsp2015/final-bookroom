@@ -15,13 +15,13 @@ const { Option } = Select;
 var dateFormatDate = require('dateformat');
 var now = new Date()
 const children = [
-    { id: '1', name: 'su' },
-    { id: '2', name: 'mo' },
-    { id: '3', name: 'tu' },
-    { id: '4', name: 'we' },
-    { id: '5', name: 'th' },
-    { id: '6', name: 'fr' },
-    { id: '7', name: 'sa' }
+    { id: '1', name: 'su', title: 'Chủ Nhật' },
+    { id: '2', name: 'mo', title: 'Thứ Hai' },
+    { id: '3', name: 'tu', title: 'Thứ Ba' },
+    { id: '4', name: 'we', title: 'Thứ Tư' },
+    { id: '5', name: 'th', title: 'Thứ Năm' },
+    { id: '6', name: 'fr', title: 'Thứ Sáu' },
+    { id: '7', name: 'sa', title: 'Thứ Bảy' }
 ];
 function disabledHours() {
     return [0, 1, 2, 3, 4, 5, 6, 7, 12, 18, 19, 20, 21, 22, 23, 24];
@@ -144,7 +144,9 @@ class CalenderInfoPage extends Component {
         } else {
             this.setState({
                 dateStart: dateString,
-                validateDate: false,
+                timestart: this.roundMinutesDate(now, 0),
+                timeend: this.roundMinutesDate(now, 60),
+                validateDate: false
             })
         }
     }
@@ -282,7 +284,7 @@ class CalenderInfoPage extends Component {
                         nameWeek += `${item[index]},`;
                     }
                 })
-                covertName = `Các Ngày ${nameWeek} Trong Tuần`
+                covertName = `Các Thứ ${nameWeek} Trong Tuần`
                 this.setState({
                     choice: 'weekly',
                     count: this.state.byweekday.length * this.state.count
@@ -462,7 +464,7 @@ class CalenderInfoPage extends Component {
                                                             defaultValue={this.state.byweekday}
                                                             onChange={this.handleChangeByWeek}>
                                                             {children.map(data => (
-                                                                <Option key={data.id} value={data.name}>{data.name}</Option>
+                                                                <Option key={data.id} value={data.name}>{data.title}</Option>
                                                             ))}
                                                         </Select>
                                                     </div>
@@ -501,31 +503,29 @@ class CalenderInfoPage extends Component {
                             <div className="b-heading">
                                 <div className="b-heading-left">
                                     <div className="b-form-group">
-                                        <input type="text" name="title" value={this.state.title} placeholder="Thêm Tiêu Đề" className="b-input" onChange={this.onChanger} />
+                                        <input type="text" name="title" autoComplete="off" value={this.state.title} placeholder="Thêm Tiêu Đề *" className="b-input" onChange={this.onChanger} />
                                     </div>
-                                    <span className={this.state.title.length > 0 ? "is-error" : "is-error is-check"}>
-                                        * Vui Lòng Điền Tên Cuộc Họp
-                                    </span>
                                     <div className="b-group-select">
                                         <div className="b-form-group">
-                                            <DatePicker onChange={this.onChangeDate} allowClear={false} value={moment(this.state.dateStart, dateFormat)} format={dateFormat} />
+                                            <label>Ngày Cuộc Họp</label>
+                                            <DatePicker className="b-picker" onChange={this.onChangeDate} allowClear={false} value={moment(this.state.dateStart, dateFormat)} format={dateFormat} />
                                             <span className={this.state.validateDate ? "is-error  is-check" : "is-error"}>
                                                 * Thời Gian Lớn Hơn Hiện Tại
                                         </span>
                                         </div>
 
                                         <div className="b-form-group">
-                                            <TimePicker hideDisabledOptions disabledHours={disabledHours} onChange={this.onChangeTime} value={moment(this.state.timestart, format)} allowClear={false} minuteStep={30} defaultValue={moment(this.state.timestart, format)} format={format} />
+                                            <label>Thời Gian Bắt Đầu</label>
+                                            <TimePicker className="b-picker" hideDisabledOptions disabledHours={disabledHours} onChange={this.onChangeTime} value={moment(this.state.timestart, format)} allowClear={false} minuteStep={30} defaultValue={moment(this.state.timestart, format)} format={format} />
                                             <span className={this.state.validateTime ? "is-error is-check" : "is-error"}>
                                                 * Thời Gian Lớn Hơn Hiện Tại
-                                        </span>
+                                            </span>
                                         </div>
 
-                                        <p className="b-text-norm">
-                                            Tới
-                                        </p>
+
                                         <div className="b-form-group">
-                                            <TimePicker hideDisabledOptions disabledHours={disabledHours} onChange={this.onChangeTimeItem} value={moment(this.state.timeend, format)} allowClear={false} minuteStep={30} defaultValue={moment(this.state.timeend, format)} format={format} />
+                                            <label>Thời Gian Kết Thúc</label>
+                                            <TimePicker className="b-picker" hideDisabledOptions disabledHours={disabledHours} onChange={this.onChangeTimeItem} value={moment(this.state.timeend, format)} allowClear={false} minuteStep={30} defaultValue={moment(this.state.timeend, format)} format={format} />
                                             <span className={this.state.validateTimeItem ? "is-error is-check" : "is-error"}>
                                                 * Thời Gian Lớn Hơn Hiện Tại
                                         </span>

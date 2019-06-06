@@ -16,11 +16,30 @@ class SearchComponent extends Component {
         if (this.state.arrayEmail !== prevState.arrayEmail) {
             this.props.onGetArrayEmail(this.state.arrayEmail);
         }
+        if (this.state.email !== prevState.email) {
+            if (this.state.email.trim() === '') {
+                this.setState({
+                    isChanger: false
+                })
+            }
+        }
     }
     onChanger = (event) => {
         var timeout = null;
         clearTimeout(timeout);
         var self = this;
+        this.setState({
+            [event.target.name]: event.target.value
+        })
+        if (this.state.email === '') {
+            self.setState({
+                isChanger: false,
+            })
+        } else {
+            self.setState({
+                isChanger: true
+            })
+        }
         var value = event.target.value.trim();
         timeout = setTimeout(function () {
             axios.request({
@@ -32,16 +51,9 @@ class SearchComponent extends Component {
                     'Authorization': `${'bearer ' + cookies.get('token')}`
                 },
             }).then(function (response) {
-                if (response.data.data.length > 0) {
-                    self.setState({
-                        isChanger: true,
-                        data: response.data.data
-                    })
-                } else {
-                    self.setState({
-                        isChanger: false
-                    })
-                }
+                self.setState({
+                    data: response.data.data,
+                })
             }).catch(function (error) {
 
             })
@@ -55,6 +67,7 @@ class SearchComponent extends Component {
         this.setState({
             arrayEmail: arrayNew,
             isChanger: false,
+            email: ''
         })
     }
     _handleKeyDown = (event) => {
@@ -68,6 +81,7 @@ class SearchComponent extends Component {
             this.setState({
                 arrayEmail: arrayNew,
                 isChanger: false,
+                email: ''
             })
         }
     }
@@ -87,7 +101,7 @@ class SearchComponent extends Component {
                 </div>
                 <div className="b-description-content">
                     <div className="b-form-group">
-                        <input type="text" className="b-input" name='email' autoComplete="off" placeholder="Thêm Khách" onChange={this.onChanger} onKeyPress={this._handleKeyDown} />
+                        <input type="text" className="b-input" value={this.state.email} name='email' autoComplete="off" placeholder="Thêm Khách" onChange={this.onChanger} onKeyPress={this._handleKeyDown} />
                         <div className={this.state.isChanger ? "b-list-user  is-active" : "b-list-user"}>
                             {this.state.data.map(data => (
                                 <div className="b-item" key={data.id} onClick={this.onAddEmail.bind(this, data)}>

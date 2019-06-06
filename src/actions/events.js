@@ -1,29 +1,17 @@
 import * as types from '../constants/actionType';
-import * as typeAPI from '../constants/actionAPI';
-import axios from 'axios';
 import { message } from 'antd';
 import Cookies from 'universal-cookie';
+import { http } from '../libraries/http/http';
 const cookies = new Cookies();
 const htmlToText = require('html-to-text');
-// var moment = require('moment');
-// var dateFormat = require('dateformat');
-// var now = new Date();
-// api
-
 export function requestGetEvent() {
     return (dispatch) => {
-        dispatch(requestLoading());
-        return axios.request({
+        return http.request({
             method: 'GET',
-            url: `${typeAPI.API_URL}/api/v1/bookrooms`,
-            headers: {
-                "Accept": "application/json",
-                'Content-Type': 'application/json',
-            },
+            url: '/bookrooms',
         }).then(function (response) {
-            dispatch(receiveData(types.REQUEST_GET_EVENTS, response.data.data))
+            dispatch(receiveData(types.REQUEST_GET_EVENTS, response))
         }).catch(function (error) {
-            // noteError(error);
             dispatch(requestRejected(error));
         })
     }
@@ -78,23 +66,13 @@ export function requestAddEvents(data) {
         }
     }
     return (dispatch) => {
-        return axios.request({
+        return http.request({
+            url: `/bookrooms`,
             method: 'POST',
-            url: `${typeAPI.API_URL}/api/v1/bookrooms`,
-            headers: {
-                "Accept": "application/json",
-                'Content-Type': 'application/json',
-                'Authorization': `${'bearer ' + cookies.get('token')}`
-            },
             data: formDataObject
         }).then(function (response) {
-            if (response.data.original === "Thời gian đặt không hợp lệ") {
-                message.warning('Trùng Lịch Đặt');
-                dispatch(receiveData(types.REQUEST_DISTICNT_EVENT, true))
-            } else {
-                message.success('Thêm Sự Kiện Thành Công');
-                dispatch(receiveData(types.REQUEST_ADD_EVENT, response.data.data))
-            }
+            message.success('Đặt Thành Công')
+            dispatch(receiveData(types.REQUEST_ADD_EVENT, response))
         }).catch(function (error) {
 
             dispatch(requestRejected(error));
@@ -103,14 +81,9 @@ export function requestAddEvents(data) {
 }
 export function requestDeleteEvent(id) {
     return (dispatch) => {
-        return axios.request({
+        return http.request({
             method: 'DELETE',
-            url: `${typeAPI.API_URL}/api/v1/bookrooms/${id}`,
-            headers: {
-                "Accept": "application/json",
-                'Content-Type': 'application/json',
-                'Authorization': `${'bearer ' + cookies.get('token')}`
-            },
+            url: `/bookrooms/${id}`,
         }).then(function (response) {
             message.success('Xóa Sự Kiện Thành Công');
             dispatch(receiveData(types.REQUEST_DELETE_EVENT, id))
@@ -163,15 +136,10 @@ export function requestUpdateEvent(data) {
     }
 
     return (dispatch) => {
-        return axios.request({
+        return http.request({
+            url: `/bookrooms`,
             method: 'PUT',
-            url: `${typeAPI.API_URL}/api/v1/bookrooms/${data.id}`,
-            params: formDataObject,
-            headers: {
-                "Accept": "application/json",
-                'Content-Type': 'application/json',
-                'Authorization': `${'bearer ' + cookies.get('token')}`
-            },
+            data: formDataObject
         }).then(function (response) {
             message.success('Sửa Sự Kiện Thành Công');
             dispatch(receiveData(types.REQUEST_UPDATE_EVENT, response.data.data))
@@ -186,13 +154,9 @@ export function requestUpdateEvent(data) {
 export function requestGetEventByRoom(id) {
     return (dispatch) => {
         dispatch(requestLoading());
-        return axios.request({
+        return http.request({
             method: 'GET',
-            url: `${typeAPI.API_URL}/api/v1/getbrbyid/${id}`,
-            headers: {
-                "Accept": "application/json",
-                'Content-Type': 'application/json',
-            },
+            url: `/getbrbyid/${id}`,
         }).then(function (response) {
             dispatch(receiveData(types.REQUEST_FILTER_EVENT_ROOM, response.data.data))
         }).catch(function (error) {
@@ -209,15 +173,10 @@ export function requestSearchEvent(data) {
     }
     return (dispatch) => {
         dispatch(requestLoading());
-        return axios.request({
+        return http.request({
             method: 'GET',
-            url: `${typeAPI.API_URL}/api/v1/admin/getbrbyday`,
+            url: `/admin/getbrbyday`,
             params,
-            headers: {
-                "Accept": "application/json",
-                'Content-Type': 'application/json',
-                'Authorization': `${'bearer ' + cookies.get('token')}`
-            },
         }).then(function (response) {
             if (response.data.data.length > 0) {
                 dispatch(receiveData(types.REQUEST_RESEARCH, response.data.data));
@@ -240,17 +199,13 @@ export function requestDeleteException(data) {
         'title': data.title,
     }
     return (dispatch) => {
-        return axios.request({
+        return http.request({
             method: 'POST',
-            url: `${typeAPI.API_URL}/api/v1/deletebrrepeat/${data.id}`,
-            headers: {
-                "Accept": "application/json",
-                'Content-Type': 'application/json',
-                'Authorization': `${'bearer ' + cookies.get('token')}`
-            },
+            url: `/deletebrrepeat/${data.id}`,
             data: formDataObject
         }).then(function (response) {
-            dispatch(receiveData(types.REQUEST_DELETE_EVENT_EXCEPTION, response.data.data));
+            message.success('Bạn Xóa Sự Kiện Lặp Lại Thành Công !');
+            dispatch(receiveData(types.REQUEST_DELETE_EVENT_EXCEPTION, response));
         }).catch(function (error) {
             dispatch(requestRejected(error));
         })
@@ -268,14 +223,9 @@ export function requestEditException(data, day) {
     }
 
     return (dispatch) => {
-        return axios.request({
+        return http.request({
             method: 'POST',
-            url: `${typeAPI.API_URL}/api/v1/editbrrepeat/${data.id}`,
-            headers: {
-                "Accept": "application/json",
-                'Content-Type': 'application/json',
-                'Authorization': `${'bearer ' + cookies.get('token')}`
-            },
+            url: `/editbrrepeat/${data.id}`,
             data: formDataObject
         }).then(function (response) {
             message.success('Sửa Ngoại Lệ Thành Công');

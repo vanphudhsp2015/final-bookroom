@@ -245,8 +245,20 @@ class HomePage extends Component {
         })
         return filterNotNull;
     }
-
+    roundMinutesDate(data, add) {
+        const start = moment(data);
+        const remainder = 30 - (start.minute() % 30) + add;
+        const dateTime = moment(start).add(remainder, "minutes").format("HH:mm");
+        return dateTime;
+    }
     render() {
+        // var isoDate = new Date('2019-06-05 14:00').toUTCString(); //covert local to UTC
+        // console.log(isoDate);
+
+        // console.log("1:" + dateFormatDate(isoDate, 'yyyy-mm-dd HH:MM'));
+        // console.log("2:" + moment(isoDate).format('YYYY-MM-DD'));
+        // console.log("3:" + moment(isoDate).format('hh:mm'));
+        // console.log("4:" + moment.utc("2019-06-05 14:00").local().format("YYYY-MM-DD HH:mm:ss"));
         return (
             <div className="wrapper">
                 <HeaderLayout onResetCheckLogin={this.onResetCheckLogin} isCheck={this.state.isLogin}></HeaderLayout>
