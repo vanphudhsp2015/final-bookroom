@@ -47,7 +47,7 @@ class CalenderInfoPage extends Component {
             repeat: '2',
             byweekday: [],
             choice: 'daily',
-            count: 0,
+            count: 1,
             rooms: this.props.room.length > 0 ? this.props.room[0].id : 1,
             content: "",
             checkbox: false,
@@ -289,12 +289,12 @@ class CalenderInfoPage extends Component {
                 let nameWeek = '';
                 this.state.byweekday.forEach((i, index, item) => {
                     if (index === item.length - 1) {
-                        nameWeek += `${item[index]}`;
+                        nameWeek += `${this.onTranslate(item[index])}`;
                     } else {
-                        nameWeek += `${item[index]},`;
+                        nameWeek += `${this.onTranslate(item[index])},`;
                     }
                 })
-                covertName = `Các Thứ ${nameWeek} Trong Tuần`
+                covertName = `Các Thứ  [ ${nameWeek} ] Trong Tuần`
                 this.setState({
                     choice: 'weekly',
                     count: this.state.byweekday.length * this.state.count
@@ -331,9 +331,9 @@ class CalenderInfoPage extends Component {
                 let nameWeek = '';
                 this.state.byweekday.forEach((i, index, item) => {
                     if (index === item.length - 1) {
-                        nameWeek += `${item[index]}`;
+                        nameWeek += `${this.onTranslate(item[index])}`;
                     } else {
-                        nameWeek += `${item[index]},`;
+                        nameWeek += `${this.onTranslate(item[index])},`;
                     }
                 })
                 covertName = `Các Ngày ${nameWeek} Trong Tuần`
@@ -433,6 +433,35 @@ class CalenderInfoPage extends Component {
         this.setState({
             [event.target.name]: event.target.value
         })
+    }
+    onTranslate(item) {
+        let data = '';
+        switch (item) {
+            case "mo":
+                data = 'Thứ Hai';
+                break;
+            case "tu":
+                data = 'Thứ Ba';
+                break;
+            case "th":
+                data = 'Thứ Tư';
+                break;
+            case "we":
+                data = 'Thứ Năm';
+                break;
+            case "fr":
+                data = 'Thứ Sáu';
+                break;
+            case "sa":
+                data = 'Thứ Bảy';
+                break;
+            case "su":
+                data = 'Chủ Nhật';
+                break;
+            default:
+                return 'Thứ Hai'
+        }
+        return data;
     }
     render() {
         const radioStyle = {
