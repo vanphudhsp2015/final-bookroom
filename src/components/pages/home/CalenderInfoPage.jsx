@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { HeaderLayout } from '../../layouts/home';
-import { DatePicker, TimePicker, Select, Modal, message, Radio } from 'antd';
+import { DatePicker, TimePicker, Select, Modal, message, Radio, InputNumber } from 'antd';
 import { SearchComponent } from '../../shared/home';
 import moment from 'moment';
 import CKEditor from '@ckeditor/ckeditor5-react';
@@ -47,7 +47,7 @@ class CalenderInfoPage extends Component {
             repeat: '2',
             byweekday: [],
             choice: 'daily',
-            count: 1,
+            count: 0,
             rooms: this.props.room.length > 0 ? this.props.room[0].id : 1,
             content: "",
             checkbox: false,
@@ -57,7 +57,9 @@ class CalenderInfoPage extends Component {
             isShowEdit: false,
             valueEdit: 1,
             isRepeat: false,
-            arrayEmail: []
+            arrayEmail: [],
+            minCount: 1,
+            maxCount: 365
         };
     }
     roundMinutesDate(data, add) {
@@ -236,7 +238,6 @@ class CalenderInfoPage extends Component {
             case '99':
                 this.setState({
                     [event.target.name]: event.target.value,
-                    count: 2,
                     checkbox: true,
                     choice: this.state.choice
                 })
@@ -262,17 +263,26 @@ class CalenderInfoPage extends Component {
                 this.setState({
                     choice: 'daily'
                 })
+                this.setState({
+                    count: this.state.count + 1
+                })
                 break;
             case "monthly":
                 covertName = "Lặp Lại  Hằng Tháng "
                 this.setState({
                     choice: 'monthly'
                 })
+                this.setState({
+                    count: this.state.count + 1
+                })
                 break;
             case "yearly":
                 covertName = "Lặp Lại  Hằng Năm "
                 this.setState({
                     choice: 'yearly'
+                })
+                this.setState({
+                    count: this.state.count + 1
                 })
                 break;
             case "weekly":
@@ -387,6 +397,43 @@ class CalenderInfoPage extends Component {
             arrayEmail: data
         })
     }
+    onChangeNumber = (value) => {
+        this.setState({
+            count: value
+        })
+    }
+    onChangerChoice = (event) => {
+        switch (event.target.value) {
+            case 'daily':
+                this.setState({
+                    maxCount: 365
+                })
+                break;
+            case 'monthly':
+                this.setState({
+                    maxCount: 6
+                })
+                break;
+            case 'weekly':
+                this.setState({
+                    maxCount: 52
+                })
+                break;
+            case 'yearly':
+                this.setState({
+                    maxCount: 2
+                })
+                break;
+            default:
+                this.setState({
+                    maxCount: 365
+                })
+        }
+
+        this.setState({
+            [event.target.name]: event.target.value
+        })
+    }
     render() {
         const radioStyle = {
             display: 'block',
@@ -448,7 +495,7 @@ class CalenderInfoPage extends Component {
                                             <div className="b-repeat">
                                                 <div className="b-form-group">
                                                     <label >Theo</label>
-                                                    <select className="b-select" name='choice' defaultValue={this.state.choice} onChange={this.onChanger}>
+                                                    <select className="b-select" name='choice' value={this.state.choice} onChange={this.onChangerChoice}>
                                                         <option value="daily">Ngày</option>
                                                         <option value="weekly">Tuần</option>
                                                         <option value="monthly">Tháng</option>
@@ -460,7 +507,7 @@ class CalenderInfoPage extends Component {
                                                         <Select
                                                             mode="multiple"
                                                             style={{ width: '100%' }}
-                                                            placeholder="Please select"
+                                                            placeholder="Mời Chọn Các Thứ !"
                                                             defaultValue={this.state.byweekday}
                                                             onChange={this.handleChangeByWeek}>
                                                             {children.map(data => (
@@ -474,19 +521,9 @@ class CalenderInfoPage extends Component {
 
                                                 <div className="b-form-group">
                                                     <label >Lặp Lại</label>
-                                                    <select className="b-select" name='count' defaultValue={this.state.count} onChange={this.onChanger}>
-                                                        <option value={1}>1</option>
-                                                        <option value={2}>2</option>
-                                                        <option value={3}>3</option>
-                                                        <option value={4}>4</option>
-                                                        <option value={5}>5</option>
-                                                        <option value={6}>6</option>
-                                                        <option value={7}>7</option>
-                                                        <option value={8}>8</option>
-                                                        <option value={10}>10</option>
-                                                        <option value={15}>15</option>
-                                                        <option value={20}>20</option>
-                                                    </select>
+                                                    <InputNumber min={this.state.minCount} max={this.state.maxCount} value={this.state.count} onChange={this.onChangeNumber} style={{
+                                                        marginLeft: '10px'
+                                                    }} />
                                                 </div>
                                             </div>
                                             <div className="b-form-button">

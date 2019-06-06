@@ -1,8 +1,5 @@
 import React, { Component } from 'react';
-import axios from 'axios';
-import Cookies from 'universal-cookie';
-const cookies = new Cookies();
-const env = process.env || {}
+import { http } from '../../../../libraries/http/http';
 class SearchComponent extends Component {
     constructor(props, context) {
         super(props, context);
@@ -42,33 +39,34 @@ class SearchComponent extends Component {
         }
         var value = event.target.value.trim();
         timeout = setTimeout(function () {
-            axios.request({
+            http.request({
                 method: 'GET',
-                url: `${env.REACT_APP_API_BE}/api/v1/search/${value === '' ? 's' : value}`,
-                headers: {
-                    "Accept": "application/json",
-                    'Content-Type': 'application/json',
-                    'Authorization': `${'bearer ' + cookies.get('token')}`
-                },
+                url: `/search/${value === '' ? 's' : value}`,
             }).then(function (response) {
                 self.setState({
-                    data: response.data.data,
+                    data: response
                 })
             }).catch(function (error) {
 
             })
-        }, 500);
+        }, 700);
 
     }
     onAddEmail = (data) => {
         let arrayNew = [];
         let dataObject = { id: this.state.arrayEmail.length > 0 ? this.state.arrayEmail[this.state.arrayEmail.length - 1].id + 1 : 1, email: data.attributes.email };
         arrayNew = [...this.state.arrayEmail, dataObject];
+        const newArrray = Array.from(new Set(arrayNew.map(s => s.email))).map(email => {
+            return {
+                email: arrayNew.find(s => s.email === email).email
+            }
+        })
         this.setState({
-            arrayEmail: arrayNew,
+            arrayEmail: newArrray,
             isChanger: false,
             email: ''
         })
+        this.props.onGetArrayEmail(this.state.arrayEmail);
     }
     _handleKeyDown = (event) => {
         if (event.key === 'Enter') {
@@ -78,18 +76,26 @@ class SearchComponent extends Component {
                 email: event.target.value
             }
             arrayNew = [...this.state.arrayEmail, dataObject];
+            const newArrray = Array.from(new Set(arrayNew.map(s => s.email))).map(email => {
+                return {
+                    email: arrayNew.find(s => s.email === email).email
+                }
+            })
+
             this.setState({
-                arrayEmail: arrayNew,
+                arrayEmail: newArrray,
                 isChanger: false,
                 email: ''
             })
+            this.props.onGetArrayEmail(this.state.arrayEmail);
         }
     }
-    onRemoveEmail = (id) => {
-        let data = this.state.arrayEmail.filter(data => data.id !== id);
+    onRemoveEmail = (item) => {
+        let data = this.state.arrayEmail.filter(data => data.email !== item);
         this.setState({
             arrayEmail: data
         })
+        this.props.onGetArrayEmail(this.state.arrayEmail);
     }
     render() {
         return (
@@ -118,11 +124,11 @@ class SearchComponent extends Component {
                     </div>
                     <div className="b-list-item">
                         {this.state.arrayEmail.map(data => (
-                            <div className="b-item" key={data.id}>
+                            <div className="b-item" key={data.email}>
                                 <h2 className="b-text-title">
                                     {data.email}
                                 </h2>
-                                <button className="b-btn"><i className="fas fa-times" onClick={this.onRemoveEmail.bind(this, data.id)} /></button>
+                                <button className="b-btn"><i className="fas fa-times" onClick={this.onRemoveEmail.bind(this, data.email)} /></button>
                             </div>
                         ))}
                     </div>

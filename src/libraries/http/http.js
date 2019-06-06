@@ -31,6 +31,8 @@ function parseBody(response) {
         return response.data.data;
     } else if (response.status === 201) {
         return response.data.data;
+    } else if (response.status === 429) {
+        return "Not Data";
     }
     else {
         return this.parseError(response.data.messages)

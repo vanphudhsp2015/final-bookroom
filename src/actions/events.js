@@ -28,7 +28,6 @@ export function requestAddEvents(data) {
             }
         })
     }
-
     let formDataObject = {};
     if (data.checkbox === true) {
         let arrayDay = '';
@@ -137,12 +136,12 @@ export function requestUpdateEvent(data) {
 
     return (dispatch) => {
         return http.request({
-            url: `/bookrooms`,
+            url: `/bookrooms/${data.id}`,
             method: 'PUT',
             data: formDataObject
         }).then(function (response) {
             message.success('Sửa Sự Kiện Thành Công');
-            dispatch(receiveData(types.REQUEST_UPDATE_EVENT, response.data.data))
+            dispatch(receiveData(types.REQUEST_UPDATE_EVENT, response))
         }).catch(function (error) {
 
             dispatch(requestRejected(error));
@@ -158,7 +157,7 @@ export function requestGetEventByRoom(id) {
             method: 'GET',
             url: `/getbrbyid/${id}`,
         }).then(function (response) {
-            dispatch(receiveData(types.REQUEST_FILTER_EVENT_ROOM, response.data.data))
+            dispatch(receiveData(types.REQUEST_FILTER_EVENT_ROOM, response))
         }).catch(function (error) {
             dispatch(requestRejected(error));
         })
@@ -179,7 +178,7 @@ export function requestSearchEvent(data) {
             params,
         }).then(function (response) {
             if (response.data.data.length > 0) {
-                dispatch(receiveData(types.REQUEST_RESEARCH, response.data.data));
+                dispatch(receiveData(types.REQUEST_RESEARCH, response));
             } else {
                 message.warning('Không có lịch nào trong khoảng thời gian này !!!');
             }
@@ -229,7 +228,7 @@ export function requestEditException(data, day) {
             data: formDataObject
         }).then(function (response) {
             message.success('Sửa Ngoại Lệ Thành Công');
-            dispatch(receiveData(types.REQUEST_EDIT_EVENT_EXCEPTION, response.data.data));
+            dispatch(receiveData(types.REQUEST_EDIT_EVENT_EXCEPTION, response));
         }).catch(function (error) {
             dispatch(requestRejected(error));
         })
