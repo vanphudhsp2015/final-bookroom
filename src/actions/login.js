@@ -15,7 +15,7 @@ export function requestGetLogin(data) {
             url: `/auth/google`,
             data: token
         }).then(function (response) {
-            if (response !== undefined) {
+            if (response !== undefined) {                
                 cookies.set('token', response.access_token);
                 httpItem.request({
                     method: 'GET',
