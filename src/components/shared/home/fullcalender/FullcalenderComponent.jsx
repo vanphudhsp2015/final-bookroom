@@ -10,10 +10,7 @@ import resourceTimeGridPlugin from '@fullcalendar/resource-timegrid';
 import allLocales from '@fullcalendar/core/locales-all';
 import '../../../../main.scss'
 import { Modal, Calendar, Radio, message } from 'antd';
-import debounce from 'lodash/debounce';
 import Cookies from 'universal-cookie';
-import * as typeAPI from '../../../../constants/actionAPI';
-import axios from 'axios';
 import { Link, Redirect } from 'react-router-dom';
 import moment from 'moment';
 const cookies = new Cookies();
@@ -62,50 +59,19 @@ class FullcalenderComponent extends Component {
             timeend: this.roundMinutesDate(now, 60),
             isShowForm: false,
         }
-        this.lastFetchId = 0;
-        this.fetchUser = debounce(this.fetchUser, 800);
-
     }
-    fetchUser = value => {
-        var self = this;
-        this.setState({ data: [], fetching: true });
-        axios.request({
-            method: 'GET',
-            url: `${typeAPI.API_URL}/api/v1/admin/users`,
-            headers: {
-                "Accept": "application/json",
-                'Content-Type': 'application/json',
-                'Authorization': `${'bearer ' + cookies.get('token')}`
-            }
-        }).then(function (response) {
-            const data = response.data.map(data => ({
-                text: `${data.attributes.email}`,
-                value: `${data.attributes.email}`,
-            }));
-            self.setState({ data, fetching: false });
-        }).catch(function (error) {
-            console.log(error)
-        })
-    };
-
-    handleChange = value => {
-        this.setState({
-            value,
-            data: [],
-            fetching: false,
-        });
-    };
 
     componentDidUpdate(prevProps, prevState) {
         if (prevProps.datecalender !== this.props.datecalender) {
             let calendarApi = this.calendarComponentRef.current.getApi()
             calendarApi.gotoDate(dateFormat(this.props.datecalender, 'yyyy-mm-dd'))
         }
-        // this.interval = setInterval(() => (this.onResetDouble()), 10000);
+        if (this.props.searchDate !== prevProps.searchDate) {
+            let calendarApi = this.calendarComponentRef.current.getApi()
+            calendarApi.gotoDate(dateFormat(this.props.searchDate, 'yyyy-mm-dd'))
+        }
+
     }
-    // componentWillUnmount() {
-    //     clearInterval(this.interval);
-    // }
     onResetDouble() {
         this.setState({
             countClick: 0
@@ -207,29 +173,6 @@ class FullcalenderComponent extends Component {
         }
 
     }
-    oneventDrop = (eventDropInfo) => {
-        console.log('dịch chuyển');
-
-        let data = {
-            id: eventDropInfo.event.id,
-            daystart: dateFormat(eventDropInfo.event.start, 'yyyy-mm-dd'),
-            timestart: dateFormat(eventDropInfo.event.start, 'HH:MM'),
-            timeend: dateFormat(eventDropInfo.event.end, 'HH:MM'),
-            is_resize: true,
-            is_drop: true
-        }
-        if (cookies.get('data') === undefined) {
-            message.warning('Vui Lòng Đăng Nhập Để Sửa Sự Kiện !')
-        } else {
-            if (parseInt(eventDropInfo.event.extendedProps.user_id) === parseInt(cookies.get('data').id)) {
-                this.props.onUpdate(data);
-            } else {
-                eventDropInfo.revert();
-                message.warning('Bạn không có quyền Sửa sự kiện này !')
-            }
-        }
-
-    }
     onShowCalender = () => {
         this.setState({
             isShowCalender: !this.state.isShowCalender
@@ -257,17 +200,6 @@ class FullcalenderComponent extends Component {
         this.setState({
             checkbox: e.target.checked
         })
-    }
-    onSendMain = () => {
-        let arrayEmail = '';
-        this.state.value.forEach((i, index, item) => {
-            if (index === item.length - 1) {
-                arrayEmail += `${item[index].key}`;
-            } else {
-                arrayEmail += `${item[index].key},`;
-            }
-        })
-        return arrayEmail;
     }
     handleDeleteOk = () => {
         const { id } = this.state;
@@ -335,53 +267,6 @@ class FullcalenderComponent extends Component {
             [event.target.name]: event.target.value
         })
     }
-    onChangeDate = (date, dateString) => {
-        if ((moment(dateFormat(dateString, 'yyyy-mm-dd HH:mm')).diff(dateFormat(now, 'yyyy-mm-dd HH:mm'), 'days')) < 0) {
-            this.setState({
-                validateDate: true
-            })
-        } else {
-            this.setState({
-                dateStart: dateString,
-                validateDate: false,
-            })
-        }
-    }
-    onChangeTime = (time, dateString) => {
-        let nowCurrent = dateFormat(this.state.dateStart, 'yyyy-mm-dd');
-        if ((moment(`${nowCurrent + ' ' + dateString + ':00'}`)).diff(dateFormat(now, 'yyyy-mm-dd HH:MM:ss'), 'minutes') < 0) {
-            this.setState({
-                validateTime: true
-            })
-        } else {
-            this.setState({
-                timestart: dateString,
-                timeend: this.roundMinutesDate(`${nowCurrent + ' ' + dateString + ':00'}`, 30),
-                validateTime: false
-            })
-        }
-    }
-    onChangeTimeItem = (time, dateString) => {
-        let nowCurrent = dateFormat(this.state.dateStart, 'yyyy-mm-dd');
-        if ((moment(`${nowCurrent + ' ' + dateString + ':00'}`)).diff(dateFormat(now, 'yyyy-mm-dd HH:MM:ss'), 'minutes') < 0) {
-            this.setState({
-                validateTimeItem: true
-            })
-        } else {
-            if ((moment(`${nowCurrent + ' ' + dateString + ':00'}`)).diff(`${nowCurrent + ' ' + this.state.timestart + ':00'}`, 'minutes') < 0) {
-                this.setState({
-                    timeend: dateString,
-                    timestart: dateString,
-                    validateTimeItem: false
-                })
-            } else {
-                this.setState({
-                    timeend: dateString,
-                    validateTimeItem: false
-                })
-            }
-        }
-    }
     componentWillUnmount() {
         this.setState({
             clickCount: 0
@@ -407,7 +292,64 @@ class FullcalenderComponent extends Component {
             }
         }
     }
-
+    convertMinsToHrsMins(mins) {
+        let h = Math.floor(mins / 60);
+        let m = mins % 60;
+        h = h < 10 ? '0' + h : h;
+        m = m < 10 ? '0' + m : m;
+        return `${h}:${m}`;
+    }
+    convertToFrontEnd(arrA) {
+        let arrB = []
+        if (arrA.length) {
+            arrB = this.convertArray(arrA).map(item => {
+                let attributes = item.attributes;
+                let excepArray = [];
+                attributes.exception.map(data => (
+                    excepArray = [...excepArray, `${data.day + ` ${data.timestart} UTC`}`]
+                ))
+                return {
+                    resourceId: attributes.room.id,
+                    id: item.id,
+                    title: attributes.title,
+                    content: attributes.content,
+                    className: [
+                        attributes.repeat !== null ? `${'room_item_' + attributes.room.id}` : "",
+                        cookies.get('data') !== undefined && parseInt(attributes.user_id) === parseInt(cookies.get('data').id) ? "is-current" : "",
+                        attributes.repeat !== null ? 'b-repeat' : ''
+                    ],
+                    start: attributes.daystart,
+                    room: attributes.room.name,
+                    user: attributes.username,
+                    user_id: attributes.user_id,
+                    timestart: attributes.timestart,
+                    timeend: attributes.timeend,
+                    color: attributes.room.color,
+                    redate: attributes && attributes.repeat !== null ? attributes.repeat.repeatby : 'Không Lặp',
+                    reweek: attributes && attributes.repeat !== null ? attributes.repeat.byweekday : '',
+                    recount: attributes && attributes.repeat !== null ? attributes.repeat.count : '',
+                    repeat: attributes && attributes.repeat !== null ? '1' : '0',
+                    is_repeat: attributes && attributes.repeat !== null ? true : false,
+                    rruleSet: attributes && attributes.repeat !== null ?
+                        {
+                            freq: attributes.repeat.repeatby,
+                            interval: attributes.repeat.interval,
+                            byweekday: attributes.repeat.byweekday,
+                            dtstart: `${attributes.daystart + ' ' + attributes.timestart}`,
+                            count: attributes.repeat.count,
+                            exrules: excepArray,
+                        } : {
+                            freq: "daily",
+                            interval: 1,
+                            dtstart: `${attributes.daystart + ' ' + attributes.timestart}`,
+                            count: 1
+                        },
+                    duration: this.convertMinsToHrsMins(moment(`${attributes.daystart + ' ' + attributes.timeend}`).diff(`${item.attributes.daystart + ' ' + item.attributes.timestart}`, 'minutes'))
+                }
+            })
+        }
+        return arrB;
+    }
     render() {
         if (this.state.isShowForm) {
             return <Redirect to={`/new?date=` + this.state.dateStart + `&time=` + this.state.timestart}></Redirect>
@@ -512,7 +454,7 @@ class FullcalenderComponent extends Component {
                                 Địa điểm/Phòng: {this.state.room}
                             </span>
                             <p className="b-text-user" style={{
-                                marginTop:'10px'
+                                marginTop: '10px'
                             }}>
                                 Người Tạo: {this.state.user}
                             </p>
@@ -522,7 +464,7 @@ class FullcalenderComponent extends Component {
                             <p className="b-text-norm" dangerouslySetInnerHTML={{ __html: this.state.content }}>
                             </p>
                             <p className={this.state.redate !== 'Không Lặp' ? "b-text-user" : ''} style={{
-                                marginTop:'-10px'
+                                marginTop: '-10px'
                             }}>
                                 {this.state.redate === 'daily' ? 'Lặp Theo Ngày' : ''}
                                 {this.state.redate === 'weekly' ? 'Lặp Theo Tuần' : ''}

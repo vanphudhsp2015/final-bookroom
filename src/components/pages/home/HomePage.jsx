@@ -4,22 +4,11 @@ import { HeaderLayout, SlideBar } from '../../layouts/home';
 import { FullcalenderComponent } from '../../shared/home';
 import * as action from '../../../actions/events';
 import * as action_Room from '../../../actions/room';
-// import rrulePlugin from '@fullcalendar/rrule';
-// import _ from "lodash";
+import queryString from 'query-string'
 import Cookies from 'universal-cookie';
 import { message } from 'antd';
-// import { RRule, RRuleSet, rrulestr } from 'rrule'
 const cookies = new Cookies();
-// var dateFormatDate = require('dateformat');
 var moment = require('moment');
-// var now = new Date()
-// const rruleSet = new RRuleSet()
-// rruleSet.rrule(new RRule({
-//     freq: RRule.DAILY,
-//     count: 5,
-//     dtstart: new Date(Date.UTC(2019, 5, 29))
-// }))
-// rruleSet.exdate(new Date(Date.UTC(2019, 5, 31)))
 
 class HomePage extends Component {
     constructor(props, context) {
@@ -32,19 +21,27 @@ class HomePage extends Component {
             edit: false,
             dataEdit: {},
             is_edit: false,
-            isLogin: false
+            isLogin: false,
+            searchDate: ''
         }
     }
     componentDidMount() {
         this.onGetData();
-        // this.interval = setInterval(() => (this.onGetData()), 20000);
+        if (this.props.location !== undefined) {
+            const values = queryString.parse(this.props.location.search)
+            this.setState({
+                searchDate: values.date,
+            })
+        }
     }
-    onGetData() {
+    // componentDidUpdate(prevProps, prevState) {
+    //     if (this.props.data !== prevProps.data) {
+    //         this.onGetData();
+    //     }
+    // }
+    onGetData() {        
         this.props.dispatch(action.requestGetEvent());
-        this.props.dispatch(action_Room.requestGetRoom());
-    }
-    componentWillUnmount() {
-        clearInterval(this.interval);
+        this.props.dispatch(action_Room.requestGetRoom());        
     }
     onAddEvent = (data) => {
         if (cookies.get('data') === undefined) {
@@ -251,14 +248,9 @@ class HomePage extends Component {
         const dateTime = moment(start).add(remainder, "minutes").format("HH:mm");
         return dateTime;
     }
-    render() {        
-        // var isoDate = new Date('2019-06-05 14:00').toUTCString(); //covert local to UTC
-        // console.log(isoDate);
+    render() {
+        console.log(this.props.data);
 
-        // console.log("1:" + dateFormatDate(isoDate, 'yyyy-mm-dd HH:MM'));
-        // console.log("2:" + moment(isoDate).format('YYYY-MM-DD'));
-        // console.log("3:" + moment(isoDate).format('hh:mm'));
-        // console.log("4:" + moment.utc("2019-06-05 14:00").local().format("YYYY-MM-DD HH:mm:ss"));
         return (
             <div className="wrapper">
                 <HeaderLayout onResetCheckLogin={this.onResetCheckLogin} isCheck={this.state.isLogin}></HeaderLayout>
@@ -266,7 +258,7 @@ class HomePage extends Component {
                     <div className="b-block">
                         <SlideBar onCheckLogin={this.onCheckLogin} room={this.props.room} onCancleEdit={this.onCancleEdit} onChangerRoom={this.onChangerRoom} onUpdate={this.onUpdate} dataEdit={this.state.dataEdit} edit={this.state.edit} onGetDate={this.onGetDate} onAddEvent={this.onAddEvent}></SlideBar>
                         <div className="b-block-right">
-                            <FullcalenderComponent onAddEvent={this.onAddEvent} onDeleteException={this.onDeleteException} rooms={this.props.room} room={this.convertArrayRoom(this.props.room)} onCancleEdit={this.onCancleEdit} onUpdate={this.onUpdate} onEdit={this.onEdit} onDelete={this.onDelete} is_checkdate={this.state.is_getdate} datecalender={this.state.datecalender} data={this.convertToFrontEnd(this.props.data)}></FullcalenderComponent>
+                            <FullcalenderComponent searchDate={this.state.searchDate} onAddEvent={this.onAddEvent} onDeleteException={this.onDeleteException} rooms={this.props.room} room={this.convertArrayRoom(this.props.room)} onCancleEdit={this.onCancleEdit} onUpdate={this.onUpdate} onEdit={this.onEdit} onDelete={this.onDelete} is_checkdate={this.state.is_getdate} datecalender={this.state.datecalender} data={this.convertToFrontEnd(this.props.data)}></FullcalenderComponent>
                         </div>
                     </div>
                 </main>
@@ -278,7 +270,6 @@ function mapStateProps(state) {
     return {
         data: state.event.all,
         room: state.room.all,
-        fetched: state.event.fetched
     }
 }
 export default connect(mapStateProps, null)(HomePage);

@@ -82,7 +82,7 @@ class CalenderInfoPage extends Component {
     }
     componentDidUpdate(prevProps, prevState) {
         if (this.props.match.params.calender !== undefined) {
-            if (this.props.data !== prevProps.data) {
+            if (this.props.data !== prevProps.data) {                
                 let data = this.props.data.filter(item => parseInt(item.id) === parseInt(this.props.match.params.calender))
                 if (data[0].attributes.repeat !== null) {
                     this.onAddSelectDate(data[0].attributes.repeat.repeatby, data[0].attributes.repeat.count)
@@ -95,37 +95,17 @@ class CalenderInfoPage extends Component {
                     dateStart: dateFormatDate(this.props.match.params.date, 'yyyy-mm-dd'),
                     timestart: data[0].attributes.timestart,
                     timeend: data[0].attributes.timeend,
-                    repeat: data[0].attributes.repeat !== null ? '12' : '2',
                     count: data[0].attributes.repeat !== null ? data[0].attributes.repeat.count : 1,
                     rooms: data[0].attributes.room.id,
                     checkbox: data[0].attributes.repeat !== null ? true : false,
-                    choice: data[0].attributes.repeat !== null ? data[0].attributes.repeat.repeatby : 'daily'
+                    choice: data[0].attributes.repeat !== null ? data[0].attributes.repeat.repeatby : 'daily',
+                    selectRepeat: data[0].attributes.repeat !== null ? [...this.state.selectRepeat, { id: '99', name: `Lặp Lại Theo ${this.onChangerCalender(data[0].attributes.repeat.repeatby)} ${data[0].attributes.repeat.count - 1} Lần` }] : this.state.selectRepeat,
+                    repeat: data[0].attributes.repeat !== null ? '99' : '2'
                 })
 
             }
         }
-        if (this.props.match.params.exception) {
-            if (this.props.data !== prevProps.data) {
-                let data = this.props.data.filter(item => parseInt(item.id) === parseInt(this.props.match.params.exception))
-                if (data[0].attributes.repeat !== null) {
-                    this.onAddSelectDate(data[0].attributes.repeat.repeatby, data[0].attributes.repeat.count)
-                }
-                this.setState({
-                    id: data[0].id,
-                    title: data[0].attributes.title,
-                    content: data[0].attributes.content,
-                    dateStart: dateFormatDate(this.props.match.params.date, 'yyyy-mm-dd'),
-                    timestart: data[0].attributes.timestart,
-                    timeend: data[0].attributes.timeend,
-                    repeat: data[0].attributes.repeat !== null ? '12' : '2',
-                    count: data[0].attributes.repeat !== null ? data[0].attributes.repeat.count : 1,
-                    rooms: data[0].attributes.room.id,
-                    checkbox: data[0].attributes.repeat !== null ? true : false,
-                    choice: data[0].attributes.repeat !== null ? data[0].attributes.repeat.repeatby : 'daily'
-                })
 
-            }
-        }
 
     }
     handleChangeByWeek = (value) => {
@@ -361,7 +341,7 @@ class CalenderInfoPage extends Component {
                 })
             } else {
                 this.props.dispatch(action.requestAddEvents(this.state));
-                this.props.history.push("/");
+                this.props.history.push(`/?date=${this.state.dateStart}`);
             }
         }
     }
@@ -460,6 +440,26 @@ class CalenderInfoPage extends Component {
                 break;
             default:
                 return 'Thứ Hai'
+        }
+        return data;
+    }
+    onChangerCalender(item) {
+        let data = '';
+        switch (item) {
+            case "daily":
+                data = 'Ngày';
+                break;
+            case "monthly":
+                data = 'Tháng';
+                break;
+            case "yearly":
+                data = 'Năm';
+                break;
+            case "weekly":
+                data = 'Tuần';
+                break;
+            default:
+                return 'Ngày'
         }
         return data;
     }
