@@ -20,9 +20,7 @@ function parseError(messages) {
 /**
  * parse response
  */
-function parseBody(response) {
-    console.log(response);
-    
+function parseBody(response) {    
     //  if (response.status === 200 && response.data.status.code === 200) { // - if use custom status code    
     if (response.status === 200) {
         return response.data.data;

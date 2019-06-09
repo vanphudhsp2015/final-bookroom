@@ -82,7 +82,7 @@ class CalenderInfoPage extends Component {
     }
     componentDidUpdate(prevProps, prevState) {
         if (this.props.match.params.calender !== undefined) {
-            if (this.props.data !== prevProps.data) {                
+            if (this.props.data !== prevProps.data) {
                 let data = this.props.data.filter(item => parseInt(item.id) === parseInt(this.props.match.params.calender))
                 if (data[0].attributes.repeat !== null) {
                     this.onAddSelectDate(data[0].attributes.repeat.repeatby, data[0].attributes.repeat.count)
@@ -348,10 +348,10 @@ class CalenderInfoPage extends Component {
     handleEditOk = () => {
         if (this.state.valueEdit === 1) {
             this.props.dispatch(action.requestUpdateEvent(this.state));
-            this.props.history.push("/");
+            this.props.history.push(`/?date=${this.state.dateStart}`);
         } else {
             this.props.dispatch(action.requestEditException(this.state, this.props.match.params.date));
-            this.props.history.push("/");
+            this.props.history.push(`/?date=${this.state.dateStart}`);
         }
         this.setState({
             isShowEdit: false
