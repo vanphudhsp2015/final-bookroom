@@ -26,7 +26,12 @@ class HomePage extends Component {
         }
     }
     componentDidMount() {
-        this.onGetData();
+        var timeout = null;
+        clearTimeout(timeout);
+        var self = this;
+        timeout = setTimeout(function () {
+            self.onGetData();
+        }, 700);
         if (this.props.location !== undefined) {
             const values = queryString.parse(this.props.location.search)
             this.setState({
@@ -34,14 +39,10 @@ class HomePage extends Component {
             })
         }
     }
-    // componentDidUpdate(prevProps, prevState) {
-    //     if (this.props.data !== prevProps.data) {
-    //         this.onGetData();
-    //     }
-    // }
-    onGetData() {        
+
+    onGetData() {
         this.props.dispatch(action.requestGetEvent());
-        this.props.dispatch(action_Room.requestGetRoom());        
+        this.props.dispatch(action_Room.requestGetRoom());
     }
     onAddEvent = (data) => {
         if (cookies.get('data') === undefined) {
@@ -87,13 +88,13 @@ class HomePage extends Component {
         })
     }
 
-    onChangerRoom = (data) => {
-        if (data === 0) {
-            this.props.dispatch(action.requestGetEvent());
-        } else {
-            this.props.dispatch(action.requestGetEventByRoom(data));
-        }
-    }
+    // onChangerRoom = (data) => {
+    //     if (data === 0) {
+    //         this.props.dispatch(action.requestGetEvent());
+    //     } else {
+    //         this.props.dispatch(action.requestGetEventByRoom(data));
+    //     }
+    // }
     onEdit = (id) => {
         let item = [...this.props.data].filter(item => item.id === id);
         if (item.length > 0) {
@@ -185,13 +186,6 @@ class HomePage extends Component {
         }
         return arrB;
     }
-    onChangerRoom = (data) => {
-        if (data === 0) {
-            this.props.dispatch(action.requestGetEvent());
-        } else {
-            this.props.dispatch(action.requestGetEventByRoom(data));
-        }
-    }
     onCheckLogin = () => {
         this.setState({
             isLogin: true
@@ -249,8 +243,6 @@ class HomePage extends Component {
         return dateTime;
     }
     render() {
-        console.log(this.props.data);
-
         return (
             <div className="wrapper">
                 <HeaderLayout onResetCheckLogin={this.onResetCheckLogin} isCheck={this.state.isLogin}></HeaderLayout>
