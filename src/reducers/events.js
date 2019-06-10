@@ -10,20 +10,11 @@ export default function (state = INITIAL_STATE, action = {}) {
     switch (action.type) {
         case types.REQUEST_LOADING:
             return Object.assign({}, state, {
-                fetching: true,
-                fetched: INITIAL_STATE.fetched
-            });
-        case types.REQUEST_REJECTED:
-            return Object.assign({}, state, {
-                fetching: INITIAL_STATE.fetching,
-                fetched: INITIAL_STATE.fetched,
-                error: action.payload.data
+                fetching: true
             });
         case types.REQUEST_GET_EVENTS:
             return Object.assign({}, state, {
                 all: action.payload,
-                fetching: INITIAL_STATE.fetching,
-                fetched: true
             })
         case types.REQUEST_ADD_EVENT:
             return Object.assign({}, state, {
@@ -38,6 +29,7 @@ export default function (state = INITIAL_STATE, action = {}) {
                 all: state.all.map(data => data.id === action.payload.id ? action.payload : data)
             })
         case types.REQUEST_DELETE_EVENT_EXCEPTION:
+
             return Object.assign({}, state, {
                 all: state.all.map(data => data.id === action.payload.id ? action.payload : data)
             })

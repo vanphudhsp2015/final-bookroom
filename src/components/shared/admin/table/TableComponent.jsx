@@ -121,7 +121,7 @@ class TableComponent extends Component {
                                                         <td>{data.id}</td>
                                                         <td >
                                                             <div className="product-name">
-                                                                <img className="link-name" src={data.attributes.img !== undefined ? 'https://img.icons8.com/bubbles/2x/system-administrator-female.png' : data.attributes.img} alt="alt-user" />
+                                                                <img className="link-name" src={data.attributes.img === null ? 'https://img.icons8.com/bubbles/2x/system-administrator-female.png' : data.attributes.img} alt="alt-user" />
                                                                 <h4 className="b-text">{data.attributes.name}</h4>
                                                             </div>
                                                         </td>

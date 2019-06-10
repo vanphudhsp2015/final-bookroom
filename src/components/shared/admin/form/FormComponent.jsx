@@ -22,7 +22,7 @@ class FormComponent extends Component {
             repeat: '',
             checkbox: false,
             displayColorPicker: false,
-            background: this.props.edit ? this.props.dataEdit.attributes.color : '#ffffff',
+            background: this.props.edit ? this.props.dataEdit.attributes.color : '#B8E986',
         }
     }
     onChanger = (event) => {

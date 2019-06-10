@@ -58,7 +58,7 @@
   &.fc-today-button {
     background-color: #f0f0f0;
     color: #4c4c4c;
-    &:hover{
+    &:hover {
       background-color: #2962ff;
       color: #fff;
     }
@@ -284,4 +284,7 @@
 }
 .ck-content {
   min-height: 150px !important;
+}
+.b-picker {
+  width: 200px !important;
 }

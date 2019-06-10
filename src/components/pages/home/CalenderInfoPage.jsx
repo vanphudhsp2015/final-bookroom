@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { HeaderLayout } from '../../layouts/home';
-import { DatePicker, TimePicker, Select, Modal, message, Radio } from 'antd';
+import { DatePicker, TimePicker, Select, Modal, message, Radio, InputNumber } from 'antd';
 import { SearchComponent } from '../../shared/home';
 import moment from 'moment';
 import CKEditor from '@ckeditor/ckeditor5-react';
@@ -15,13 +15,13 @@ const { Option } = Select;
 var dateFormatDate = require('dateformat');
 var now = new Date()
 const children = [
-    { id: '1', name: 'su' },
-    { id: '2', name: 'mo' },
-    { id: '3', name: 'tu' },
-    { id: '4', name: 'we' },
-    { id: '5', name: 'th' },
-    { id: '6', name: 'fr' },
-    { id: '7', name: 'sa' }
+    { id: '1', name: 'su', title: 'Chủ Nhật' },
+    { id: '2', name: 'mo', title: 'Thứ Hai' },
+    { id: '3', name: 'tu', title: 'Thứ Ba' },
+    { id: '4', name: 'we', title: 'Thứ Tư' },
+    { id: '5', name: 'th', title: 'Thứ Năm' },
+    { id: '6', name: 'fr', title: 'Thứ Sáu' },
+    { id: '7', name: 'sa', title: 'Thứ Bảy' }
 ];
 function disabledHours() {
     return [0, 1, 2, 3, 4, 5, 6, 7, 12, 18, 19, 20, 21, 22, 23, 24];
@@ -57,7 +57,9 @@ class CalenderInfoPage extends Component {
             isShowEdit: false,
             valueEdit: 1,
             isRepeat: false,
-            arrayEmail: []
+            arrayEmail: [],
+            minCount: 1,
+            maxCount: 365
         };
     }
     roundMinutesDate(data, add) {
@@ -93,37 +95,17 @@ class CalenderInfoPage extends Component {
                     dateStart: dateFormatDate(this.props.match.params.date, 'yyyy-mm-dd'),
                     timestart: data[0].attributes.timestart,
                     timeend: data[0].attributes.timeend,
-                    repeat: data[0].attributes.repeat !== null ? '12' : '2',
                     count: data[0].attributes.repeat !== null ? data[0].attributes.repeat.count : 1,
                     rooms: data[0].attributes.room.id,
                     checkbox: data[0].attributes.repeat !== null ? true : false,
-                    choice: data[0].attributes.repeat !== null ? data[0].attributes.repeat.repeatby : 'daily'
+                    choice: data[0].attributes.repeat !== null ? data[0].attributes.repeat.repeatby : 'daily',
+                    selectRepeat: data[0].attributes.repeat !== null ? [...this.state.selectRepeat, { id: '99', name: `Lặp Lại Theo ${this.onChangerCalender(data[0].attributes.repeat.repeatby)} ${data[0].attributes.repeat.count - 1} Lần` }] : this.state.selectRepeat,
+                    repeat: data[0].attributes.repeat !== null ? '99' : '2'
                 })
 
             }
         }
-        if (this.props.match.params.exception) {
-            if (this.props.data !== prevProps.data) {
-                let data = this.props.data.filter(item => parseInt(item.id) === parseInt(this.props.match.params.exception))
-                if (data[0].attributes.repeat !== null) {
-                    this.onAddSelectDate(data[0].attributes.repeat.repeatby, data[0].attributes.repeat.count)
-                }
-                this.setState({
-                    id: data[0].id,
-                    title: data[0].attributes.title,
-                    content: data[0].attributes.content,
-                    dateStart: dateFormatDate(this.props.match.params.date, 'yyyy-mm-dd'),
-                    timestart: data[0].attributes.timestart,
-                    timeend: data[0].attributes.timeend,
-                    repeat: data[0].attributes.repeat !== null ? '12' : '2',
-                    count: data[0].attributes.repeat !== null ? data[0].attributes.repeat.count : 1,
-                    rooms: data[0].attributes.room.id,
-                    checkbox: data[0].attributes.repeat !== null ? true : false,
-                    choice: data[0].attributes.repeat !== null ? data[0].attributes.repeat.repeatby : 'daily'
-                })
 
-            }
-        }
 
     }
     handleChangeByWeek = (value) => {
@@ -144,7 +126,9 @@ class CalenderInfoPage extends Component {
         } else {
             this.setState({
                 dateStart: dateString,
-                validateDate: false,
+                timestart: this.roundMinutesDate(now, 0),
+                timeend: this.roundMinutesDate(now, 60),
+                validateDate: false
             })
         }
     }
@@ -234,7 +218,6 @@ class CalenderInfoPage extends Component {
             case '99':
                 this.setState({
                     [event.target.name]: event.target.value,
-                    count: 2,
                     checkbox: true,
                     choice: this.state.choice
                 })
@@ -260,11 +243,17 @@ class CalenderInfoPage extends Component {
                 this.setState({
                     choice: 'daily'
                 })
+                this.setState({
+                    count: this.state.count + 1
+                })
                 break;
             case "monthly":
                 covertName = "Lặp Lại  Hằng Tháng "
                 this.setState({
                     choice: 'monthly'
+                })
+                this.setState({
+                    count: this.state.count + 1
                 })
                 break;
             case "yearly":
@@ -272,17 +261,20 @@ class CalenderInfoPage extends Component {
                 this.setState({
                     choice: 'yearly'
                 })
+                this.setState({
+                    count: this.state.count + 1
+                })
                 break;
             case "weekly":
                 let nameWeek = '';
                 this.state.byweekday.forEach((i, index, item) => {
                     if (index === item.length - 1) {
-                        nameWeek += `${item[index]}`;
+                        nameWeek += `${this.onTranslate(item[index])}`;
                     } else {
-                        nameWeek += `${item[index]},`;
+                        nameWeek += `${this.onTranslate(item[index])},`;
                     }
                 })
-                covertName = `Các Ngày ${nameWeek} Trong Tuần`
+                covertName = `Các Thứ  [ ${nameWeek} ] Trong Tuần`
                 this.setState({
                     choice: 'weekly',
                     count: this.state.byweekday.length * this.state.count
@@ -319,9 +311,9 @@ class CalenderInfoPage extends Component {
                 let nameWeek = '';
                 this.state.byweekday.forEach((i, index, item) => {
                     if (index === item.length - 1) {
-                        nameWeek += `${item[index]}`;
+                        nameWeek += `${this.onTranslate(item[index])}`;
                     } else {
-                        nameWeek += `${item[index]},`;
+                        nameWeek += `${this.onTranslate(item[index])},`;
                     }
                 })
                 covertName = `Các Ngày ${nameWeek} Trong Tuần`
@@ -349,17 +341,17 @@ class CalenderInfoPage extends Component {
                 })
             } else {
                 this.props.dispatch(action.requestAddEvents(this.state));
-                this.props.history.push("/");
+                this.props.history.push(`/?date=${this.state.dateStart}`);
             }
         }
     }
     handleEditOk = () => {
         if (this.state.valueEdit === 1) {
             this.props.dispatch(action.requestUpdateEvent(this.state));
-            this.props.history.push("/");
+            this.props.history.push(`/?date=${this.state.dateStart}`);
         } else {
             this.props.dispatch(action.requestEditException(this.state, this.props.match.params.date));
-            this.props.history.push("/");
+            this.props.history.push(`/?date=${this.state.dateStart}`);
         }
         this.setState({
             isShowEdit: false
@@ -384,6 +376,92 @@ class CalenderInfoPage extends Component {
         this.setState({
             arrayEmail: data
         })
+    }
+    onChangeNumber = (value) => {
+        this.setState({
+            count: value
+        })
+    }
+    onChangerChoice = (event) => {
+        switch (event.target.value) {
+            case 'daily':
+                this.setState({
+                    maxCount: 365
+                })
+                break;
+            case 'monthly':
+                this.setState({
+                    maxCount: 6
+                })
+                break;
+            case 'weekly':
+                this.setState({
+                    maxCount: 52
+                })
+                break;
+            case 'yearly':
+                this.setState({
+                    maxCount: 2
+                })
+                break;
+            default:
+                this.setState({
+                    maxCount: 365
+                })
+        }
+
+        this.setState({
+            [event.target.name]: event.target.value
+        })
+    }
+    onTranslate(item) {
+        let data = '';
+        switch (item) {
+            case "mo":
+                data = 'Thứ Hai';
+                break;
+            case "tu":
+                data = 'Thứ Ba';
+                break;
+            case "th":
+                data = 'Thứ Tư';
+                break;
+            case "we":
+                data = 'Thứ Năm';
+                break;
+            case "fr":
+                data = 'Thứ Sáu';
+                break;
+            case "sa":
+                data = 'Thứ Bảy';
+                break;
+            case "su":
+                data = 'Chủ Nhật';
+                break;
+            default:
+                return 'Thứ Hai'
+        }
+        return data;
+    }
+    onChangerCalender(item) {
+        let data = '';
+        switch (item) {
+            case "daily":
+                data = 'Ngày';
+                break;
+            case "monthly":
+                data = 'Tháng';
+                break;
+            case "yearly":
+                data = 'Năm';
+                break;
+            case "weekly":
+                data = 'Tuần';
+                break;
+            default:
+                return 'Ngày'
+        }
+        return data;
     }
     render() {
         const radioStyle = {
@@ -446,7 +524,7 @@ class CalenderInfoPage extends Component {
                                             <div className="b-repeat">
                                                 <div className="b-form-group">
                                                     <label >Theo</label>
-                                                    <select className="b-select" name='choice' defaultValue={this.state.choice} onChange={this.onChanger}>
+                                                    <select className="b-select" name='choice' value={this.state.choice} onChange={this.onChangerChoice}>
                                                         <option value="daily">Ngày</option>
                                                         <option value="weekly">Tuần</option>
                                                         <option value="monthly">Tháng</option>
@@ -458,11 +536,11 @@ class CalenderInfoPage extends Component {
                                                         <Select
                                                             mode="multiple"
                                                             style={{ width: '100%' }}
-                                                            placeholder="Please select"
+                                                            placeholder="Mời Chọn Các Thứ !"
                                                             defaultValue={this.state.byweekday}
                                                             onChange={this.handleChangeByWeek}>
                                                             {children.map(data => (
-                                                                <Option key={data.id} value={data.name}>{data.name}</Option>
+                                                                <Option key={data.id} value={data.name}>{data.title}</Option>
                                                             ))}
                                                         </Select>
                                                     </div>
@@ -472,19 +550,9 @@ class CalenderInfoPage extends Component {
 
                                                 <div className="b-form-group">
                                                     <label >Lặp Lại</label>
-                                                    <select className="b-select" name='count' defaultValue={this.state.count} onChange={this.onChanger}>
-                                                        <option value={1}>1</option>
-                                                        <option value={2}>2</option>
-                                                        <option value={3}>3</option>
-                                                        <option value={4}>4</option>
-                                                        <option value={5}>5</option>
-                                                        <option value={6}>6</option>
-                                                        <option value={7}>7</option>
-                                                        <option value={8}>8</option>
-                                                        <option value={10}>10</option>
-                                                        <option value={15}>15</option>
-                                                        <option value={20}>20</option>
-                                                    </select>
+                                                    <InputNumber min={this.state.minCount} max={this.state.maxCount} value={this.state.count} onChange={this.onChangeNumber} style={{
+                                                        marginLeft: '10px'
+                                                    }} />
                                                 </div>
                                             </div>
                                             <div className="b-form-button">
@@ -501,31 +569,29 @@ class CalenderInfoPage extends Component {
                             <div className="b-heading">
                                 <div className="b-heading-left">
                                     <div className="b-form-group">
-                                        <input type="text" name="title" value={this.state.title} placeholder="Thêm Tiêu Đề" className="b-input" onChange={this.onChanger} />
+                                        <input type="text" name="title" autoComplete="off" value={this.state.title} placeholder="Thêm Tiêu Đề *" className="b-input" onChange={this.onChanger} />
                                     </div>
-                                    <span className={this.state.title.length > 0 ? "is-error" : "is-error is-check"}>
-                                        * Vui Lòng Điền Tên Cuộc Họp
-                                    </span>
                                     <div className="b-group-select">
                                         <div className="b-form-group">
-                                            <DatePicker onChange={this.onChangeDate} allowClear={false} value={moment(this.state.dateStart, dateFormat)} format={dateFormat} />
+                                            <label>Ngày Cuộc Họp</label>
+                                            <DatePicker className="b-picker" onChange={this.onChangeDate} allowClear={false} value={moment(this.state.dateStart, dateFormat)} format={dateFormat} />
                                             <span className={this.state.validateDate ? "is-error  is-check" : "is-error"}>
                                                 * Thời Gian Lớn Hơn Hiện Tại
                                         </span>
                                         </div>
 
                                         <div className="b-form-group">
-                                            <TimePicker hideDisabledOptions disabledHours={disabledHours} onChange={this.onChangeTime} value={moment(this.state.timestart, format)} allowClear={false} minuteStep={30} defaultValue={moment(this.state.timestart, format)} format={format} />
+                                            <label>Thời Gian Bắt Đầu</label>
+                                            <TimePicker className="b-picker" hideDisabledOptions disabledHours={disabledHours} onChange={this.onChangeTime} value={moment(this.state.timestart, format)} allowClear={false} minuteStep={30} defaultValue={moment(this.state.timestart, format)} format={format} />
                                             <span className={this.state.validateTime ? "is-error is-check" : "is-error"}>
                                                 * Thời Gian Lớn Hơn Hiện Tại
-                                        </span>
+                                            </span>
                                         </div>
 
-                                        <p className="b-text-norm">
-                                            Tới
-                                        </p>
+
                                         <div className="b-form-group">
-                                            <TimePicker hideDisabledOptions disabledHours={disabledHours} onChange={this.onChangeTimeItem} value={moment(this.state.timeend, format)} allowClear={false} minuteStep={30} defaultValue={moment(this.state.timeend, format)} format={format} />
+                                            <label>Thời Gian Kết Thúc</label>
+                                            <TimePicker className="b-picker" hideDisabledOptions disabledHours={disabledHours} onChange={this.onChangeTimeItem} value={moment(this.state.timeend, format)} allowClear={false} minuteStep={30} defaultValue={moment(this.state.timeend, format)} format={format} />
                                             <span className={this.state.validateTimeItem ? "is-error is-check" : "is-error"}>
                                                 * Thời Gian Lớn Hơn Hiện Tại
                                         </span>

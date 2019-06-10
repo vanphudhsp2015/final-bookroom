@@ -19,9 +19,9 @@ export default function (state = INITIAL_STATE, action = {}) {
             return Object.assign({}, state, {
                 all: [...state.all, action.payload]
             })
-        case types.REQUEST_UPDATE_ROOM:        
+        case types.REQUEST_UPDATE_ROOM:
             return Object.assign({}, state, {
-                all: state.all.map(data => data.id === action.payload.data.id ? action.payload.data : data)
+                all: state.all.map(data => data.id === action.payload.id ? action.payload : data)
             })
         default:
             return state;

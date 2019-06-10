@@ -170,7 +170,7 @@ class HeaderLayout extends Component {
         }
 
         return (
-            <header className="b-page-header" ref={this.setWrapperRef}>
+            <header className="b-page-header" >
                 <Modal
                     visible={this.state.visible}
                     onOk={this.handleOk}
@@ -208,7 +208,7 @@ class HeaderLayout extends Component {
                         </div>
                     </div>
                     <div className="b-block-right">
-                        <div className="b-list-item">
+                        <div className="b-list-item" ref={this.setWrapperRef}>
                             {contentLogout()}
                         </div>
                     </div>

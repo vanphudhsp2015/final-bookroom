@@ -1,8 +1,5 @@
 import React, { Component } from 'react';
-import axios from 'axios';
-import Cookies from 'universal-cookie';
-const cookies = new Cookies();
-const env = process.env || {}
+import { http } from '../../../../libraries/http/http';
 class SearchComponent extends Component {
     constructor(props, context) {
         super(props, context);
@@ -16,46 +13,60 @@ class SearchComponent extends Component {
         if (this.state.arrayEmail !== prevState.arrayEmail) {
             this.props.onGetArrayEmail(this.state.arrayEmail);
         }
+        if (this.state.email !== prevState.email) {
+            if (this.state.email.trim() === '') {
+                this.setState({
+                    isChanger: false
+                })
+            }
+        }
     }
     onChanger = (event) => {
         var timeout = null;
         clearTimeout(timeout);
         var self = this;
+        this.setState({
+            [event.target.name]: event.target.value
+        })
+        if (this.state.email === '') {
+            self.setState({
+                isChanger: false,
+            })
+        } else {
+            self.setState({
+                isChanger: true
+            })
+        }
         var value = event.target.value.trim();
         timeout = setTimeout(function () {
-            axios.request({
+            http.request({
                 method: 'GET',
-                url: `${env.REACT_APP_API_BE}/api/v1/search/${value === '' ? 's' : value}`,
-                headers: {
-                    "Accept": "application/json",
-                    'Content-Type': 'application/json',
-                    'Authorization': `${'bearer ' + cookies.get('token')}`
-                },
+                url: `/search/${value === '' ? 's' : value}`,
             }).then(function (response) {
-                if (response.data.data.length > 0) {
-                    self.setState({
-                        isChanger: true,
-                        data: response.data.data
-                    })
-                } else {
-                    self.setState({
-                        isChanger: false
-                    })
-                }
+                self.setState({
+                    data: response
+                })
             }).catch(function (error) {
 
             })
-        }, 500);
+        }, 700);
 
     }
     onAddEmail = (data) => {
         let arrayNew = [];
         let dataObject = { id: this.state.arrayEmail.length > 0 ? this.state.arrayEmail[this.state.arrayEmail.length - 1].id + 1 : 1, email: data.attributes.email };
         arrayNew = [...this.state.arrayEmail, dataObject];
-        this.setState({
-            arrayEmail: arrayNew,
-            isChanger: false,
+        const newArrray = Array.from(new Set(arrayNew.map(s => s.email))).map(email => {
+            return {
+                email: arrayNew.find(s => s.email === email).email
+            }
         })
+        this.setState({
+            arrayEmail: newArrray,
+            isChanger: false,
+            email: ''
+        })
+        this.props.onGetArrayEmail(this.state.arrayEmail);
     }
     _handleKeyDown = (event) => {
         if (event.key === 'Enter') {
@@ -65,17 +76,26 @@ class SearchComponent extends Component {
                 email: event.target.value
             }
             arrayNew = [...this.state.arrayEmail, dataObject];
-            this.setState({
-                arrayEmail: arrayNew,
-                isChanger: false,
+            const newArrray = Array.from(new Set(arrayNew.map(s => s.email))).map(email => {
+                return {
+                    email: arrayNew.find(s => s.email === email).email
+                }
             })
+
+            this.setState({
+                arrayEmail: newArrray,
+                isChanger: false,
+                email: ''
+            })
+            this.props.onGetArrayEmail(this.state.arrayEmail);
         }
     }
-    onRemoveEmail = (id) => {
-        let data = this.state.arrayEmail.filter(data => data.id !== id);
+    onRemoveEmail = (item) => {
+        let data = this.state.arrayEmail.filter(data => data.email !== item);
         this.setState({
             arrayEmail: data
         })
+        this.props.onGetArrayEmail(this.state.arrayEmail);
     }
     render() {
         return (
@@ -87,7 +107,7 @@ class SearchComponent extends Component {
                 </div>
                 <div className="b-description-content">
                     <div className="b-form-group">
-                        <input type="text" className="b-input" name='email' autoComplete="off" placeholder="Thêm Khách" onChange={this.onChanger} onKeyPress={this._handleKeyDown} />
+                        <input type="text" className="b-input" value={this.state.email} name='email' autoComplete="off" placeholder="Thêm Khách" onChange={this.onChanger} onKeyPress={this._handleKeyDown} />
                         <div className={this.state.isChanger ? "b-list-user  is-active" : "b-list-user"}>
                             {this.state.data.map(data => (
                                 <div className="b-item" key={data.id} onClick={this.onAddEmail.bind(this, data)}>
@@ -104,11 +124,11 @@ class SearchComponent extends Component {
                     </div>
                     <div className="b-list-item">
                         {this.state.arrayEmail.map(data => (
-                            <div className="b-item" key={data.id}>
+                            <div className="b-item" key={data.email}>
                                 <h2 className="b-text-title">
                                     {data.email}
                                 </h2>
-                                <button className="b-btn"><i className="fas fa-times" onClick={this.onRemoveEmail.bind(this, data.id)} /></button>
+                                <button className="b-btn"><i className="fas fa-times" onClick={this.onRemoveEmail.bind(this, data.email)} /></button>
                             </div>
                         ))}
                     </div>
