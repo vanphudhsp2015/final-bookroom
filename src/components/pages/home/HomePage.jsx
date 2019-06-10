@@ -87,14 +87,13 @@ class HomePage extends Component {
             edit: false
         })
     }
-
-    // onChangerRoom = (data) => {
-    //     if (data === 0) {
-    //         this.props.dispatch(action.requestGetEvent());
-    //     } else {
-    //         this.props.dispatch(action.requestGetEventByRoom(data));
-    //     }
-    // }
+    onChangerRoom = (data) => {
+        if (data === 0) {
+            this.props.dispatch(action.requestGetEvent());
+        } else {
+            this.props.dispatch(action.requestGetEventByRoom(data));
+        }
+    }
     onEdit = (id) => {
         let item = [...this.props.data].filter(item => item.id === id);
         if (item.length > 0) {
