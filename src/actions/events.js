@@ -19,23 +19,30 @@ export function requestGetEvent() {
 // add tour 
 export function requestAddEvents(data) {
     let email = '';
-    if (data.arrayEmail !== undefined) {
-        data.arrayEmail.forEach((i, index, item) => {
-            if (index === item.length - 1) {
-                email += `${item[index].email}`;
-            } else {
-                email += `${item[index].email},`;
-            }
-        })
+    if (data.arrayEmail !== undefined && data.arrayEmail.length > 0) {
+        if (data.arrayEmail.length > 1) {
+            data.arrayEmail.forEach((i, index, item) => {
+                if (index === item.length - 1) {
+                    email += `${item[index].email}`;
+                } else {
+                    email += `${item[index].email},`;
+                }
+            })
+        } else {
+            data.arrayEmail.forEach((i, index, item) => {
+                email += `${item[index].email}`
+            })
+        }
+
     }
     let formDataObject = {};
     if (data.checkbox === true) {
         let arrayDay = '';
         data.byweekday.forEach((i, index, item) => {
             if (index === item.length - 1) {
-                arrayDay += `${item[index]}`;
+                arrayDay += `${item[index]} `;
             } else {
-                arrayDay += `${item[index]},`;
+                arrayDay += `${item[index]}, `;
             }
         })
         formDataObject = {
@@ -100,9 +107,9 @@ export function requestUpdateEvent(data) {
         if (data.byweekday !== null) {
             data.byweekday.forEach((i, index, item) => {
                 if (index === item.length - 1) {
-                    arrayDay += `${item[index]}`;
+                    arrayDay += `${item[index]} `;
                 } else {
-                    arrayDay += `${item[index]},`;
+                    arrayDay += `${item[index]}, `;
                 }
             })
         }

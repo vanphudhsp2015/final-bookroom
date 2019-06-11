@@ -39,6 +39,8 @@ function parseBody(response) {
     }
 }
 function parseBodyItem(response) {
+    console.log(response);
+    
     //  if (response.status === 200 && response.data.status.code === 200) { // - if use custom status code    
     if (response.status === 200) {
         return response.data;

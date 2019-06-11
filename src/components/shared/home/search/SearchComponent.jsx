@@ -128,7 +128,7 @@ class SearchComponent extends Component {
                                 <h2 className="b-text-title">
                                     {data.email}
                                 </h2>
-                                <button className="b-btn"><i className="fas fa-times" onClick={this.onRemoveEmail.bind(this, data.email)} /></button>
+                                <button className="b-btn" onClick={this.onRemoveEmail.bind(this, data.email)} ><i className="fas fa-times" /></button>
                             </div>
                         ))}
                     </div>

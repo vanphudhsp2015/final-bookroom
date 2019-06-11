@@ -84,7 +84,6 @@ class FullcalenderComponent extends Component {
     }
 
     onEvent(info) {
-
         this.setState({
             show: true,
             title: info.event.title,
@@ -416,7 +415,8 @@ class FullcalenderComponent extends Component {
                     cancelText="Hủy"
                 >
                     <div className="b-events">
-                        {cookies.get('data') !== undefined && parseInt(this.state.user_id) === parseInt(cookies.get('data').id) ?
+                        {/* {cookies.get('data') !== undefined && cookies.get('data').attributes} */}
+                        {(cookies.get('data') !== undefined && parseInt(this.state.user_id) === parseInt(cookies.get('data').id)) || (cookies.get('data') !== undefined && cookies.get('data').attributes.roles[0] === 'super_admin') ?
                             <div className="b-button-funtion">
                                 <div className="b-item">
                                     <Link to={'/' + this.state.id + '/' + this.state.day} className="b-btn">
@@ -433,7 +433,8 @@ class FullcalenderComponent extends Component {
                                         <i className="fas fa-times"></i>
                                     </button>
                                 </div>
-                            </div> :
+                            </div>
+                            :
                             <div className="b-button-funtion">
                                 <div className="b-item">
                                     <button className="b-btn" onClick={this.onCloseModal}>
