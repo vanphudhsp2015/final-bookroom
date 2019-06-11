@@ -216,7 +216,7 @@ export function requestDeleteException(data) {
         })
     }
 }
-export function requestEditException(data, day) {
+export function requestEditException(data, day, room) {
 
     let formDataObject = {};
     formDataObject = {
@@ -225,6 +225,7 @@ export function requestEditException(data, day) {
         'timestart': data.timestart,
         'timeend': data.timeend,
         'title': data.title,
+        'room_id': room
     }
 
     return (dispatch) => {

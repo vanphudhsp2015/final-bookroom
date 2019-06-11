@@ -211,7 +211,11 @@ class HomePage extends Component {
                         id: item.id,
                         attributes: {
                             ...detail,
-                            room: item.attributes.room,
+                            room: {
+                                id: detail.room_id,
+                                title: detail.name,
+                                color: detail.color
+                            },
                             repeat: null,
                             daystart: detail.day,
                             user_id: item.attributes.user_id,
@@ -241,7 +245,7 @@ class HomePage extends Component {
         const dateTime = moment(start).add(remainder, "minutes").format("HH:mm");
         return dateTime;
     }
-    render() {        
+    render() {
         return (
             <div className="wrapper">
                 <HeaderLayout onResetCheckLogin={this.onResetCheckLogin} isCheck={this.state.isLogin}></HeaderLayout>
