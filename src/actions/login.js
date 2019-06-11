@@ -20,7 +20,6 @@ export function requestGetLogin(data) {
             },
             data: token
         }).then(function (response) {
-
             if (response !== undefined) {
                 cookies.set('token', response.data.access_token);
                 axios.request({
