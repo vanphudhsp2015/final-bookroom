@@ -89,6 +89,7 @@ export function requestAddEvents(data) {
             message.success('Đặt Thành Công')
             dispatch(receiveData(types.REQUEST_ADD_EVENT, response))
         }).catch(function (error) {
+            message.error(error.messages[0])            
             dispatch(requestRejected(error));
         })
     }
