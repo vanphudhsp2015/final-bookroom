@@ -350,7 +350,7 @@ class CalenderInfoPage extends Component {
             this.props.dispatch(action.requestUpdateEvent(this.state));
             this.props.history.push(`/?date=${this.state.dateStart}`);
         } else {
-            this.props.dispatch(action.requestEditException(this.state, this.props.match.params.date));
+            this.props.dispatch(action.requestEditException(this.state, this.props.match.params.date, this.state.rooms));
             this.props.history.push(`/?date=${this.state.dateStart}`);
         }
         this.setState({

@@ -298,57 +298,6 @@ class FullcalenderComponent extends Component {
         m = m < 10 ? '0' + m : m;
         return `${h}:${m}`;
     }
-    convertToFrontEnd(arrA) {
-        let arrB = []
-        if (arrA.length) {
-            arrB = this.convertArray(arrA).map(item => {
-                let attributes = item.attributes;
-                let excepArray = [];
-                attributes.exception.map(data => (
-                    excepArray = [...excepArray, `${data.day + ` ${data.timestart} UTC`}`]
-                ))
-                return {
-                    resourceId: attributes.room.id,
-                    id: item.id,
-                    title: attributes.title,
-                    content: attributes.content,
-                    className: [
-                        attributes.repeat !== null ? `${'room_item_' + attributes.room.id}` : "",
-                        cookies.get('data') !== undefined && parseInt(attributes.user_id) === parseInt(cookies.get('data').id) ? "is-current" : "",
-                        attributes.repeat !== null ? 'b-repeat' : ''
-                    ],
-                    start: attributes.daystart,
-                    room: attributes.room.name,
-                    user: attributes.username,
-                    user_id: attributes.user_id,
-                    timestart: attributes.timestart,
-                    timeend: attributes.timeend,
-                    color: attributes.room.color,
-                    redate: attributes && attributes.repeat !== null ? attributes.repeat.repeatby : 'Không Lặp',
-                    reweek: attributes && attributes.repeat !== null ? attributes.repeat.byweekday : '',
-                    recount: attributes && attributes.repeat !== null ? attributes.repeat.count : '',
-                    repeat: attributes && attributes.repeat !== null ? '1' : '0',
-                    is_repeat: attributes && attributes.repeat !== null ? true : false,
-                    rruleSet: attributes && attributes.repeat !== null ?
-                        {
-                            freq: attributes.repeat.repeatby,
-                            interval: attributes.repeat.interval,
-                            byweekday: attributes.repeat.byweekday,
-                            dtstart: `${attributes.daystart + ' ' + attributes.timestart}`,
-                            count: attributes.repeat.count,
-                            exrules: excepArray,
-                        } : {
-                            freq: "daily",
-                            interval: 1,
-                            dtstart: `${attributes.daystart + ' ' + attributes.timestart}`,
-                            count: 1
-                        },
-                    duration: this.convertMinsToHrsMins(moment(`${attributes.daystart + ' ' + attributes.timeend}`).diff(`${item.attributes.daystart + ' ' + item.attributes.timestart}`, 'minutes'))
-                }
-            })
-        }
-        return arrB;
-    }
     render() {
         if (this.state.isShowForm) {
             return <Redirect to={`/new?date=` + this.state.dateStart + `&time=` + this.state.timestart}></Redirect>

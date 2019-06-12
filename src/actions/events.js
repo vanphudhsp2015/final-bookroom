@@ -38,13 +38,22 @@ export function requestAddEvents(data) {
     let formDataObject = {};
     if (data.checkbox === true) {
         let arrayDay = '';
-        data.byweekday.forEach((i, index, item) => {
-            if (index === item.length - 1) {
-                arrayDay += `${item[index]} `;
+        if (data.byweekday !== null) {
+            if (data.byweekday.length > 1) {
+                data.byweekday.forEach((i, index, item) => {
+                    if (index === item.length - 1) {
+                        arrayDay += `${item[index]} `;
+                    } else {
+                        arrayDay += `${item[index]}, `;
+                    }
+                })
             } else {
-                arrayDay += `${item[index]}, `;
+                data.byweekday.forEach((i, index, item) => {
+                    arrayDay += `${item[index]} `;
+                })
             }
-        })
+
+        }
         formDataObject = {
             'room_id': data.rooms,
             'title': data.title,
@@ -105,13 +114,20 @@ export function requestUpdateEvent(data) {
     if (data.checkbox === true) {
         let arrayDay = '';
         if (data.byweekday !== null) {
-            data.byweekday.forEach((i, index, item) => {
-                if (index === item.length - 1) {
+            if (data.byweekday.length > 1) {
+                data.byweekday.forEach((i, index, item) => {
+                    if (index === item.length - 1) {
+                        arrayDay += `${item[index]} `;
+                    } else {
+                        arrayDay += `${item[index]}, `;
+                    }
+                })
+            } else {
+                data.byweekday.forEach((i, index, item) => {
                     arrayDay += `${item[index]} `;
-                } else {
-                    arrayDay += `${item[index]}, `;
-                }
-            })
+                })
+            }
+
         }
         formDataObject = {
             'room_id': data.rooms,
@@ -216,7 +232,7 @@ export function requestDeleteException(data) {
         })
     }
 }
-export function requestEditException(data, day) {
+export function requestEditException(data, day, room) {
 
     let formDataObject = {};
     formDataObject = {
@@ -225,6 +241,7 @@ export function requestEditException(data, day) {
         'timestart': data.timestart,
         'timeend': data.timeend,
         'title': data.title,
+        'room_id': room
     }
 
     return (dispatch) => {
