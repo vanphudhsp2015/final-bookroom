@@ -66,7 +66,7 @@ class HeaderLayout extends Component {
         console.error("error " + response) // eslint-disable-line
     }
     logout = () => {
-        this.props.dispatch(action.requestLogout(cookies.remove('accessToken')));
+        this.props.dispatch(action.requestLogout());
         this.setState({
             isLogout: true
         })
@@ -109,7 +109,7 @@ class HeaderLayout extends Component {
         })
     }
 
-    render() {
+    render() {        
         if (this.state.isRedirect) {
             return (
                 <Redirect to="/admin/event"></Redirect>
