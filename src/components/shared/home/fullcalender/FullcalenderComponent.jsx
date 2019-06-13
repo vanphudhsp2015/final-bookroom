@@ -8,7 +8,6 @@ import rrsetPlugin from '../../../../libraries/rruleset';
 import interactionPlugin from '@fullcalendar/interaction' // needed for dayClick
 import resourceTimeGridPlugin from '@fullcalendar/resource-timegrid';
 import allLocales from '@fullcalendar/core/locales-all';
-import '../../../../main.scss'
 import { Modal, Calendar, Radio, message } from 'antd';
 import Cookies from 'universal-cookie';
 import { Link, Redirect } from 'react-router-dom';
@@ -447,9 +446,9 @@ class FullcalenderComponent extends Component {
                     //     }
                     // }}
                     header={{
-                        right: 'custom  today prev,next',
+                        right: 'custom prev,next',
                         center: 'title ',
-                        left: 'dayGridMonth,timeGridWeek,resourceTimeGridDay',
+                        left: 'dayGridMonth,timeGridWeek',
                     }}
                     listDayFormat
                     height={'parent'}

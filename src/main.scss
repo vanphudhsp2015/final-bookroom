@@ -50,6 +50,10 @@
   border: none;
   color: #4c4c4c;
   font-family: "Roboto Medium";
+
+  &:hover {
+    border: none;
+  }
   &.fc-today-button {
     &:disabled {
       display: none;
@@ -186,6 +190,7 @@
 }
 
 .fc-button {
+  padding: 0px !important;
   &.fc-button-active {
     border: none !important;
     background-color: #3384e2 !important;
@@ -293,6 +298,6 @@
 .b-picker {
   width: 200px !important;
 }
-.antmessage{
+.antmessage {
   display: none !important;
 }
