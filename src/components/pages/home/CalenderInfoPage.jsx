@@ -39,10 +39,10 @@ class CalenderInfoPage extends Component {
             timestart: this.roundMinutesDate(now, 0),
             timeend: this.roundMinutesDate(now, 60),
             selectRepeat: [
-                { id: '2', name: 'Không Lặp Lại' },
-                { id: '0', name: 'Tùy Chỉnh' },
-                { id: '3', name: 'Mọi Ngày Trong Tuần Từ Thứ 2 Đến Thứ 6' },
-                { id: '1', name: 'Hằng Ngày', count: 10 },
+                { id: '2', name: 'Không lặp lại' },
+                { id: '0', name: 'Tùy chỉnh' },
+                { id: '3', name: 'Mọi ngày trong tuần từ thứ 2 đến thứ 6' },
+                { id: '1', name: 'Hàng ngày', count: 10 },
             ],
             visible: false,
             repeat: '2',
@@ -240,7 +240,7 @@ class CalenderInfoPage extends Component {
         let covertName = '';
         switch (this.state.choice) {
             case "daily":
-                covertName = "Lặp Lại Hằng Ngày "
+                covertName = "Lặp lại hàng ngày"
                 this.setState({
                     choice: 'daily'
                 })
@@ -249,7 +249,7 @@ class CalenderInfoPage extends Component {
                 })
                 break;
             case "monthly":
-                covertName = "Lặp Lại  Hằng Tháng "
+                covertName = "Lặp lại hàng tháng"
                 this.setState({
                     choice: 'monthly'
                 })
@@ -258,7 +258,7 @@ class CalenderInfoPage extends Component {
                 })
                 break;
             case "yearly":
-                covertName = "Lặp Lại  Hằng Năm "
+                covertName = "Lặp lại hàng năm"
                 this.setState({
                     choice: 'yearly'
                 })
@@ -275,7 +275,7 @@ class CalenderInfoPage extends Component {
                         nameWeek += `${this.onTranslate(item[index])},`;
                     }
                 })
-                covertName = `Các Thứ  [ ${nameWeek} ] Trong Tuần`
+                covertName = `Các thứ  [ ${nameWeek} ] trong tuần`
                 this.setState({
                     choice: 'weekly',
                     count: (this.state.byweekday.length + 1) * this.state.count
@@ -300,13 +300,13 @@ class CalenderInfoPage extends Component {
         let covertName = '';
         switch (choice) {
             case "daily":
-                covertName = "Lặp Lại Hằng Ngày "
+                covertName = "Lặp lại hàng ngày"
                 break;
             case "monthly":
-                covertName = "Lặp Lại  Hằng Tháng "
+                covertName = "Lặp lại hàng tháng"
                 break;
             case "yearly":
-                covertName = "Lặp Lại  Hằng Năm "
+                covertName = "Lặp Lại hàng năm"
                 break;
             case "weekly":
                 let nameWeek = '';
@@ -317,7 +317,7 @@ class CalenderInfoPage extends Component {
                         nameWeek += `${this.onTranslate(item[index])},`;
                     }
                 })
-                covertName = `Các Ngày ${nameWeek} Trong Tuần`
+                covertName = `Các ngày ${nameWeek} trong tuần`
                 break;
             default:
                 covertName = 'daily'
@@ -573,7 +573,7 @@ class CalenderInfoPage extends Component {
                                                         <Select
                                                             mode="multiple"
                                                             style={{ width: '100%' }}
-                                                            placeholder="Mời Chọn Các Thứ !"
+                                                            placeholder="Chọn thứ trong tuần !"
                                                             defaultValue={this.state.byweekday}
                                                             onChange={this.handleChangeByWeek}>
                                                             {children.map(data => (
@@ -606,31 +606,31 @@ class CalenderInfoPage extends Component {
                             <div className="b-heading">
                                 <div className="b-heading-left">
                                     <div className="b-form-group">
-                                        <input type="text" name="title" autoComplete="off" value={this.state.title} placeholder="Thêm Tiêu Đề *" className="b-input" onChange={this.onChanger} />
+                                        <input type="text" name="title" autoComplete="off" value={this.state.title} placeholder="Nhập tiêu đề" className="b-input" onChange={this.onChanger} />
                                     </div>
                                     <div className="b-group-select">
                                         <div className="b-form-group">
-                                            <label>Ngày Cuộc Họp</label>
+                                            <label>Ngày cuộc họp</label>
                                             <DatePicker className="b-picker" onChange={this.onChangeDate} allowClear={false} value={moment(this.state.dateStart, dateFormat)} format={dateFormat} />
                                             <span className={this.state.validateDate ? "is-error  is-check" : "is-error"}>
-                                                * Thời Gian Lớn Hơn Hiện Tại
+                                                * Thời gian lớn hơn hiện tại
                                         </span>
                                         </div>
 
                                         <div className="b-form-group">
-                                            <label>Thời Gian Bắt Đầu</label>
+                                            <label>Thời gian bắt đầu</label>
                                             <TimePicker className="b-picker" hideDisabledOptions disabledHours={disabledHours} onChange={this.onChangeTime} value={moment(this.state.timestart, format)} allowClear={false} minuteStep={30} defaultValue={moment(this.state.timestart, format)} format={format} />
                                             <span className={this.state.validateTime ? "is-error is-check" : "is-error"}>
-                                                * Thời Gian Lớn Hơn Hiện Tại
+                                                * Thời gian lớn hơn hiện tại
                                             </span>
                                         </div>
 
 
                                         <div className="b-form-group">
-                                            <label>Thời Gian Kết Thúc</label>
+                                            <label>Thời gian kết thúc</label>
                                             <TimePicker className="b-picker" hideDisabledOptions disabledHours={disabledHours} onChange={this.onChangeTimeItem} value={moment(this.state.timeend, format)} allowClear={false} minuteStep={30} defaultValue={moment(this.state.timeend, format)} format={format} />
                                             <span className={this.state.validateTimeItem ? "is-error is-check" : "is-error"}>
-                                                * Thời Gian Lớn Hơn Hiện Tại
+                                                * Thời gian lớn hơn hiện tại
                                         </span>
                                         </div>
 

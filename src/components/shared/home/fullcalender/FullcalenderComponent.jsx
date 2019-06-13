@@ -447,9 +447,9 @@ class FullcalenderComponent extends Component {
                         }
                     }}
                     header={{
-                        right: 'custom prev,next today',
+                        right: 'custom prev,next',
                         center: 'title ',
-                        left: 'dayGridMonth,timeGridWeek,resourceTimeGridDay',
+                        left: 'dayGridMonth,timeGridWeek',
                     }}
                     listDayFormat
                     height={'parent'}
