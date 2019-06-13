@@ -273,9 +273,7 @@ class FullcalenderComponent extends Component {
     }
     onClickDate = (e) => {
         // (moment(`${nowCurrent + ' ' + dateString + ':00'}`)).diff(dateFormatDate(now, 'yyyy-mm-dd HH:MM:ss'), 'minutes') < 0
-        if(moment(dateFormat(e.dateStr,'yyyy-mm-dd HH:MM:ss')).diff(dateFormat(now, 'yyyy-mm-dd HH:MM:ss'),'minites') < 0){
-            return;
-        }else{
+       
             this.clickCount += 1;
             var self = this;
             if (this.clickCount === 1) {
@@ -286,16 +284,19 @@ class FullcalenderComponent extends Component {
                 if (cookies.get('data') === undefined) {
                     message.error('Vui Lòng Đăng Nhập')
                 } else {
-                    this.setState({
-                        isShowForm: true,
-                        dateStart: dateFormat(e.dateStr, 'yyyy-mm-dd'),
-                        timestart: dateFormat(e.dateStr, 'HH:MM'),
-                        timeend: this.roundMinutesDate(e.dateStr, 30),
-                    })
+                    if(moment(dateFormat(e.dateStr,'yyyy-mm-dd HH:MM:ss')).diff(dateFormat(now, 'yyyy-mm-dd HH:MM:ss'),'minites') < 0){
+                        message.error('Vui Lòng Chọn Thời Gian Lớn Hơn Thời Gian Hiện Tại');
+                        return;
+                    }else{
+                        this.setState({
+                            isShowForm: true,
+                            dateStart: dateFormat(e.dateStr, 'yyyy-mm-dd'),
+                            timestart: dateFormat(e.dateStr, 'HH:MM'),
+                            timeend: this.roundMinutesDate(e.dateStr, 30),
+                        })
+                    }
                 }
             }
-        }
-        
     }
     convertMinsToHrsMins(mins) {
         let h = Math.floor(mins / 60);
