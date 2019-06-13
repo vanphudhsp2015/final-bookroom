@@ -247,6 +247,8 @@ class HomePage extends Component {
         return dateTime;
     }
     render() {        
+        console.log(cookies.get('accessToken'));
+        
         return (
             <div className="wrapper">
                 <HeaderLayout onResetCheckLogin={this.onResetCheckLogin} isCheck={this.state.isLogin}></HeaderLayout>

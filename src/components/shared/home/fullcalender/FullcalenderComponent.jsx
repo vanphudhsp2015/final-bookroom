@@ -9,6 +9,7 @@ import interactionPlugin from '@fullcalendar/interaction' // needed for dayClick
 import resourceTimeGridPlugin from '@fullcalendar/resource-timegrid';
 import allLocales from '@fullcalendar/core/locales-all';
 import { Modal, Calendar, Radio, message } from 'antd';
+import '../../../../main.scss'
 import Cookies from 'universal-cookie';
 import { Link, Redirect } from 'react-router-dom';
 import moment from 'moment';

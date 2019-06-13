@@ -50,15 +50,6 @@
   border: none;
   color: #4c4c4c;
   font-family: "Roboto Medium";
-
-  &:hover {
-    border: none;
-  }
-  &.fc-today-button {
-    &:disabled {
-      display: none;
-    }
-  }
   &.fc-button-active {
     background-color: #f0f0f0 !important;
     color: #4c4c4c !important;
@@ -190,7 +181,6 @@
 }
 
 .fc-button {
-  padding: 0px !important;
   &.fc-button-active {
     border: none !important;
     background-color: #3384e2 !important;
@@ -298,6 +288,10 @@
 .b-picker {
   width: 200px !important;
 }
-.antmessage {
-  display: none !important;
+
+.ant-message .anticon {
+  position: relative;
+  top: -1px !important;
+  margin-right: 8px;
+  font-size: 18px;
 }
