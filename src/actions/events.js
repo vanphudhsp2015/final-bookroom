@@ -42,17 +42,16 @@ export function requestAddEvents(data) {
             if (data.byweekday.length > 1) {
                 data.byweekday.forEach((i, index, item) => {
                     if (index === item.length - 1) {
-                        arrayDay += `${item[index]} `;
+                        arrayDay += `${item[index]}`;
                     } else {
-                        arrayDay += `${item[index]}, `;
+                        arrayDay += `${item[index]},`;
                     }
                 })
             } else {
                 data.byweekday.forEach((i, index, item) => {
-                    arrayDay += `${item[index]} `;
+                    arrayDay += `${item[index]}`;
                 })
-            }
-
+            }            
         }
         formDataObject = {
             'room_id': data.rooms,
@@ -89,6 +88,7 @@ export function requestAddEvents(data) {
             message.success('Đặt Thành Công')
             dispatch(receiveData(types.REQUEST_ADD_EVENT, response))
         }).catch(function (error) {
+            message.error(error.messages[0])            
             dispatch(requestRejected(error));
         })
     }

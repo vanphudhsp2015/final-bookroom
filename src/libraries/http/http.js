@@ -20,7 +20,7 @@ function parseError(messages) {
 /**
  * parse response
  */
-function parseBody(response) {    
+function parseBody(response) {        
     //  if (response.status === 200 && response.data.status.code === 200) { // - if use custom status code    
     if (response.status === 200) {
         return response.data.data;
@@ -33,14 +33,14 @@ function parseBody(response) {
         return response.data.data;
     } else if (response.status === 429) {
         return "Not Data";
+    }else if(response.status === 400){
+        return "Event Exists"
     }
     else {
         return this.parseError(response.data.messages)
     }
 }
-function parseBodyItem(response) {
-    console.log(response);
-    
+function parseBodyItem(response) {    
     //  if (response.status === 200 && response.data.status.code === 200) { // - if use custom status code    
     if (response.status === 200) {
         return response.data;

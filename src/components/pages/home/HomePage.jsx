@@ -152,7 +152,7 @@ class HomePage extends Component {
                     reweek: attributes && attributes.repeat !== null ? attributes.repeat.byweekday : '',
                     recount: attributes && attributes.repeat !== null ? attributes.repeat.count : '',
                     repeat: attributes && attributes.repeat !== null ? '1' : '0',
-                    is_repeat: attributes && attributes.repeat !== null ? true : false,
+                    is_repeat: (attributes && attributes.repeat !== null) || (attributes && attributes.checkRepeat === true) ? true : false,
                     rruleSet: attributes && attributes.repeat !== null ?
                         {
                             freq: attributes.repeat.repeatby,
@@ -217,6 +217,7 @@ class HomePage extends Component {
                                 color: detail.color
                             },
                             repeat: null,
+                            checkRepeat: true,
                             daystart: detail.day,
                             user_id: item.attributes.user_id,
                             exception: []

@@ -9,6 +9,7 @@ import * as action from '../../../actions/events';
 import * as actionRoom from '../../../actions/room';
 import { connect } from 'react-redux';
 import queryString from 'query-string'
+import { http } from '../../../libraries/http/http';
 const dateFormat = 'YYYY/MM/DD';
 const format = 'HH:mm';
 const { Option } = Select;
@@ -277,7 +278,7 @@ class CalenderInfoPage extends Component {
                 covertName = `Các Thứ  [ ${nameWeek} ] Trong Tuần`
                 this.setState({
                     choice: 'weekly',
-                    count: this.state.byweekday.length * this.state.count
+                    count: (this.state.byweekday.length + 1) * this.state.count
                 })
                 break;
             default:
@@ -332,26 +333,78 @@ class CalenderInfoPage extends Component {
     }
     onSubmit = (event) => {
         event.preventDefault();
-        if (this.state.title.length <= 0) {
-            message.error('Vui Lòng Kiểm Tra Thông Tin Nhập');
-        } else {
-            if (this.props.match.params.calender !== undefined) {
-                this.setState({
-                    isShowEdit: true
-                })
-            } else {
-                this.props.dispatch(action.requestAddEvents(this.state));
-                this.props.history.push(`/?date=${this.state.dateStart}`);
-            }
+        var self = this.state;
+        var selfProps = this.props;
+        var selfThis = this;
+        let params = {
+            'daystart': this.state.dateStart,
+            'timestart': this.state.timestart,
+            'timeend': this.state.timeend
         }
+        http.request({
+            method: 'GET',
+            url: '/admin/getbrbyday',
+            params,
+        }).then(function (response) {
+            if (response.length === 0) {
+                if (self.title.length <= 0) {
+                    message.error('Vui Lòng Kiểm Tra Thông Tin Nhập');
+                } else {
+                    if (selfProps.match.params.calender !== undefined) {
+                        selfThis.setState({
+                            isShowEdit: true
+                        })
+                    } else {
+                        selfProps.dispatch(action.requestAddEvents(selfThis.state));
+                        selfProps.history.push(`/?date=${self.dateStart}`);
+                    }
+                }
+            } else {
+                message.error("Đã Trùng Lịch Vui Lòng Nhập Thời Gian Khác");
+            }
+        })
+
     }
     handleEditOk = () => {
+        var selfProps = this.props;
+        var selfState = this.state;
         if (this.state.valueEdit === 1) {
-            this.props.dispatch(action.requestUpdateEvent(this.state));
-            this.props.history.push(`/?date=${this.state.dateStart}`);
+            let params = {
+                'daystart': this.state.dateStart,
+                'timestart': this.state.timestart,
+                'timeend': this.state.timeend
+            }
+            http.request({
+                method: 'GET',
+                url: '/admin/getbrbyday',
+                params,
+            }).then(function (response) {
+                if (response.length === 0) {
+                    selfProps.dispatch(action.requestUpdateEvent(selfState));
+                    selfProps.history.push(`/?date=${selfState.dateStart}`);
+                } else {
+                    message.error("Đã Trùng Lịch Vui Lòng Nhập Thời Gian Khác");
+                }
+            })
+
         } else {
-            this.props.dispatch(action.requestEditException(this.state, this.props.match.params.date, this.state.rooms));
-            this.props.history.push(`/?date=${this.state.dateStart}`);
+            let params = {
+                'daystart': this.state.dateStart,
+                'timestart': this.state.timestart,
+                'timeend': this.state.timeend
+            }
+            http.request({
+                method: 'GET',
+                url: '/admin/getbrbyday',
+                params,
+            }).then(function (response) {
+                if (response.length === 0) {
+                    selfProps.dispatch(action.requestEditException(selfState, selfProps.match.params.date, selfState.rooms));
+                    selfProps.history.push(`/?date=${selfState.dateStart}`);
+                } else {
+                    message.error("Đã Trùng Lịch Vui Lòng Nhập Thời Gian Khác");
+                }
+            })
         }
         this.setState({
             isShowEdit: false
