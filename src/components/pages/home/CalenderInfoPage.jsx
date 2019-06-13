@@ -610,27 +610,27 @@ class CalenderInfoPage extends Component {
                                     </div>
                                     <div className="b-group-select">
                                         <div className="b-form-group">
-                                            <label>Ngày Cuộc Họp</label>
+                                            <label>Ngày cuộc họp</label>
                                             <DatePicker className="b-picker" onChange={this.onChangeDate} allowClear={false} value={moment(this.state.dateStart, dateFormat)} format={dateFormat} />
                                             <span className={this.state.validateDate ? "is-error  is-check" : "is-error"}>
-                                                * Thời Gian Lớn Hơn Hiện Tại
+                                                * Thời gian lớn hơn hiện tại
                                         </span>
                                         </div>
 
                                         <div className="b-form-group">
-                                            <label>Thời Gian Bắt Đầu</label>
+                                            <label>Thời gian bắt đầu</label>
                                             <TimePicker className="b-picker" hideDisabledOptions disabledHours={disabledHours} onChange={this.onChangeTime} value={moment(this.state.timestart, format)} allowClear={false} minuteStep={30} defaultValue={moment(this.state.timestart, format)} format={format} />
                                             <span className={this.state.validateTime ? "is-error is-check" : "is-error"}>
-                                                * Thời Gian Lớn Hơn Hiện Tại
+                                                * Thời gian lớn hơn hiện tại
                                             </span>
                                         </div>
 
 
                                         <div className="b-form-group">
-                                            <label>Thời Gian Kết Thúc</label>
+                                            <label>Thời gian kết thúc</label>
                                             <TimePicker className="b-picker" hideDisabledOptions disabledHours={disabledHours} onChange={this.onChangeTimeItem} value={moment(this.state.timeend, format)} allowClear={false} minuteStep={30} defaultValue={moment(this.state.timeend, format)} format={format} />
                                             <span className={this.state.validateTimeItem ? "is-error is-check" : "is-error"}>
-                                                * Thời Gian Lớn Hơn Hiện Tại
+                                                * Thời gian lớn hơn hiện tại
                                         </span>
                                         </div>
 
