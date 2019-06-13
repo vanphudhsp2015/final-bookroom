@@ -285,7 +285,7 @@ class FullcalenderComponent extends Component {
                     message.error('Vui Lòng Đăng Nhập')
                 } else {
                     if(moment(dateFormat(e.dateStr,'yyyy-mm-dd HH:MM:ss')).diff(dateFormat(now, 'yyyy-mm-dd HH:MM:ss'),'minites') < 0){
-                        message.error('Vui Lòng Nhập Thời Gian Lớn Hơn Thời Gian Hiện Tại');
+                        message.error('Vui Lòng Chọn Thời Gian Lớn Hơn Thời Gian Hiện Tại');
                         return;
                     }else{
                         this.setState({
