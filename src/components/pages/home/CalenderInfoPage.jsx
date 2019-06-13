@@ -336,34 +336,18 @@ class CalenderInfoPage extends Component {
         var self = this.state;
         var selfProps = this.props;
         var selfThis = this;
-        let params = {
-            'daystart': this.state.dateStart,
-            'timestart': this.state.timestart,
-            'timeend': this.state.timeend
-        }
-        http.request({
-            method: 'GET',
-            url: '/admin/getbrbyday',
-            params,
-        }).then(function (response) {
-            if (response.length === 0) {
-                if (self.title.length <= 0) {
-                    message.error('Vui Lòng Kiểm Tra Thông Tin Nhập');
-                } else {
-                    if (selfProps.match.params.calender !== undefined) {
-                        selfThis.setState({
-                            isShowEdit: true
-                        })
-                    } else {
-                        selfProps.dispatch(action.requestAddEvents(selfThis.state));
-                        selfProps.history.push(`/?date=${self.dateStart}`);
-                    }
-                }
+        if (self.title.length <= 0) {
+            message.error('Vui Lòng Kiểm Tra Thông Tin Nhập');
+        } else {
+            if (selfProps.match.params.calender !== undefined) {
+                selfThis.setState({
+                    isShowEdit: true
+                })
             } else {
-                message.error("Đã Trùng Lịch Vui Lòng Nhập Thời Gian Khác");
+                selfProps.dispatch(action.requestAddEvents(selfThis.state));
+                selfProps.history.push(`/?date=${self.dateStart}`);
             }
-        })
-
+        }
     }
     handleEditOk = () => {
         var selfProps = this.props;
