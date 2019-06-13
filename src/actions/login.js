@@ -70,24 +70,21 @@ export function requestGetLogin(data) {
     }
 }
 // logout
-export function requestLogout(data) {
-    let body = {
-        'token': data
-    }
+export function requestLogout() {
+    let token = cookies.get('token');
+    cookies.remove('token');
+    cookies.remove('data');
+    cookies.remove('accessToken');
     return (dispatch) => {
         return axios.request({
-            method: 'POST',
+            method: 'GET',
             url: `${API.API_URL}/api/v1/auth/logout`,
             headers: {
                 "Accept": "application/json",
                 'Content-Type': 'application/json',
-                'Authorization': `${'bearer ' + cookies.get('token')}`
-            },
-            data: body
+                'Authorization': `${'bearer ' + token}`
+            }
         }).then(function (response) {
-            cookies.remove('token');
-            cookies.remove('data');
-            cookies.remove('accessToken');
             message.success('Đăng Xuất Thành Công!');
             dispatch(receiveData(types.REQUEST_LOGOUT, response))
         }).catch(function (error) {
