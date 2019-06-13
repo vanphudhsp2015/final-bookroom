@@ -288,3 +288,10 @@
 .b-picker {
   width: 200px !important;
 }
+
+.ant-message .anticon {
+  position: relative;
+  top: -1px !important;
+  margin-right: 8px;
+  font-size: 18px;
+}

@@ -8,8 +8,8 @@ import rrsetPlugin from '../../../../libraries/rruleset';
 import interactionPlugin from '@fullcalendar/interaction' // needed for dayClick
 import resourceTimeGridPlugin from '@fullcalendar/resource-timegrid';
 import allLocales from '@fullcalendar/core/locales-all';
-import '../../../../main.scss'
 import { Modal, Calendar, Radio, message } from 'antd';
+import '../../../../main.scss'
 import Cookies from 'universal-cookie';
 import { Link, Redirect } from 'react-router-dom';
 import moment from 'moment';
@@ -273,30 +273,30 @@ class FullcalenderComponent extends Component {
     }
     onClickDate = (e) => {
         // (moment(`${nowCurrent + ' ' + dateString + ':00'}`)).diff(dateFormatDate(now, 'yyyy-mm-dd HH:MM:ss'), 'minutes') < 0
-       
-            this.clickCount += 1;
-            var self = this;
-            if (this.clickCount === 1) {
-                setTimeout(function () {
-                    self.clickCount = 0;
-                }, 1000);
-            } else if (this.clickCount === 2) {
-                if (cookies.get('data') === undefined) {
-                    message.error('Vui Lòng Đăng Nhập')
+
+        this.clickCount += 1;
+        var self = this;
+        if (this.clickCount === 1) {
+            setTimeout(function () {
+                self.clickCount = 0;
+            }, 1000);
+        } else if (this.clickCount === 2) {
+            if (cookies.get('data') === undefined) {
+                message.error('Vui Lòng Đăng Nhập')
+            } else {
+                if (moment(dateFormat(e.dateStr, 'yyyy-mm-dd HH:MM:ss')).diff(dateFormat(now, 'yyyy-mm-dd HH:MM:ss'), 'minites') < 0) {
+                    message.error('Vui Lòng Chọn Thời Gian Lớn Hơn Thời Gian Hiện Tại');
+                    return;
                 } else {
-                    if(moment(dateFormat(e.dateStr,'yyyy-mm-dd HH:MM:ss')).diff(dateFormat(now, 'yyyy-mm-dd HH:MM:ss'),'minites') < 0){
-                        message.error('Vui Lòng Chọn Thời Gian Lớn Hơn Thời Gian Hiện Tại');
-                        return;
-                    }else{
-                        this.setState({
-                            isShowForm: true,
-                            dateStart: dateFormat(e.dateStr, 'yyyy-mm-dd'),
-                            timestart: dateFormat(e.dateStr, 'HH:MM'),
-                            timeend: this.roundMinutesDate(e.dateStr, 30),
-                        })
-                    }
+                    this.setState({
+                        isShowForm: true,
+                        dateStart: dateFormat(e.dateStr, 'yyyy-mm-dd'),
+                        timestart: dateFormat(e.dateStr, 'HH:MM'),
+                        timeend: this.roundMinutesDate(e.dateStr, 30),
+                    })
                 }
             }
+        }
     }
     convertMinsToHrsMins(mins) {
         let h = Math.floor(mins / 60);
@@ -440,12 +440,12 @@ class FullcalenderComponent extends Component {
                     schedulerLicenseKey={'GPL-My-Project-Is-Open-Source'}
                     defaultView="timeGridWeek"
 
-                    customButtons={{
-                        custom: {
-                            text: 'Chọn Ngày',
-                            click: this.onShowCalender
-                        }
-                    }}
+                    // customButtons={{
+                    //     custom: {
+                    //         text: 'Chọn Ngày',
+                    //         click: this.onShowCalender
+                    //     }
+                    // }}
                     header={{
                         right: 'custom prev,next',
                         center: 'title ',
