@@ -1,0 +1,76 @@
+
+.edit-form {
+    width: 100%;
+    padding-top: 20px;
+
+    .header-title {
+        @include flexbox();
+        @include justify-content(space-between);
+        .page-title {
+            width: 100%;
+            .title {
+                font-weight: 700;
+                color: $color_title;
+                @include rem("font-size", 18);
+                font-family: 'Nunito Sans', sans-serif;
+            }
+            .b-link {
+                color: #2962FF;
+                @include rem("font-size", 12);
+                font-family: 'Nunito Sans', sans-serif;
+            }
+            .b-arrow {
+                margin: 0 5px;
+                color: #6C757D;
+                @include rem("font-size", 12);
+                font-family: 'Nunito Sans', sans-serif;
+            }
+        }
+        .btn-upgrade {
+            text-align: right;
+            width: 100%;
+            .link-upgrade {
+                border-radius: 2px;
+                background: #F62D51;
+                padding: 8px 10px;
+                color: #FFFFFF;
+                @include rem("font-size", 14);
+                font-family: 'Nunito Sans', sans-serif;
+            }
+        }
+    }
+    .b-card {
+        background: #FFFFFF;
+        .card-body {
+            position: relative;
+            margin-top: 20px;
+
+            .form-group {
+
+                .text-contact {
+                    margin: 0 0 8px;
+                    @include rem("font-size",14);
+                    color: $color_title;
+                    font-family: 'Nunito Sans', sans-serif;
+                }
+                .form-control {
+                    @include rem("font-size",14);
+                    color: $color_title;
+                    font-family: 'Nunito Sans', sans-serif;
+                    &:focus {
+                        border-color: inherit;
+                        -webkit-box-shadow: none;
+                        box-shadow: none;
+                    }
+                }
+                .btn-success {
+                    @include rem("font-size",14);
+                    color: #FFFFFF;
+                    padding: 6px 12px;
+                    font-family: 'Nunito Sans', sans-serif;
+                }
+            }
+        }
+    }
+
+}

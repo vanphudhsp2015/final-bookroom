@@ -9,7 +9,6 @@ import * as action from '../../../actions/events';
 import * as actionRoom from '../../../actions/room';
 import { connect } from 'react-redux';
 import queryString from 'query-string'
-import { http } from '../../../libraries/http/http';
 const dateFormat = 'YYYY/MM/DD';
 const format = 'HH:mm';
 const { Option } = Select;
@@ -353,42 +352,11 @@ class CalenderInfoPage extends Component {
         var selfProps = this.props;
         var selfState = this.state;
         if (this.state.valueEdit === 1) {
-            let params = {
-                'daystart': this.state.dateStart,
-                'timestart': this.state.timestart,
-                'timeend': this.state.timeend
-            }
-            http.request({
-                method: 'GET',
-                url: '/admin/getbrbyday',
-                params,
-            }).then(function (response) {
-                if (response.length === 0) {
-                    selfProps.dispatch(action.requestUpdateEvent(selfState));
-                    selfProps.history.push(`/?date=${selfState.dateStart}`);
-                } else {
-                    message.error("Đã Trùng Lịch Vui Lòng Nhập Thời Gian Khác");
-                }
-            })
-
+            selfProps.dispatch(action.requestUpdateEvent(selfState));
+            selfProps.history.push(`/?date=${selfState.dateStart}`);
         } else {
-            let params = {
-                'daystart': this.state.dateStart,
-                'timestart': this.state.timestart,
-                'timeend': this.state.timeend
-            }
-            http.request({
-                method: 'GET',
-                url: '/admin/getbrbyday',
-                params,
-            }).then(function (response) {
-                if (response.length === 0) {
-                    selfProps.dispatch(action.requestEditException(selfState, selfProps.match.params.date, selfState.rooms));
-                    selfProps.history.push(`/?date=${selfState.dateStart}`);
-                } else {
-                    message.error("Đã Trùng Lịch Vui Lòng Nhập Thời Gian Khác");
-                }
-            })
+            selfProps.dispatch(action.requestEditException(selfState, selfProps.match.params.date, selfState.rooms));
+            selfProps.history.push(`/?date=${selfState.dateStart}`);
         }
         this.setState({
             isShowEdit: false
@@ -508,7 +476,7 @@ class CalenderInfoPage extends Component {
         };
         return (
             <div className="wrapper">
-                <HeaderLayout  searchDate={this.state.searchDate}></HeaderLayout>
+                <HeaderLayout dateStart={this.state.dateStart} searchDate={this.state.searchDate}></HeaderLayout>
                 <main className="b-page-main">
                     <div className="b-page-calender">
                         <Modal
@@ -612,6 +580,7 @@ class CalenderInfoPage extends Component {
                                     <div className="b-group-select">
                                         <div className="b-form-group">
                                             <label>Ngày cuộc họp</label>
+                                            <br />
                                             <DatePicker className="b-picker" onChange={this.onChangeDate} allowClear={false} value={moment(this.state.dateStart, dateFormat)} format={dateFormat} />
                                             <span className={this.state.validateDate ? "is-error  is-check" : "is-error"}>
                                                 * Thời gian lớn hơn hiện tại
@@ -620,21 +589,20 @@ class CalenderInfoPage extends Component {
 
                                         <div className="b-form-group">
                                             <label>Thời gian bắt đầu</label>
+                                            <br />
                                             <TimePicker className="b-picker" hideDisabledOptions disabledHours={disabledHours} onChange={this.onChangeTime} value={moment(this.state.timestart, format)} allowClear={false} minuteStep={30} defaultValue={moment(this.state.timestart, format)} format={format} />
                                             <span className={this.state.validateTime ? "is-error is-check" : "is-error"}>
                                                 * Thời gian lớn hơn hiện tại
                                             </span>
                                         </div>
-
-
                                         <div className="b-form-group">
                                             <label>Thời gian kết thúc</label>
+                                            <br />
                                             <TimePicker className="b-picker" hideDisabledOptions disabledHours={disabledHours} onChange={this.onChangeTimeItem} value={moment(this.state.timeend, format)} allowClear={false} minuteStep={30} defaultValue={moment(this.state.timeend, format)} format={format} />
                                             <span className={this.state.validateTimeItem ? "is-error is-check" : "is-error"}>
                                                 * Thời gian lớn hơn hiện tại
-                                        </span>
+                                            </span>
                                         </div>
-
                                     </div>
                                     <div className="b-select-repeat">
                                         <div className="b-form-group">

@@ -1,0 +1,46 @@
+// ----------------------------------------------------------------------
+// Font
+// ----------------------------------------------------------------------
+@import "~bootstrap/dist/css/bootstrap.min.css";
+@import url("https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900&subset=vietnamese");
+
+@font-face {
+  font-family: "Roboto Medium";
+  src: local("Roboto Medium"), url("/fonts/Roboto-Medium.ttf") format("embedded-opentype");
+}
+// ----------------------------------------------------------------------
+// Base
+// ----------------------------------------------------------------------
+@import "base/mixins";
+@import "base/variables";
+@import "base/extends";
+@import "base/reset";
+@import "base/fonts";
+@import "base/utility";
+@import "base/button";
+
+// ----------------------------------------------------------------------
+// Layout
+// ----------------------------------------------------------------------
+@import "layout/header";
+@import "layout/footer";
+@import "layout/siderleft";
+// ----------------------------------------------------------------------
+// Custom
+// ----------------------------------------------------------------------
+@import "custom/custom-plugin";
+
+// ----------------------------------------------------------------------
+// Pages
+// ----------------------------------------------------------------------
+@import "pages/homepage";
+@import "pages/banner";
+@import "pages/waves";
+@import "pages/form";
+@import "pages/table";
+@import "pages/edit";
+@import "pages/add";
+// ----------------------------------------------------------------------
+// Responsive
+// ----------------------------------------------------------------------
+@import "responsive/responsive";

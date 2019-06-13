@@ -1,0 +1,122 @@
+.b-dashboard-header {
+  position: relative;
+  background-color: #414755;
+  top: 0;
+  left: 0;
+  .b-logo {
+    .link-logo {
+      width: 80%;
+      padding: 10px 10px;
+    }
+  }
+  .b-menu {
+    @include flexbox();
+    @include justify-content(space-between);
+    @include align-items(center);
+    width: 80%;
+    .b-search {
+      padding: 0 20px;
+      color: white;
+      @include rem("font-size", 20);
+    }
+    .b-user {
+      padding: 0 20px;
+      .img-user {
+        border-radius: 31px;
+        width: 31px;
+        height: 31px;
+      }
+    }
+  }
+}
+.b-page-header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  background-color: $color_header;
+  box-shadow: 0 0 10px -2px rgba($color: #000000, $alpha: 0.2);
+  .b-block {
+    @include flexbox();
+    @include justify-content(space-between);
+    align-items: center;
+    padding-right: 15px;
+    padding-left: 15px;
+    .b-block-left {
+      img {
+        width: 200px;
+        &::selection{
+          background-color: transparent;
+        }
+      }
+    }
+    .b-block-right {
+      .b-item {
+        display: inline-block;
+        &.b-dropdown {
+          position: relative;
+          i {
+            padding: 0 5px;
+            @include transform(translate(0, 4px));
+          }
+          &.is-active {
+            .b-hash-menu {
+              visibility: visible;
+              opacity: 1;
+            }
+          }
+          .b-hash-menu {
+            z-index: 9999;
+            visibility: hidden;
+            opacity: 0;
+            position: absolute;
+            width: 150px;
+            top: 100%;
+            left: 0;
+            background-color: #fff;
+            border-radius: 4px;
+            box-shadow: 0 0 10px -2px rgba($color: #000000, $alpha: 0.2);
+            .b-logout {
+              position: relative;
+              .b-btn {
+                display: block;
+                width: 100%;
+                height: 50px;
+                color: #868686;
+                @include rem(font-size, 18);
+                &:hover {
+                  background-color: #3384e2;
+                  color: #fff;
+                  border-radius: 4px;
+                  i {
+                    color: #fff;
+                  }
+                }
+              }
+            }
+          }
+        }
+        .b-btn {
+          display: inline-block;
+          height: 70px;
+          min-width: 50px;
+          background-color: transparent;
+          border: none;
+          color: $color_icon;
+
+          &:hover {
+            background-color: #fff;
+            color: #414755;
+            i {
+              color: $color_icon;
+            }
+          }
+          i {
+            color: $color_icon;
+            @include rem(font-size, 20);
+          }
+        }
+      }
+    }
+  }
+}

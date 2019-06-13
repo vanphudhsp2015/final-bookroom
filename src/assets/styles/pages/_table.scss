@@ -1,0 +1,149 @@
+.right-table {
+  width: calc(100%-250px);
+  padding-top: 20px;
+  width: 100%;
+  .page-title {
+    .title {
+      font-weight: 700;
+      color: $color_title;
+      @include rem("font-size", 18);
+      font-family: "Nunito Sans", sans-serif;
+    }
+    .b-link {
+      color: #2962ff;
+      @include rem("font-size", 12);
+      font-family: "Nunito Sans", sans-serif;
+    }
+    .b-arrow {
+      margin: 0 5px;
+      color: #6c757d;
+      @include rem("font-size", 12);
+      font-family: "Nunito Sans", sans-serif;
+    }
+  }
+  .btn-upgrade {
+    text-align: right;
+
+    .link-upgrade {
+      border-radius: 2px;
+      background: #f62d51;
+      padding: 8px 10px;
+      color: #ffffff;
+      @include rem("font-size", 14);
+      font-family: "Nunito Sans", sans-serif;
+    }
+  }
+
+  .b-card {
+    background: #ffffff;
+
+    .card-body {
+      position: relative;
+      margin-top: 20px;
+      .card-title {
+        color: $color_title;
+        @include rem("font-size", 18);
+        font-family: "Nunito Sans", sans-serif;
+      }
+      .title-table {
+        padding: 40px 0 0;
+        color: $color_title;
+        @include rem("font-size", 14);
+        font-family: "Nunito Sans", sans-serif;
+      }
+      .card-subtitle {
+        color: #a1aab2;
+        @include rem("font-size", 14);
+        font-family: "Nunito Sans", sans-serif;
+      }
+      .table-responsive {
+        padding: 10px 0;
+
+        .table {
+          th {
+            padding: 16px;
+            color: $color_title;
+            @include rem("font-size", 14);
+            font-family: "Nunito Sans", sans-serif;
+          }
+          td {
+            padding: 16px;
+            color: $color_title;
+            @include rem("font-size", 14);
+            font-family: "Nunito Sans", sans-serif;
+            .b-item {
+              padding: 2px 5px;
+              border-radius: 30px;
+              background-color: #f62d51 !important;
+              color: #fff;
+              &.is-current {
+                background-color: #2962ff !important;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+.b-admin-calender {
+  padding: 20px;
+  > .b-calender {
+    box-shadow: 0 0 10px -2px rgba(0, 0, 0, 0.15);
+    // padding: 10px;
+    min-height: 100vh;
+    .b-heading {
+      background-color: #f3f3f5;
+      padding: 10px 20px;
+      border-bottom: 1px solid #6c757d;
+      .b-block {
+        @include flexbox();
+        @include align-items(center);
+        @include justify-content(space-between);
+        .b-block-center {
+          width: 70%;
+          .b-form-filter {
+            @include flexbox();
+            .b-form-group {
+              width: 25%;
+              margin: 0 10px;
+
+              .b-btn {
+                background-color: #2962ff;
+                border: none;
+                color: #fff;
+                border-radius: 4px;
+                padding: 4px 20px;
+              }
+            }
+          }
+        }
+        .b-block-left {
+          width: 10%;
+          .b-text-title {
+            @include rem(font-size, 16);
+            color: #6c757d;
+          }
+        }
+        .b-block-right {
+          width: 20%;
+          text-align: right;
+          @include flexbox();
+          .b-btn {
+            margin-left: 4px;
+            background-color: #2962ff;
+            border: none;
+            color: #fff;
+            width: 100px;
+            padding: 5px;
+            border-radius: 4px;
+          }
+        }
+      }
+    }
+    .b-content-main {
+      overflow: hidden;
+      padding: 10px;
+    }
+  }
+}

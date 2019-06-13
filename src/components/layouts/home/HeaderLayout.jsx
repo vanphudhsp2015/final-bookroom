@@ -6,6 +6,7 @@ import Cookies from 'universal-cookie';
 import * as action from '../../../actions/login';
 import { Redirect, Link } from 'react-router-dom';
 import { API_GG } from '../../../constants/config';
+import Logo from '../../../assets/images/logo-light.svg'
 const cookies = new Cookies();
 class HeaderLayout extends Component {
     constructor(props, context) {
@@ -14,7 +15,8 @@ class HeaderLayout extends Component {
             visible: false,
             is_dropdown: false,
             isLogout: false,
-            isRedirect: false
+            isRedirect: false,
+            dateStart: ''
         }
     }
     componentDidUpdate(prevProps, prevState) {
@@ -203,12 +205,11 @@ class HeaderLayout extends Component {
                 <div className="b-block">
                     <div className="b-block-left">
                         <div className="b-icon">
-                            {this.props.isHome !== true ? <Link to="/">
-                                <img src="/images/logo-light.svg" alt="Logo" />
+                            {this.props.isHome !== true ? <Link to={'/?date=' + this.props.dateStart}>
+                                <img src={Logo} alt="Logo" />
                             </Link>
                                 :
-                                <img src="/images/logo-light.svg" alt="Logo" />}
-
+                                <img src={Logo} alt="Logo" />}
                         </div>
                     </div>
                     <div className="b-block-right">

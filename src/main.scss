@@ -4,37 +4,6 @@
 @import "~@fullcalendar/daygrid/main.css";
 @import "~@fullcalendar/timegrid/main.css";
 
-.demo-app {
-  font-family: Arial, Helvetica Neue, Helvetica, sans-serif;
-  font-size: 14px;
-}
-
-.demo-app-top {
-  margin: 0 0 3em;
-}
-
-.demo-app-calendar {
-  margin: 0 auto;
-  max-width: 900px;
-}
-.available {
-  background: red;
-}
-.booked {
-  background: green;
-}
-.room_1 {
-  background: #e7e1e2;
-}
-.room_2 {
-  background: #dae2eb;
-}
-.room_3 {
-  background-color: #efefef;
-}
-.MEDIUM {
-  background-color: #4c4c4c;
-}
 .fc-unthemed {
   background-color: #fff;
 }
@@ -45,11 +14,16 @@
 .b-fullcalender {
   padding: 10px;
 }
+.fc-day-header {
+  font-size: 14px;
+}
 .fc-button {
   background-color: #f0f0f0;
   border: none;
   color: #4c4c4c;
-  font-family: "Roboto Medium";
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: 600;
+  font-size: 15px;
   &.fc-button-active {
     background-color: #f0f0f0 !important;
     color: #4c4c4c !important;
@@ -71,6 +45,8 @@
 .fc-event {
   border: none;
   box-shadow: 0 0 8px -2px rgba(0, 0, 0, 0.45);
+  text-align: left;
+  padding: 2px;
 }
 .b-google {
   width: 100%;
@@ -78,31 +54,7 @@
 .b-logout {
   width: 100%;
 }
-.b-calender {
-  .b-heading {
-    background-color: #fff;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.45);
-    .b-block {
-      display: flex;
-      align-items: center;
-      padding: 10px;
-      .b-block-left {
-        width: 50%;
-      }
-      .b-block-right {
-        width: 50%;
-        text-align: right;
-        .b-btn {
-          background-color: #4fc3f2;
-          border: none;
-          color: #fff;
-          padding: 5px 10px;
-          border-radius: 4px;
-        }
-      }
-    }
-  }
-}
+
 .is-current {
   position: relative;
   border: 1.5px dashed #4c4c4c !important;
@@ -137,36 +89,7 @@
     }
   }
 }
-.b-page-header {
-  .b-block {
-    padding-left: 15px;
-    .b-block-left {
-      img {
-        width: 200px;
-      }
-    }
-    .b-block-right {
-      .b-item {
-        display: inline-block;
-        &.b-dropdown {
-          position: relative;
-          &::after {
-            display: none;
-          }
-          i {
-            padding: 0 5px;
-          }
-          &.is-active {
-            .b-hash-menu {
-              visibility: visible;
-              opacity: 1;
-            }
-          }
-        }
-      }
-    }
-  }
-}
+
 .fc-next-button {
   border: none !important;
   &:focus {
@@ -199,42 +122,6 @@
   overflow: hidden;
 }
 
-// .room_item_1 {
-//   &.fc-time-grid-event-inset {
-//     position: relative;
-//     background-color: rgba(0, 0, 0, 0.45) !important;
-//     z-index: 999;
-//     &::before {
-//       position: absolute;
-//       content: "Trùng";
-//       background-color: #feeb0c;
-//       right: -25px;
-//       bottom: -10px;
-//       z-index: 9999 !important;
-//       border-radius: 2px;
-//       color: #2962ff;
-//       padding: 2px 4px;
-//     }
-//   }
-// }
-// .room_item_2 {
-//   &.fc-time-grid-event-inset {
-//     position: relative;
-//     background-color: rgba(0, 0, 0, 0.45) !important;
-//     z-index: 999;
-//     &::before {
-//       position: absolute;
-//       content: "Trùng";
-//       background-color: #feeb0c;
-//       right: -25px;
-//       bottom: -10px;
-//       z-index: 9999 !important;
-//       border-radius: 2px;
-//       color: #2962ff;
-//       padding: 2px 4px;
-//     }
-//   }
-// }
 .is-error {
   display: block;
   padding: 2px 0;
@@ -291,7 +178,7 @@
 
 .ant-message .anticon {
   position: relative;
-  top: -1px !important;
+  top: -3px !important;
   margin-right: 8px;
-  font-size: 18px;
+  font-size: 20px;
 }

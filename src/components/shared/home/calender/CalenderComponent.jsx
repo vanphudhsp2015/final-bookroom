@@ -17,6 +17,7 @@ class CalenderComponent extends Component {
         return (
             <div className="b-calender">
                 <Calendar
+                    locale={'vi'}
                     onChange={this.onChange}
                     value={this.state.date}
                     activeStartDate={this.state.date}
