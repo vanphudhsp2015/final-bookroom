@@ -102,7 +102,7 @@ class SearchComponent extends Component {
             <div className="b-description-right">
                 <div className="b-heading">
                     <h2 className="b-text-title">
-                        Thành Phần Tham Dự
+                        Thành phần tham dự
                     </h2>
                 </div>
                 <div className="b-description-content">

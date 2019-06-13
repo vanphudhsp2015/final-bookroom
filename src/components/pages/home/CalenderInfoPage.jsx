@@ -607,6 +607,7 @@ class CalenderInfoPage extends Component {
                                 <div className="b-heading-left">
                                     <div className="b-form-group">
                                         <input type="text" name="title" autoComplete="off" value={this.state.title} placeholder="Nhập tiêu đề" className="b-input" onChange={this.onChanger} />
+                                        <span className={this.state.title === '' ? "" : "is-current"}>*</span>
                                     </div>
                                     <div className="b-group-select">
                                         <div className="b-form-group">

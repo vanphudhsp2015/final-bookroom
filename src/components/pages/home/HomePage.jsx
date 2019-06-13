@@ -246,7 +246,9 @@ class HomePage extends Component {
         const dateTime = moment(start).add(remainder, "minutes").format("HH:mm");
         return dateTime;
     }
-    render() {
+    render() {        
+        console.log(cookies.get('accessToken'));
+        
         return (
             <div className="wrapper">
                 <HeaderLayout onResetCheckLogin={this.onResetCheckLogin} isCheck={this.state.isLogin}></HeaderLayout>
