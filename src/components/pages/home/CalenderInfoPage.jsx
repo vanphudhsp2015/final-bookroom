@@ -278,7 +278,7 @@ class CalenderInfoPage extends Component {
                 covertName = `Các Thứ  [ ${nameWeek} ] Trong Tuần`
                 this.setState({
                     choice: 'weekly',
-                    count: this.state.byweekday.length * this.state.count
+                    count: (this.state.byweekday.length + 1) * this.state.count
                 })
                 break;
             default:
