@@ -508,7 +508,7 @@ class CalenderInfoPage extends Component {
         };
         return (
             <div className="wrapper">
-                <HeaderLayout ></HeaderLayout>
+                <HeaderLayout  searchDate={this.state.searchDate}></HeaderLayout>
                 <main className="b-page-main">
                     <div className="b-page-calender">
                         <Modal

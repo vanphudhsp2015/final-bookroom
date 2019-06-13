@@ -246,12 +246,10 @@ class HomePage extends Component {
         const dateTime = moment(start).add(remainder, "minutes").format("HH:mm");
         return dateTime;
     }
-    render() {        
-        console.log(cookies.get('accessToken'));
-        
+    render() {
         return (
             <div className="wrapper">
-                <HeaderLayout onResetCheckLogin={this.onResetCheckLogin} isCheck={this.state.isLogin}></HeaderLayout>
+                <HeaderLayout isHome={true} onResetCheckLogin={this.onResetCheckLogin} isCheck={this.state.isLogin}></HeaderLayout>
                 <main className="b-page-main">
                     <div className="b-block">
                         <SlideBar onCheckLogin={this.onCheckLogin} room={this.props.room} onCancleEdit={this.onCancleEdit} onChangerRoom={this.onChangerRoom} onUpdate={this.onUpdate} dataEdit={this.state.dataEdit} edit={this.state.edit} onGetDate={this.onGetDate} onAddEvent={this.onAddEvent}></SlideBar>

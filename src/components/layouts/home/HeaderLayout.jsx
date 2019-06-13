@@ -52,10 +52,11 @@ class HeaderLayout extends Component {
         this.onResetLogin();
     }
     responseGoogle = (response) => {
+        // console.log(response);
 
         if (response) {
             this.props.dispatch(action.requestGetLogin(response))
-            cookies.set('accessToken', response.accessToken);
+            cookies.set('accessToken', response.Zi.access_token);
             this.setState({
                 visible: false,
                 isLogout: false
@@ -109,7 +110,7 @@ class HeaderLayout extends Component {
         })
     }
 
-    render() {        
+    render() {
         if (this.state.isRedirect) {
             return (
                 <Redirect to="/admin/event"></Redirect>
@@ -185,7 +186,7 @@ class HeaderLayout extends Component {
                         <div className="b-content" style={{ width: '100%' }}>
                             <GoogleLogin
                                 clientId={API_GG}
-                                scope="https://www.googleapis.com/auth/analytics"
+                                // scope="https://www.googleapis.com/auth/analytics"
                                 onSuccess={this.responseGoogle}
                                 onFailure={this.error}
                                 // onRequest={loading}
@@ -202,9 +203,12 @@ class HeaderLayout extends Component {
                 <div className="b-block">
                     <div className="b-block-left">
                         <div className="b-icon">
-                            <Link to="/">
+                            {this.props.isHome !== true ? <Link to="/">
                                 <img src="/images/logo-light.svg" alt="Logo" />
                             </Link>
+                                :
+                                <img src="/images/logo-light.svg" alt="Logo" />}
+
                         </div>
                     </div>
                     <div className="b-block-right">
