@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { http } from '../../../../libraries/http/http';
+import { message } from 'antd';
+
 class SearchComponent extends Component {
     constructor(props, context) {
         super(props, context);
@@ -39,6 +41,9 @@ class SearchComponent extends Component {
         }
         var value = event.target.value.trim();
         timeout = setTimeout(function () {
+            if (value.length < 3) {
+                return;
+            }
             http.request({
                 method: 'GET',
                 url: `/search/${value === '' ? 's' : value}`,
@@ -49,11 +54,12 @@ class SearchComponent extends Component {
             }).catch(function (error) {
 
             })
-        }, 700);
+        }, 900);
 
     }
     onAddEmail = (data) => {
         let arrayNew = [];
+
         let dataObject = { id: this.state.arrayEmail.length > 0 ? this.state.arrayEmail[this.state.arrayEmail.length - 1].id + 1 : 1, email: data.attributes.email };
         arrayNew = [...this.state.arrayEmail, dataObject];
         const newArrray = Array.from(new Set(arrayNew.map(s => s.email))).map(email => {
@@ -71,6 +77,10 @@ class SearchComponent extends Component {
     _handleKeyDown = (event) => {
         if (event.key === 'Enter') {
             let arrayNew = [];
+            const regex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+            if (event.target.value.match(regex) === null) {
+                return message.error('Vui lòng nhập email hợp lệ.');
+            }
             let dataObject = {
                 id: this.state.arrayEmail.length > 0 ? this.state.arrayEmail[this.state.arrayEmail.length - 1].id + 1 : 1,
                 email: event.target.value
@@ -102,7 +112,7 @@ class SearchComponent extends Component {
             <div className="b-description-right">
                 <div className="b-heading">
                     <h2 className="b-text-title">
-                        Thành Phần Tham Dự
+                        Thành phần tham dự
                     </h2>
                 </div>
                 <div className="b-description-content">
