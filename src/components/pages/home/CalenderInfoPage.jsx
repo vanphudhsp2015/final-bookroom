@@ -581,7 +581,7 @@ class CalenderInfoPage extends Component {
                                         <div className="b-form-group">
                                             <label>Ngày cuộc họp</label>
                                             <br />
-                                            <DatePicker className="b-picker" onChange={this.onChangeDate} allowClear={false} value={moment(this.state.dateStart, dateFormat)} format={dateFormat} />
+                                            <DatePicker className="b-picker" onChange={this.onChangeDate} allowClear={false} value={moment(this.state.dateStart, dateFormat)} format={'DD-MM-YYYY'} />
                                             <span className={this.state.validateDate ? "is-error  is-check" : "is-error"}>
                                                 * Thời gian lớn hơn hiện tại
                                         </span>

@@ -132,7 +132,9 @@ class HeaderLayout extends Component {
                             </li>
                         }
                         <li className={this.state.is_dropdown ? "b-item b-dropdown is-active" : "b-item b-dropdown"}>
-                            <button className="b-btn" onClick={this.onShowLogout}><i className="fas fa-user" /> Xin Chào, {cookies.get('data').attributes.name}<i className="fas fa-angle-down"></i></button>
+                            <button className="b-btn" onClick={this.onShowLogout}>
+                                <img src={cookies.get('data').attributes.img === null ? "https://namtrungsafety.com/wp-content/themes/namtrung/images/customer.png" : cookies.get('data').attributes.img} alt="Admin" />
+                                Xin Chào, {cookies.get('data').attributes.name}<i className="fas fa-angle-down"></i></button>
                             <div className="b-hash-menu">
                                 <div className="b-logout">
                                     <GoogleLogout
@@ -159,7 +161,8 @@ class HeaderLayout extends Component {
             if (this.state.isLogout) {
                 return (
                     <li className="b-item ">
-                        <button className="b-btn" onClick={this.showModal}><i className="fas fa-user"></i> Đăng Nhập</button>
+                        <button className="b-btn" onClick={this.showModal}>
+                            Đăng Nhập</button>
                     </li>
                 )
             } else {
