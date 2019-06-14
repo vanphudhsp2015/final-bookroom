@@ -24,7 +24,7 @@ const children = [
     { id: '7', name: 'sa', title: 'Thứ Bảy' }
 ];
 function disabledHours() {
-    return [0, 1, 2, 3, 4, 5, 6, 7, 12, 18, 19, 20, 21, 22, 23, 24];
+    return [0, 1, 2, 3, 4, 5, 6, 12, 20, 21, 22, 23, 24];
 }
 class CalenderInfoPage extends Component {
     constructor(props) {
@@ -156,11 +156,12 @@ class CalenderInfoPage extends Component {
             if ((moment(`${nowCurrent + ' ' + dateString + ':00'}`)).diff(`${nowCurrent + ' ' + this.state.timestart + ':00'}`, 'minutes') < 0) {
                 this.setState({
                     timeend: dateString,
-                    timestart: dateString,
+                    timestart: this.roundMinutesDate(`${nowCurrent + ' ' + dateString + ':00'}`, -90),
                     validateTimeItem: false
                 })
             } else {
                 this.setState({
+                    timestart: this.roundMinutesDate(`${nowCurrent + ' ' + dateString + ':00'}`, -90),
                     timeend: dateString,
                     validateTimeItem: false
                 })
