@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 class HeaderLayout extends Component {
+    
     render() {
         return (
             <header className="b-dashboard-header">

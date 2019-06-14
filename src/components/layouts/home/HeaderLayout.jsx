@@ -6,6 +6,7 @@ import Cookies from 'universal-cookie';
 import * as action from '../../../actions/login';
 import { Redirect, Link } from 'react-router-dom';
 import { API_GG } from '../../../constants/config';
+import Logo from '../../../assets/images/logo-light.svg'
 const cookies = new Cookies();
 class HeaderLayout extends Component {
     constructor(props, context) {
@@ -14,7 +15,8 @@ class HeaderLayout extends Component {
             visible: false,
             is_dropdown: false,
             isLogout: false,
-            isRedirect: false
+            isRedirect: false,
+            dateStart: ''
         }
     }
     componentDidUpdate(prevProps, prevState) {
@@ -52,10 +54,11 @@ class HeaderLayout extends Component {
         this.onResetLogin();
     }
     responseGoogle = (response) => {
+        // console.log(response);
 
         if (response) {
             this.props.dispatch(action.requestGetLogin(response))
-            cookies.set('accessToken', response.accessToken);
+            cookies.set('accessToken', response.Zi.access_token);
             this.setState({
                 visible: false,
                 isLogout: false
@@ -109,7 +112,7 @@ class HeaderLayout extends Component {
         })
     }
 
-    render() {        
+    render() {
         if (this.state.isRedirect) {
             return (
                 <Redirect to="/admin/event"></Redirect>
@@ -129,7 +132,9 @@ class HeaderLayout extends Component {
                             </li>
                         }
                         <li className={this.state.is_dropdown ? "b-item b-dropdown is-active" : "b-item b-dropdown"}>
-                            <button className="b-btn" onClick={this.onShowLogout}><i className="fas fa-user" /> Xin Chào, {cookies.get('data').attributes.name}<i className="fas fa-angle-down"></i></button>
+                            <button className="b-btn" onClick={this.onShowLogout}>
+                                <img src={cookies.get('data').attributes.img === null ? "https://namtrungsafety.com/wp-content/themes/namtrung/images/customer.png" : cookies.get('data').attributes.img} alt="Admin" />
+                                Xin Chào, {cookies.get('data').attributes.name}<i className="fas fa-angle-down"></i></button>
                             <div className="b-hash-menu">
                                 <div className="b-logout">
                                     <GoogleLogout
@@ -156,7 +161,8 @@ class HeaderLayout extends Component {
             if (this.state.isLogout) {
                 return (
                     <li className="b-item ">
-                        <button className="b-btn" onClick={this.showModal}><i className="fas fa-user"></i> Đăng Nhập</button>
+                        <button className="b-btn" onClick={this.showModal}>
+                            Đăng Nhập</button>
                     </li>
                 )
             } else {
@@ -185,7 +191,7 @@ class HeaderLayout extends Component {
                         <div className="b-content" style={{ width: '100%' }}>
                             <GoogleLogin
                                 clientId={API_GG}
-                                scope="https://www.googleapis.com/auth/analytics"
+                                // scope="https://www.googleapis.com/auth/analytics"
                                 onSuccess={this.responseGoogle}
                                 onFailure={this.error}
                                 // onRequest={loading}
@@ -202,9 +208,11 @@ class HeaderLayout extends Component {
                 <div className="b-block">
                     <div className="b-block-left">
                         <div className="b-icon">
-                            <Link to="/">
-                                <img src="/images/logo-light.svg" alt="Logo" />
+                            {this.props.isHome !== true ? <Link to={'/?date=' + this.props.dateStart}>
+                                <img src={Logo} alt="Logo" />
                             </Link>
+                                :
+                                <img src={Logo} alt="Logo" />}
                         </div>
                     </div>
                     <div className="b-block-right">

@@ -46,7 +46,7 @@ class HomePage extends Component {
     }
     onAddEvent = (data) => {
         if (cookies.get('data') === undefined) {
-            message.warning('Vui Lòng Đăng Nhập Để Được Đặt Lịch !')
+            message.warning('Vui Lòng Đăng Nhập Để Được Đặt Phòng !')
         } else {
             this.props.dispatch(action.requestAddEvents(data));
         }
@@ -143,6 +143,7 @@ class HomePage extends Component {
                     ],
                     start: attributes.daystart,
                     room: attributes.room.name,
+                    room_id: attributes.room.id,
                     user: attributes.username,
                     user_id: attributes.user_id,
                     timestart: attributes.timestart,
@@ -246,12 +247,10 @@ class HomePage extends Component {
         const dateTime = moment(start).add(remainder, "minutes").format("HH:mm");
         return dateTime;
     }
-    render() {        
-        console.log(cookies.get('accessToken'));
-        
+    render() {
         return (
             <div className="wrapper">
-                <HeaderLayout onResetCheckLogin={this.onResetCheckLogin} isCheck={this.state.isLogin}></HeaderLayout>
+                <HeaderLayout isHome={true} onResetCheckLogin={this.onResetCheckLogin} isCheck={this.state.isLogin}></HeaderLayout>
                 <main className="b-page-main">
                     <div className="b-block">
                         <SlideBar onCheckLogin={this.onCheckLogin} room={this.props.room} onCancleEdit={this.onCancleEdit} onChangerRoom={this.onChangerRoom} onUpdate={this.onUpdate} dataEdit={this.state.dataEdit} edit={this.state.edit} onGetDate={this.onGetDate} onAddEvent={this.onAddEvent}></SlideBar>

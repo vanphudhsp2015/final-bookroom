@@ -1,0 +1,8 @@
+.b-dashboard-footer {
+    h3 {
+        padding: 15px 20px;
+        @include rem("font-size",14);
+        color: $color_title;
+        font-family: 'Nunito Sans', sans-serif;
+    }
+}

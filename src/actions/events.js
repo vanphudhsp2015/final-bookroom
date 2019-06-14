@@ -23,14 +23,14 @@ export function requestAddEvents(data) {
         if (data.arrayEmail.length > 1) {
             data.arrayEmail.forEach((i, index, item) => {
                 if (index === item.length - 1) {
-                    email += `${item[index].email}`;
+                    email += `${item[index].key}`;
                 } else {
-                    email += `${item[index].email},`;
+                    email += `${item[index].key},`;
                 }
             })
         } else {
             data.arrayEmail.forEach((i, index, item) => {
-                email += `${item[index].email}`
+                email += `${item[index].key}`
             })
         }
 
@@ -51,7 +51,7 @@ export function requestAddEvents(data) {
                 data.byweekday.forEach((i, index, item) => {
                     arrayDay += `${item[index]}`;
                 })
-            }            
+            }
         }
         formDataObject = {
             'room_id': data.rooms,
@@ -85,10 +85,10 @@ export function requestAddEvents(data) {
             method: 'POST',
             data: formDataObject
         }).then(function (response) {
-            message.success('Đặt Thành Công')
+            message.success('Đặt phòng thành công !')
             dispatch(receiveData(types.REQUEST_ADD_EVENT, response))
         }).catch(function (error) {
-            message.error(error.messages[0])            
+            message.error(error.messages[0])
             dispatch(requestRejected(error));
         })
     }
@@ -99,7 +99,7 @@ export function requestDeleteEvent(id) {
             method: 'DELETE',
             url: `/bookrooms/${id}`,
         }).then(function (response) {
-            message.success('Xóa Sự Kiện Thành Công');
+            message.success('Xóa đặt phòng thành công !');
             dispatch(receiveData(types.REQUEST_DELETE_EVENT, id))
         }).catch(function (error) {
             if (error.response) {
@@ -162,7 +162,7 @@ export function requestUpdateEvent(data) {
             method: 'PUT',
             data: formDataObject
         }).then(function (response) {
-            message.success('Sửa Sự Kiện Thành Công');
+            message.success('Sửa đặt phòng thành công !');
             dispatch(receiveData(types.REQUEST_UPDATE_EVENT, response))
         }).catch(function (error) {
 
@@ -218,6 +218,7 @@ export function requestDeleteException(data) {
         'timestart': data.timestart,
         'timeend': data.timeend,
         'title': data.title,
+        'room_id': data.room_id
     }
     return (dispatch) => {
         return http.request({
@@ -225,7 +226,7 @@ export function requestDeleteException(data) {
             url: `/deletebrrepeat/${data.id}`,
             data: formDataObject
         }).then(function (response) {
-            message.success('Bạn Xóa Sự Kiện Lặp Lại Thành Công !');
+            message.success('Xóa đặt phòng thành công !');
             dispatch(receiveData(types.REQUEST_DELETE_EVENT_EXCEPTION, response));
         }).catch(function (error) {
             dispatch(requestRejected(error));
@@ -250,7 +251,7 @@ export function requestEditException(data, day, room) {
             url: `/editbrrepeat/${data.id}`,
             data: formDataObject
         }).then(function (response) {
-            message.success('Sửa Ngoại Lệ Thành Công');
+            message.success('Sửa đặt phòng thành công !');
             dispatch(receiveData(types.REQUEST_EDIT_EVENT_EXCEPTION, response));
         }).catch(function (error) {
             dispatch(requestRejected(error));

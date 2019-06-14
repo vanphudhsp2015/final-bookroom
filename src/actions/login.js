@@ -5,9 +5,8 @@ import * as API from '../constants/actionAPI';
 import Cookies from 'universal-cookie';
 const cookies = new Cookies();
 export function requestGetLogin(data) {
-
     let token = {
-        'token': data.accessToken,
+        'token': data.Zi.access_token,
         'email': data.profileObj.email
     }
     return (dispatch) => {
@@ -40,29 +39,8 @@ export function requestGetLogin(data) {
             }
         }).catch(function (error) {
             if (error.response) {
-                cookies.remove('accessToken');
-                cookies.remove('APISID');
-                cookies.remove('G_AUTHUSER_H');
-                cookies.remove('HSID');
-                cookies.remove('NID');
-                cookies.remove('SAPISID');
-                cookies.remove('SID');
-                cookies.remove('SIDCC');
-                cookies.remove('SSID');
                 if (error.response.data.title === 'Validation Error') {
-                    cookies.remove('token');
-                    cookies.remove('data');
-                    cookies.remove('accessToken');
-                    cookies.remove('APISID');
-                    cookies.remove('G_AUTHUSER_H');
-                    cookies.remove('HSID');
-                    cookies.remove('NID');
-                    cookies.remove('SAPISID');
-                    cookies.remove('SID');
-                    cookies.remove('SIDCC');
-                    cookies.remove('SSID');
                     message.error('Bạn không phải thành viên GreenGlobal');
-
                 }
             }
 

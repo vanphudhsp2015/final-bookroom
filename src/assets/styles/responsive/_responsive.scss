@@ -1,0 +1,15 @@
+$break_screen_large: 1125px;
+
+.b-page-main {
+  @media screen and (max-width: $break_screen_large) {
+    .b-block {
+      .b-block-left {
+        display: none;
+      }
+      .b-block-right {
+        width: 100%;
+        padding: 90px 10px;
+      }
+    }
+  }
+}
