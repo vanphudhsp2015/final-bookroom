@@ -383,6 +383,16 @@ class CalenderInfoPage extends Component {
         })
     }
     onChangeNumber = (value) => {
+        var regex = /^[0-9.]+$/;
+        if (value > 365) {
+            message.error('Vui Lòng nhập số lượng lặp lại nhỏ hơn 365');
+            return;
+        }
+        if (value.toString().match(regex) === null) {
+            message.error('Vui lòng nhập số !');
+            return;
+        }
+
         this.setState({
             count: value
         })
@@ -468,7 +478,7 @@ class CalenderInfoPage extends Component {
         }
         return data;
     }
-    render() {
+    render() {        
         const radioStyle = {
             display: 'block',
             height: '30px',
