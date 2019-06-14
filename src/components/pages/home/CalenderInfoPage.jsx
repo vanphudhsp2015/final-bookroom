@@ -156,12 +156,11 @@ class CalenderInfoPage extends Component {
             if ((moment(`${nowCurrent + ' ' + dateString + ':00'}`)).diff(`${nowCurrent + ' ' + this.state.timestart + ':00'}`, 'minutes') < 0) {
                 this.setState({
                     timeend: dateString,
-                    timestart: this.roundMinutesDate(`${nowCurrent + ' ' + dateString + ':00'}`, -90),
+                    timestart: dateString,
                     validateTimeItem: false
                 })
             } else {
                 this.setState({
-                    timestart: this.roundMinutesDate(`${nowCurrent + ' ' + dateString + ':00'}`, -90),
                     timeend: dateString,
                     validateTimeItem: false
                 })
@@ -582,7 +581,7 @@ class CalenderInfoPage extends Component {
                                         <div className="b-form-group">
                                             <label>Ngày cuộc họp</label>
                                             <br />
-                                            <DatePicker className="b-picker" onChange={this.onChangeDate} allowClear={false} value={moment(this.state.dateStart, dateFormat)} format={'DD-MM-YYYY'} />
+                                            <DatePicker className="b-picker" onChange={this.onChangeDate} allowClear={false} value={moment(this.state.dateStart, dateFormat)} format={dateFormat} />
                                             <span className={this.state.validateDate ? "is-error  is-check" : "is-error"}>
                                                 * Thời gian lớn hơn hiện tại
                                         </span>

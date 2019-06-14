@@ -46,7 +46,7 @@ class HomePage extends Component {
     }
     onAddEvent = (data) => {
         if (cookies.get('data') === undefined) {
-            message.warning('Vui Lòng Đăng Nhập Để Được Đặt Lịch !')
+            message.warning('Vui Lòng Đăng Nhập Để Được Đặt Phòng !')
         } else {
             this.props.dispatch(action.requestAddEvents(data));
         }
