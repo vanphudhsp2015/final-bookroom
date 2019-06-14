@@ -23,14 +23,14 @@ export function requestAddEvents(data) {
         if (data.arrayEmail.length > 1) {
             data.arrayEmail.forEach((i, index, item) => {
                 if (index === item.length - 1) {
-                    email += `${item[index].email}`;
+                    email += `${item[index].key}`;
                 } else {
-                    email += `${item[index].email},`;
+                    email += `${item[index].key},`;
                 }
             })
         } else {
             data.arrayEmail.forEach((i, index, item) => {
-                email += `${item[index].email}`
+                email += `${item[index].key}`
             })
         }
 
@@ -51,7 +51,7 @@ export function requestAddEvents(data) {
                 data.byweekday.forEach((i, index, item) => {
                     arrayDay += `${item[index]}`;
                 })
-            }            
+            }
         }
         formDataObject = {
             'room_id': data.rooms,
@@ -88,7 +88,7 @@ export function requestAddEvents(data) {
             message.success('Đặt Thành Công')
             dispatch(receiveData(types.REQUEST_ADD_EVENT, response))
         }).catch(function (error) {
-            message.error(error.messages[0])            
+            message.error(error.messages[0])
             dispatch(requestRejected(error));
         })
     }
@@ -218,6 +218,7 @@ export function requestDeleteException(data) {
         'timestart': data.timestart,
         'timeend': data.timeend,
         'title': data.title,
+        'room_id': data.room_id
     }
     return (dispatch) => {
         return http.request({

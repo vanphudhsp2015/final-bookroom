@@ -143,6 +143,7 @@ class HomePage extends Component {
                     ],
                     start: attributes.daystart,
                     room: attributes.room.name,
+                    room_id: attributes.room.id,
                     user: attributes.username,
                     user_id: attributes.user_id,
                     timestart: attributes.timestart,

@@ -58,6 +58,7 @@ class FullcalenderComponent extends Component {
             timestart: this.roundMinutesDate(now, 0),
             timeend: this.roundMinutesDate(now, 60),
             isShowForm: false,
+            room_id: ''
         }
     }
 
@@ -99,7 +100,8 @@ class FullcalenderComponent extends Component {
             reweek: info.event.extendedProps.reweek,
             user_id: info.event.extendedProps.user_id,
             content: info.event.extendedProps.content,
-            is_repeat: info.event.extendedProps.is_repeat
+            is_repeat: info.event.extendedProps.is_repeat,
+            room_id: info.event.extendedProps.room_id
         })
     }
 
@@ -293,6 +295,7 @@ class FullcalenderComponent extends Component {
                         dateStart: dateFormat(e.dateStr, 'yyyy-mm-dd'),
                         timestart: dateFormat(e.dateStr, 'HH:MM'),
                         timeend: this.roundMinutesDate(e.dateStr, 30),
+
                     })
                 }
             }
