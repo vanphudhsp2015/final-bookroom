@@ -478,7 +478,7 @@ class CalenderInfoPage extends Component {
         }
         return data;
     }
-    render() {        
+    render() {
         const radioStyle = {
             display: 'block',
             height: '30px',

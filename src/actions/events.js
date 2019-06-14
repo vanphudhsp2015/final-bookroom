@@ -117,9 +117,9 @@ export function requestUpdateEvent(data) {
             if (data.byweekday.length > 1) {
                 data.byweekday.forEach((i, index, item) => {
                     if (index === item.length - 1) {
-                        arrayDay += `${item[index]} `;
+                        arrayDay += `${item[index]}`;
                     } else {
-                        arrayDay += `${item[index]}, `;
+                        arrayDay += `${item[index]},`;
                     }
                 })
             } else {
