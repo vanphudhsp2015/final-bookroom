@@ -336,8 +336,8 @@ class CalenderInfoPage extends Component {
         var self = this.state;
         var selfProps = this.props;
         var selfThis = this;
-        if (self.title.length <= 0) {
-            message.error('Vui Lòng Kiểm Tra Thông Tin Nhập');
+        if (self.title.trim() === '') {
+            message.error('Vui lòng nhập tên tiêu đề cuộc họp !');
         } else {
             if (selfProps.match.params.calender !== undefined) {
                 selfThis.setState({
