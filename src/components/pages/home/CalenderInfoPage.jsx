@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { HeaderLayout } from '../../layouts/home';
-import { DatePicker, TimePicker, Select, Modal, message, Radio, InputNumber } from 'antd';
+import { DatePicker, Select, Modal, message, Radio, InputNumber } from 'antd';
 import { SearchComponent } from '../../shared/home';
 import moment from 'moment';
 import CKEditor from '@ckeditor/ckeditor5-react';
@@ -13,7 +13,6 @@ import Cookies from 'universal-cookie';
 import { http } from '../../../libraries/http/http';
 const htmlToText = require('html-to-text');
 const dateFormat = 'YYYY-MM-DD';
-const format = 'HH:mm';
 const { Option } = Select;
 var dateFormatDate = require('dateformat');
 var now = new Date()
@@ -27,9 +26,33 @@ const children = [
     { id: '6', name: 'fr', title: 'Thứ Sáu' },
     { id: '7', name: 'sa', title: 'Thứ Bảy' }
 ];
-function disabledHours() {
-    return [0, 1, 2, 3, 4, 5, 6, 12, 19, 20, 21, 22, 23, 24];
-}
+const arrayTime = [
+    { id: '1', date: '07:00' },
+    { id: '2', date: '07:30' },
+    { id: '3', date: '08:00' },
+    { id: '4', date: '08:30' },
+    { id: '5', date: '09:00' },
+    { id: '6', date: '09:30' },
+    { id: '7', date: '10:00' },
+    { id: '8', date: '10:30' },
+    { id: '9', date: '11:00' },
+    { id: '10', date: '11:30' },
+    { id: '11', date: '12:00' },
+    { id: '12', date: '12:30' },
+    { id: '14', date: '13:00' },
+    { id: '15', date: '13:30' },
+    { id: '16', date: '14:00' },
+    { id: '17', date: '14:30' },
+    { id: '18', date: '15:00' },
+    { id: '19', date: '15:30' },
+    { id: '20', date: '16:00' },
+    { id: '21', date: '16:30' },
+    { id: '22', date: '17:00' },
+    { id: '23', date: '17:30' },
+    { id: '24', date: '18:00' },
+    { id: '25', date: '18:30' }
+]
+
 class CalenderInfoPage extends Component {
 
     constructor(props) {
@@ -65,7 +88,7 @@ class CalenderInfoPage extends Component {
             validateTime: false,
             validateTimeItem: false,
             isShowEdit: false,
-            valueEdit: 1,
+            valueEdit: 2,
             isRepeat: false,
             arrayEmail: [],
             minCount: 1,
@@ -104,8 +127,8 @@ class CalenderInfoPage extends Component {
                     title: data[0].attributes.title,
                     content: data[0].attributes.content !== null ? data[0].attributes.content : "",
                     dateStart: dateFormatDate(data[0].attributes.daystart, 'yyyy-mm-dd'),
-                    timestart: data[0].attributes.timestart,
-                    timeend: data[0].attributes.timeend,
+                    timestart: dateFormatDate(`${data[0].attributes.daystart + ' ' + data[0].attributes.timestart}`, 'HH:MM'),
+                    timeend: dateFormatDate(`${data[0].attributes.daystart + ' ' + data[0].attributes.timeend}`, 'HH:MM'),
                     count: data[0].attributes.repeat !== null ? data[0].attributes.repeat.count : 1,
                     rooms: data[0].attributes.room.id,
                     checkbox: data[0].attributes.repeat !== null ? true : false,
@@ -151,37 +174,27 @@ class CalenderInfoPage extends Component {
             })
         }
     }
-    onChangeTime = (time, dateString) => {
-        let nowCurrent = dateFormatDate(this.state.dateStart, 'yyyy-mm-dd');
-        if ((moment(`${nowCurrent + ' ' + dateString + ':00'}`)).diff(dateFormatDate(now, 'yyyy-mm-dd HH:MM:ss'), 'minutes') < 0) {
-            this.setState({
-                validateTime: true
-            })
+    onChangeTime = (event) => {
+        if (moment(`${dateFormatDate(this.state.dateStart, 'yyyy-mm-dd')} ${event}`).diff(now, 'minutes') <= 0) {
+            message.error('Vui lòng nhập thời gian lớn hơn hiện tại');
+            return;
         } else {
             this.setState({
-                timestart: dateString,
-                timeend: this.roundMinutesDate(`${nowCurrent + ' ' + dateString + ':00'}`, 30),
-                validateTime: false
+                timestart: event,
+                timeend: this.roundMinutesDate(`${this.state.dateStart} ${event}`, 30),
             })
         }
     }
-    onChangeTimeItem = (time, dateString) => {
-        let nowCurrent = dateFormatDate(this.state.dateStart, 'yyyy-mm-dd');
-        if ((moment(`${nowCurrent + ' ' + dateString + ':00'}`)).diff(dateFormatDate(now, 'yyyy-mm-dd HH:MM:ss'), 'minutes') < 0) {
-            this.setState({
-                validateTimeItem: true
-            })
+    onChangeTimeItem = (event) => {
+        if (moment(`${dateFormatDate(this.state.dateStart, 'yyyy-mm-dd')} ${event}`).diff(now, 'minutes') <= 0) {
+            message.error('Vui lòng nhập thời gian lớn hơn hiện tại');
+            return;
         } else {
-            if ((moment(`${nowCurrent + ' ' + dateString + ':00'}`)).diff(`${nowCurrent + ' ' + this.state.timestart + ':00'}`, 'minutes') < 0) {
-                this.setState({
-                    timeend: dateString,
-                    timestart: dateString,
-                    validateTimeItem: false
-                })
+            if (moment(`${dateFormatDate(this.state.dateStart, 'yyyy-mm-dd')} ${event}`).diff(`${dateFormatDate(this.state.dateStart, 'yyyy-mm-dd')} ${this.state.timestart}`, 'minutes') <= 0) {
+                message.error('Vui lòng nhập thời gian kết thúc lớn hơn thời gian bắt đầu')
             } else {
                 this.setState({
-                    timeend: dateString,
-                    validateTimeItem: false
+                    timeend: event
                 })
             }
         }
@@ -215,7 +228,7 @@ class CalenderInfoPage extends Component {
             case '1':
                 this.setState({
                     [event.target.name]: event.target.value,
-                    count: 365,
+                    count: 90,
                     checkbox: true
                 })
                 break;
@@ -228,7 +241,7 @@ class CalenderInfoPage extends Component {
             case '3':
                 this.setState({
                     [event.target.name]: event.target.value,
-                    count: 365,
+                    count: 90,
                     byweekday: ['mo', 'tu', 'we', 'th', 'fr'],
                     checkbox: true,
                     choice: 'weekly'
@@ -258,6 +271,7 @@ class CalenderInfoPage extends Component {
                 { id: '1', name: 'Hàng ngày', count: 10 },
                 { id: '0', name: 'Tùy chỉnh' },
             ],
+            count: 1
         })
     }
     onSubmitDate = (event) => {
@@ -583,6 +597,10 @@ class CalenderInfoPage extends Component {
         }
         return data;
     }
+    onCancelForm = (event) => {
+        event.preventDefault();
+        this.props.history.push(`/?date=${dateFormatDate(this.state.dateStart, 'yyyy-mm-dd')}`);
+    }
     render() {
         const radioStyle = {
             display: 'block',
@@ -607,17 +625,17 @@ class CalenderInfoPage extends Component {
                                 <Radio.Group onChange={this.onChangeEditEvent} value={this.state.valueEdit}>
                                     {this.state.isRepeat ?
                                         <>
-                                            <Radio style={radioStyle} value={1}>
-                                                Sửa Tất Cả Sự Kiện Này
-                                            </Radio>
                                             <Radio style={radioStyle} value={2}>
-                                                Chỉ Sửa Sự Kiện Này
+                                                Chỉ sửa đặt phòng này
+                                            </Radio>
+                                            <Radio style={radioStyle} value={1}>
+                                                Sửa tất cả đặt phòng này
                                             </Radio>
                                         </>
                                         :
                                         <>
                                             <Radio style={radioStyle} value={1}>
-                                                Sửa  Sự Kiện Này
+                                                Sửa  đặt phòng này
                                             </Radio>
                                         </>
                                     }
@@ -705,7 +723,13 @@ class CalenderInfoPage extends Component {
                                         <div className="b-form-group">
                                             <label>Thời gian bắt đầu</label>
                                             <br />
-                                            <TimePicker className="b-picker" hideDisabledOptions disabledHours={disabledHours} onChange={this.onChangeTime} allowClear={false} minuteStep={30} defaultValue={moment(this.state.timestart, format)} format={format} />
+                                            <Select value={this.state.timestart} onChange={this.onChangeTime}>
+                                                {arrayTime.map(data => (
+                                                    <Option key={data.id} value={data.date}>{data.date}</Option>
+                                                ))
+
+                                                }
+                                            </Select>
                                             <span className={this.state.validateTime ? "is-error is-check" : "is-error"}>
                                                 * Thời gian lớn hơn hiện tại
                                             </span>
@@ -713,7 +737,13 @@ class CalenderInfoPage extends Component {
                                         <div className="b-form-group">
                                             <label>Thời gian kết thúc</label>
                                             <br />
-                                            <TimePicker className="b-picker" hideDisabledOptions disabledHours={disabledHours} onChange={this.onChangeTimeItem} allowClear={false} minuteStep={30} defaultValue={moment(this.state.timeend, format)} format={format} />
+                                            <Select value={this.state.timeend} onChange={this.onChangeTimeItem}>
+                                                {arrayTime.map(data => (
+                                                    <Option key={data.id} value={data.date}>{data.date}</Option>
+                                                ))
+
+                                                }
+                                            </Select>
                                             <span className={this.state.validateTimeItem ? "is-error is-check" : "is-error"}>
                                                 * Thời gian lớn hơn hiện tại
                                             </span>
@@ -732,7 +762,8 @@ class CalenderInfoPage extends Component {
                                     </div>
                                 </div>
                                 <div className="b-heading-right">
-                                    <button className="b-btn waves-effect waves-ripple" type="submit">Lưu</button>
+                                    <button className="b-btn waves-effect waves-ripple" type="submit" >Lưu</button>
+                                    <button className="b-btn b-btn-cancel waves-effect waves-ripple" type="cancel" onClick={this.onCancelForm}>Hủy</button>
                                 </div>
                             </div>
                         </form>

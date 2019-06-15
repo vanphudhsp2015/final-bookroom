@@ -208,7 +208,7 @@ class HeaderLayout extends Component {
                 <div className="b-block">
                     <div className="b-block-left">
                         <div className="b-icon">
-                            {this.props.isHome !== true ? <Link to={'/?date=' + this.props.dateStart}>
+                            {this.props.isHome !== true ? <Link to={'/'}>
                                 <img src={Logo} alt="Logo" />
                             </Link>
                                 :
