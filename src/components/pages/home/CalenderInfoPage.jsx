@@ -131,7 +131,7 @@ class CalenderInfoPage extends Component {
     }
     onChangeDate = (date, dateString) => {
         if (dateString === '') {
-            message.error('Vui lòng nhập thời gian ');
+            message.error('Vui lòng nhập đúng chuẩn thời gian ');
             this.setState({
                 validateDate: true
             })
@@ -698,7 +698,7 @@ class CalenderInfoPage extends Component {
                                             <br />
                                             <DatePicker allowClear={false} className="b-picker" onChange={this.onChangeDate} defaultValue={moment(this.state.dateStart, dateFormat)} format={dateFormat} />
                                             <span className={this.state.validateDate ? "is-error  is-check" : "is-error"}>
-                                                * Thời gian lớn hơn hiện tại
+                                                * Thời gian không hợp lệ
                                         </span>
                                         </div>
 
