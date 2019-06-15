@@ -258,6 +258,11 @@ export function requestEditException(data, day, room) {
         })
     }
 }
+export function requestAddEventCheck(data) {
+    return (dispatch) => {
+        dispatch(receiveData(types.REQUEST_ADD_EVENT, data))
+    }
+}
 export function requestLoading() {
     return { type: types.REQUEST_LOADING };
 }

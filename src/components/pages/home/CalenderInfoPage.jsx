@@ -9,11 +9,15 @@ import * as action from '../../../actions/events';
 import * as actionRoom from '../../../actions/room';
 import { connect } from 'react-redux';
 import queryString from 'query-string'
+import Cookies from 'universal-cookie';
+import { http } from '../../../libraries/http/http';
+const htmlToText = require('html-to-text');
 const dateFormat = 'YYYY/MM/DD';
 const format = 'HH:mm';
 const { Option } = Select;
 var dateFormatDate = require('dateformat');
 var now = new Date()
+const cookies = new Cookies();
 const children = [
     { id: '1', name: 'su', title: 'Chủ Nhật' },
     { id: '2', name: 'mo', title: 'Thứ Hai' },
@@ -24,7 +28,7 @@ const children = [
     { id: '7', name: 'sa', title: 'Thứ Bảy' }
 ];
 function disabledHours() {
-    return [0, 1, 2, 3, 4, 5, 6, 12, 20, 21, 22, 23, 24];
+    return [0, 1, 2, 3, 4, 5, 6, 12, 19, 20, 21, 22, 23, 24];
 }
 class CalenderInfoPage extends Component {
     constructor(props) {
@@ -39,9 +43,9 @@ class CalenderInfoPage extends Component {
             timeend: this.roundMinutesDate(now, 60),
             selectRepeat: [
                 { id: '2', name: 'Không lặp lại' },
-                { id: '0', name: 'Tùy chỉnh' },
                 { id: '3', name: 'Mọi ngày trong tuần từ thứ 2 đến thứ 6' },
                 { id: '1', name: 'Hàng ngày', count: 10 },
+                { id: '0', name: 'Tùy chỉnh' },
             ],
             visible: false,
             repeat: '2',
@@ -230,8 +234,15 @@ class CalenderInfoPage extends Component {
 
     }
     onCancel = (event) => {
+        event.preventDefault();
         this.setState({
-            visible: false
+            visible: false,
+            selectRepeat: [
+                { id: '2', name: 'Không lặp lại' },
+                { id: '3', name: 'Mọi ngày trong tuần từ thứ 2 đến thứ 6' },
+                { id: '1', name: 'Hàng ngày', count: 10 },
+                { id: '0', name: 'Tùy chỉnh' },
+            ],
         })
     }
     onSubmitDate = (event) => {
@@ -335,6 +346,11 @@ class CalenderInfoPage extends Component {
         var self = this.state;
         var selfProps = this.props;
         var selfThis = this;
+        let data = this.state;
+        if (cookies.get('data') === undefined) {
+            message.error('Vui lòng đăng nhập để tạo phòng !');
+            return;
+        }
         if (self.title.trim() === '') {
             message.error('Vui lòng nhập tên tiêu đề cuộc họp !');
         } else {
@@ -343,8 +359,78 @@ class CalenderInfoPage extends Component {
                     isShowEdit: true
                 })
             } else {
-                selfProps.dispatch(action.requestAddEvents(selfThis.state));
-                selfProps.history.push(`/?date=${self.dateStart}`);
+                let email = '';
+                if (data.arrayEmail !== undefined && data.arrayEmail.length > 0) {
+                    if (data.arrayEmail.length > 1) {
+                        data.arrayEmail.forEach((i, index, item) => {
+                            if (index === item.length - 1) {
+                                email += `${item[index].key}`;
+                            } else {
+                                email += `${item[index].key},`;
+                            }
+                        })
+                    } else {
+                        data.arrayEmail.forEach((i, index, item) => {
+                            email += `${item[index].key}`
+                        })
+                    }
+
+                }
+                let formDataObject = {};
+                if (data.checkbox === true) {
+                    let arrayDay = '';
+                    if (data.byweekday !== null) {
+                        if (data.byweekday.length > 1) {
+                            data.byweekday.forEach((i, index, item) => {
+                                if (index === item.length - 1) {
+                                    arrayDay += `${item[index]}`;
+                                } else {
+                                    arrayDay += `${item[index]},`;
+                                }
+                            })
+                        } else {
+                            data.byweekday.forEach((i, index, item) => {
+                                arrayDay += `${item[index]}`;
+                            })
+                        }
+                    }
+                    formDataObject = {
+                        'room_id': data.rooms,
+                        'title': data.title,
+                        'content': htmlToText.fromString(data.content),
+                        'user_id': cookies.get('data').id,
+                        'daystart': data.dateStart,
+                        'timestart': data.timestart,
+                        'timeend': data.timeend,
+                        'repeatby': data.choice,
+                        'interval': 1,
+                        'count': data.count,
+                        'byweekday': data.choice === 'weekly' ? arrayDay : '',
+                        'mail': data.arrayEmail === undefined ? '' : email
+                    }
+                } else {
+                    formDataObject = {
+                        'room_id': data.rooms,
+                        'content': htmlToText.fromString(data.content),
+                        'user_id': cookies.get('data').id,
+                        'daystart': data.dateStart,
+                        'timestart': data.timestart,
+                        'timeend': data.timeend,
+                        'title': data.title,
+                        'mail': data.arrayEmail === undefined ? '' : email
+                    }
+                }
+                http.request({
+                    url: `/bookrooms`,
+                    method: 'POST',
+                    data: formDataObject
+                }).then(function (response) {
+                    message.success('Đặt phòng thành công !')
+                    selfProps.dispatch(action.requestAddEventCheck(response));
+                    selfProps.history.push(`/?date=${self.dateStart}`);
+                }).catch(function (error) {
+                    message.error(error.messages[0])
+                })
             }
         }
     }
@@ -572,7 +658,7 @@ class CalenderInfoPage extends Component {
                                             </div>
                                             <div className="b-form-button">
                                                 <button type="cancel" className="b-btn b-btn-cancel  waves-effect waves-teal" onClick={this.onCancel}>Hủy</button>
-                                                <button type="submit" className="b-btn b-btn-save waves-effect waves-teal">Lưu</button>
+                                                <button type="submit" className="b-btn b-btn-save waves-effect waves-teal" >Lưu</button>
                                             </div>
                                         </form>
                                     </div>
@@ -677,6 +763,11 @@ class CalenderInfoPage extends Component {
                                                 }}
                                                 onFocus={editor => {
                                                     // console.log('Focus.', editor);
+                                                }}
+                                                config={{
+                                                    // plugins: [Essentials, Heading, Paragraph, Bold, Italic, BlockQuote, Alignment, List, Link],
+                                                    toolbar: ['Heading', '|'],
+                                                    removePlugins: ['Image', 'ImageCaption', 'ImageStyle', 'ImageToolbar', 'ImageUpload', 'Italic', 'Link', 'BlockQuote', 'Undo', 'Redo', 'Bold']
                                                 }}
                                             />
                                         </div>
