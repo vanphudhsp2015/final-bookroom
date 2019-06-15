@@ -12,7 +12,7 @@ import queryString from 'query-string'
 import Cookies from 'universal-cookie';
 import { http } from '../../../libraries/http/http';
 const htmlToText = require('html-to-text');
-const dateFormat = 'YYYY/MM/DD';
+const dateFormat = 'YYYY-MM-DD';
 const format = 'HH:mm';
 const { Option } = Select;
 var dateFormatDate = require('dateformat');
@@ -31,6 +31,7 @@ function disabledHours() {
     return [0, 1, 2, 3, 4, 5, 6, 12, 19, 20, 21, 22, 23, 24];
 }
 class CalenderInfoPage extends Component {
+
     constructor(props) {
         super(props);
         this.state = {
@@ -38,7 +39,12 @@ class CalenderInfoPage extends Component {
             data: [],
             value: [],
             fetching: false,
-            dateStart: dateFormatDate(now, 'yyyy-mm-dd'),
+            dateStart: this.props.match.params.calender !== undefined ?
+                this.props.match.params.date
+                :
+                (queryString.parse(this.props.location.search) !== undefined
+                    ? moment(queryString.parse(this.props.location.search).date, 'YYYY-MM-DD')
+                    : moment(now, 'YYYY-MM-DD')),
             timestart: this.roundMinutesDate(now, 0),
             timeend: this.roundMinutesDate(now, 60),
             selectRepeat: [
@@ -75,7 +81,7 @@ class CalenderInfoPage extends Component {
     componentDidMount() {
         this.props.dispatch(action.requestGetEvent());
         this.props.dispatch(actionRoom.requestGetRoom());
-        const values = queryString.parse(this.props.location.search)
+        var values = queryString.parse(this.props.location.search)
         if (values.date !== undefined) {
             this.setState({
                 dateStart: values.date,
@@ -83,6 +89,7 @@ class CalenderInfoPage extends Component {
                 timeend: this.roundMinutesDate(`${values.date} ${values.time}`, 30)
             })
         }
+
     }
     componentDidUpdate(prevProps, prevState) {
         if (this.props.match.params.calender !== undefined) {
@@ -96,7 +103,7 @@ class CalenderInfoPage extends Component {
                     id: data[0].id,
                     title: data[0].attributes.title,
                     content: data[0].attributes.content !== null ? data[0].attributes.content : "",
-                    dateStart: dateFormatDate(this.props.match.params.date, 'yyyy-mm-dd'),
+                    dateStart: dateFormatDate(data[0].attributes.daystart, 'yyyy-mm-dd'),
                     timestart: data[0].attributes.timestart,
                     timeend: data[0].attributes.timeend,
                     count: data[0].attributes.repeat !== null ? data[0].attributes.repeat.count : 1,
@@ -123,13 +130,21 @@ class CalenderInfoPage extends Component {
         })
     }
     onChangeDate = (date, dateString) => {
-        if ((moment(dateFormatDate(dateString, 'yyyy-mm-dd HH:mm')).diff(dateFormatDate(now, 'yyyy-mm-dd HH:mm'), 'days')) < 0) {
+        if (dateString === '') {
+            message.error('Vui lòng nhập thời gian ');
+            this.setState({
+                validateDate: true
+            })
+            return;
+        }
+
+        if (moment(moment(dateString, 'YYYY-MM-DD')).diff(moment(now, 'YYYY-MM-DD'), 'days') < 0) {
             this.setState({
                 validateDate: true
             })
         } else {
             this.setState({
-                dateStart: dateString,
+                dateStart: moment(dateString, 'YYYY-MM-DD'),
                 timestart: this.roundMinutesDate(now, 0),
                 timeend: this.roundMinutesDate(now, 60),
                 validateDate: false
@@ -351,6 +366,10 @@ class CalenderInfoPage extends Component {
             message.error('Vui lòng đăng nhập để tạo phòng !');
             return;
         }
+        if (this.state.validateDate === true) {
+            message.error('Vui lòng nhập thời gian  !');
+            return;
+        }
         if (self.title.trim() === '') {
             message.error('Vui lòng nhập tên tiêu đề cuộc họp !');
         } else {
@@ -399,7 +418,7 @@ class CalenderInfoPage extends Component {
                         'title': data.title,
                         'content': htmlToText.fromString(data.content),
                         'user_id': cookies.get('data').id,
-                        'daystart': data.dateStart,
+                        'daystart': dateFormatDate(data.dateStart, 'yyyy-mm-dd'),
                         'timestart': data.timestart,
                         'timeend': data.timeend,
                         'repeatby': data.choice,
@@ -413,7 +432,7 @@ class CalenderInfoPage extends Component {
                         'room_id': data.rooms,
                         'content': htmlToText.fromString(data.content),
                         'user_id': cookies.get('data').id,
-                        'daystart': data.dateStart,
+                        'daystart': dateFormatDate(data.dateStart, 'yyyy-mm-dd'),
                         'timestart': data.timestart,
                         'timeend': data.timeend,
                         'title': data.title,
@@ -427,7 +446,7 @@ class CalenderInfoPage extends Component {
                 }).then(function (response) {
                     message.success('Đặt phòng thành công !')
                     selfProps.dispatch(action.requestAddEventCheck(response));
-                    selfProps.history.push(`/?date=${self.dateStart}`);
+                    selfProps.history.push(`/?date=${dateFormatDate(self.dateStart, 'yyyy-mm-dd')}`);
                 }).catch(function (error) {
                     message.error(error.messages[0])
                 })
@@ -439,10 +458,10 @@ class CalenderInfoPage extends Component {
         var selfState = this.state;
         if (this.state.valueEdit === 1) {
             selfProps.dispatch(action.requestUpdateEvent(selfState));
-            selfProps.history.push(`/?date=${selfState.dateStart}`);
+            selfProps.history.push(`/?date=${dateFormatDate(selfState.dateStart, 'yyyy-mm-dd')}`);
         } else {
             selfProps.dispatch(action.requestEditException(selfState, selfProps.match.params.date, selfState.rooms));
-            selfProps.history.push(`/?date=${selfState.dateStart}`);
+            selfProps.history.push(`/?date=${dateFormatDate(selfState.dateStart, 'yyyy-mm-dd')}`);
         }
         this.setState({
             isShowEdit: false
@@ -572,7 +591,7 @@ class CalenderInfoPage extends Component {
         };
         return (
             <div className="wrapper">
-                <HeaderLayout dateStart={this.state.dateStart} searchDate={this.state.searchDate}></HeaderLayout>
+                <HeaderLayout dateStart={this.state.validateDate ? dateFormatDate(now, 'yyyy-mm-dd') : dateFormatDate(this.state.dateStart, 'yyyy-mm-dd')} searchDate={this.state.searchDate}></HeaderLayout>
                 <main className="b-page-main">
                     <div className="b-page-calender">
                         <Modal
@@ -677,7 +696,7 @@ class CalenderInfoPage extends Component {
                                         <div className="b-form-group">
                                             <label>Ngày cuộc họp</label>
                                             <br />
-                                            <DatePicker className="b-picker" onChange={this.onChangeDate} allowClear={false} value={moment(this.state.dateStart, dateFormat)} format={dateFormat} />
+                                            <DatePicker allowClear={false} className="b-picker" onChange={this.onChangeDate} defaultValue={moment(this.state.dateStart, dateFormat)} format={dateFormat} />
                                             <span className={this.state.validateDate ? "is-error  is-check" : "is-error"}>
                                                 * Thời gian lớn hơn hiện tại
                                         </span>
@@ -686,7 +705,7 @@ class CalenderInfoPage extends Component {
                                         <div className="b-form-group">
                                             <label>Thời gian bắt đầu</label>
                                             <br />
-                                            <TimePicker className="b-picker" hideDisabledOptions disabledHours={disabledHours} onChange={this.onChangeTime} value={moment(this.state.timestart, format)} allowClear={false} minuteStep={30} defaultValue={moment(this.state.timestart, format)} format={format} />
+                                            <TimePicker className="b-picker" hideDisabledOptions disabledHours={disabledHours} onChange={this.onChangeTime} allowClear={false} minuteStep={30} defaultValue={moment(this.state.timestart, format)} format={format} />
                                             <span className={this.state.validateTime ? "is-error is-check" : "is-error"}>
                                                 * Thời gian lớn hơn hiện tại
                                             </span>
@@ -694,7 +713,7 @@ class CalenderInfoPage extends Component {
                                         <div className="b-form-group">
                                             <label>Thời gian kết thúc</label>
                                             <br />
-                                            <TimePicker className="b-picker" hideDisabledOptions disabledHours={disabledHours} onChange={this.onChangeTimeItem} value={moment(this.state.timeend, format)} allowClear={false} minuteStep={30} defaultValue={moment(this.state.timeend, format)} format={format} />
+                                            <TimePicker className="b-picker" hideDisabledOptions disabledHours={disabledHours} onChange={this.onChangeTimeItem} allowClear={false} minuteStep={30} defaultValue={moment(this.state.timeend, format)} format={format} />
                                             <span className={this.state.validateTimeItem ? "is-error is-check" : "is-error"}>
                                                 * Thời gian lớn hơn hiện tại
                                             </span>

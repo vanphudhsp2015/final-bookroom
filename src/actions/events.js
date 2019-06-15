@@ -2,6 +2,7 @@ import * as types from '../constants/actionType';
 import { message } from 'antd';
 import Cookies from 'universal-cookie';
 import { http } from '../libraries/http/http';
+var dateFormatDate = require('dateformat');
 const cookies = new Cookies();
 const htmlToText = require('html-to-text');
 export function requestGetEvent() {
@@ -134,7 +135,7 @@ export function requestUpdateEvent(data) {
             'content': htmlToText.fromString(data.content),
             'title': data.title,
             'user_id': cookies.get('data').id,
-            'daystart': data.dateStart,
+            'daystart': dateFormatDate(data.dateStart,'yyyy-mm-dd'),
             'timestart': data.timestart,
             'timeend': data.timeend,
             'check': '1',
@@ -148,7 +149,7 @@ export function requestUpdateEvent(data) {
             'room_id': data.rooms,
             'content': htmlToText.fromString(data.content),
             'user_id': cookies.get('data').id,
-            'daystart': data.dateStart,
+            'daystart': dateFormatDate(data.dateStart,'yyyy-mm-dd'),
             'timestart': data.timestart,
             'timeend': data.timeend,
             'check': '0',
