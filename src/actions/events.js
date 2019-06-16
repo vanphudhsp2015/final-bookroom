@@ -135,7 +135,7 @@ export function requestUpdateEvent(data) {
             'content': htmlToText.fromString(data.content),
             'title': data.title,
             'user_id': cookies.get('data').id,
-            'daystart': dateFormatDate(data.dateStart,'yyyy-mm-dd'),
+            'daystart': dateFormatDate(data.dateStart, 'yyyy-mm-dd'),
             'timestart': data.timestart,
             'timeend': data.timeend,
             'check': '1',
@@ -149,7 +149,7 @@ export function requestUpdateEvent(data) {
             'room_id': data.rooms,
             'content': htmlToText.fromString(data.content),
             'user_id': cookies.get('data').id,
-            'daystart': dateFormatDate(data.dateStart,'yyyy-mm-dd'),
+            'daystart': dateFormatDate(data.dateStart, 'yyyy-mm-dd'),
             'timestart': data.timestart,
             'timeend': data.timeend,
             'check': '0',
@@ -235,7 +235,6 @@ export function requestDeleteException(data) {
     }
 }
 export function requestEditException(data, day, room) {
-
     let formDataObject = {};
     formDataObject = {
         'content': data.content,

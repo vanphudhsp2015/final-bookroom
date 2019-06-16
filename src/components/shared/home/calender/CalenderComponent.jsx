@@ -21,7 +21,6 @@ class CalenderComponent extends Component {
                     onChange={this.onChange}
                     value={this.state.date}
                     activeStartDate={this.state.date}
-                    className={'b-calender-side'}
                 />
             </div>
         );

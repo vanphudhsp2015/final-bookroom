@@ -29,7 +29,6 @@ export default function (state = INITIAL_STATE, action = {}) {
                 all: state.all.map(data => data.id === action.payload.id ? action.payload : data)
             })
         case types.REQUEST_DELETE_EVENT_EXCEPTION:
-
             return Object.assign({}, state, {
                 all: state.all.map(data => data.id === action.payload.id ? action.payload : data)
             })

@@ -63,11 +63,12 @@ class CalenderInfoPage extends Component {
             value: [],
             fetching: false,
             dateStart: this.props.match.params.calender !== undefined ?
-                this.props.match.params.date
-                :
-                (queryString.parse(this.props.location.search) !== undefined
-                    ? moment(queryString.parse(this.props.location.search).date, 'YYYY-MM-DD')
-                    : moment(now, 'YYYY-MM-DD')),
+                this.props.match.params.date :
+                ((this.props.match.path === '/new' && (queryString.parse(this.props.location.search).date === undefined) ?
+                    moment(now, 'YYYY-MM-DD') :
+                    (queryString.parse(this.props.location.search).date !== undefined ?
+                        moment(queryString.parse(this.props.location.search).date, 'YYYY-MM-DD') :
+                        moment(now, 'YYYY-MM-DD')))),
             timestart: this.roundMinutesDate(now, 0),
             timeend: this.roundMinutesDate(now, 60),
             selectRepeat: [
@@ -88,7 +89,7 @@ class CalenderInfoPage extends Component {
             validateTime: false,
             validateTimeItem: false,
             isShowEdit: false,
-            valueEdit: 2,
+            valueEdit: 1,
             isRepeat: false,
             arrayEmail: [],
             minCount: 1,
@@ -181,7 +182,7 @@ class CalenderInfoPage extends Component {
         } else {
             this.setState({
                 timestart: event,
-                timeend: this.roundMinutesDate(`${this.state.dateStart} ${event}`, 30),
+                timeend: this.roundMinutesDate(`${dateFormatDate(this.state.dateStart, 'yyyy-mm-dd')} ${event}`, 30),
             })
         }
     }
@@ -602,14 +603,16 @@ class CalenderInfoPage extends Component {
         this.props.history.push(`/?date=${dateFormatDate(this.state.dateStart, 'yyyy-mm-dd')}`);
     }
     render() {
+        // console.log((this.props.match.path === '/new') && (queryString.parse(this.props.location.search).date === undefined));
         const radioStyle = {
             display: 'block',
             height: '30px',
             lineHeight: '30px',
         };
         return (
+
             <div className="wrapper">
-                <HeaderLayout dateStart={this.state.validateDate ? dateFormatDate(now, 'yyyy-mm-dd') : dateFormatDate(this.state.dateStart, 'yyyy-mm-dd')} searchDate={this.state.searchDate}></HeaderLayout>
+                <HeaderLayout searchDate={this.state.searchDate}></HeaderLayout>
                 <main className="b-page-main">
                     <div className="b-page-calender">
                         <Modal
