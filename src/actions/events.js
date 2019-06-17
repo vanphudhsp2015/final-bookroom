@@ -2,6 +2,7 @@ import * as types from '../constants/actionType';
 import { message } from 'antd';
 import Cookies from 'universal-cookie';
 import { http } from '../libraries/http/http';
+var dateFormatDate = require('dateformat');
 const cookies = new Cookies();
 const htmlToText = require('html-to-text');
 export function requestGetEvent() {
@@ -117,9 +118,9 @@ export function requestUpdateEvent(data) {
             if (data.byweekday.length > 1) {
                 data.byweekday.forEach((i, index, item) => {
                     if (index === item.length - 1) {
-                        arrayDay += `${item[index]} `;
+                        arrayDay += `${item[index]}`;
                     } else {
-                        arrayDay += `${item[index]}, `;
+                        arrayDay += `${item[index]},`;
                     }
                 })
             } else {
@@ -134,7 +135,7 @@ export function requestUpdateEvent(data) {
             'content': htmlToText.fromString(data.content),
             'title': data.title,
             'user_id': cookies.get('data').id,
-            'daystart': data.dateStart,
+            'daystart': dateFormatDate(data.dateStart, 'yyyy-mm-dd'),
             'timestart': data.timestart,
             'timeend': data.timeend,
             'check': '1',
@@ -148,7 +149,7 @@ export function requestUpdateEvent(data) {
             'room_id': data.rooms,
             'content': htmlToText.fromString(data.content),
             'user_id': cookies.get('data').id,
-            'daystart': data.dateStart,
+            'daystart': dateFormatDate(data.dateStart, 'yyyy-mm-dd'),
             'timestart': data.timestart,
             'timeend': data.timeend,
             'check': '0',
@@ -234,7 +235,6 @@ export function requestDeleteException(data) {
     }
 }
 export function requestEditException(data, day, room) {
-
     let formDataObject = {};
     formDataObject = {
         'content': data.content,
@@ -256,6 +256,11 @@ export function requestEditException(data, day, room) {
         }).catch(function (error) {
             dispatch(requestRejected(error));
         })
+    }
+}
+export function requestAddEventCheck(data) {
+    return (dispatch) => {
+        dispatch(receiveData(types.REQUEST_ADD_EVENT, data))
     }
 }
 export function requestLoading() {

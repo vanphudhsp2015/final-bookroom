@@ -484,14 +484,21 @@
     }
     .b-heading-right {
       width: 30%;
+      @include flexbox();
       .b-btn {
+        margin-left: 5px;
+        margin-right: 5px;
         display: block;
         width: 100px;
+        height: 46px;
         padding: 10px;
         background-color: $color_green;
         border: none;
         border-radius: 4px;
         color: #fff;
+        &.b-btn-cancel {
+          background-color: #4c4c4c;
+        }
         &:disabled {
           background-color: #4c4c4c;
           color: #fff;
