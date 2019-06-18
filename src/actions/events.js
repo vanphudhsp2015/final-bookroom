@@ -141,7 +141,7 @@ export function requestUpdateEvent(data) {
             'check': '1',
             'repeatby': data.choice,
             'interval': 1,
-            'count': data.count,
+            'count': data.byweekday.length > 0 ? (data.count * data.byweekday.length + 1) : (data.count + 1),
             'byweekday': data.choice === 'weekly' ? arrayDay : ''
         }
     } else {
@@ -163,10 +163,10 @@ export function requestUpdateEvent(data) {
             method: 'PUT',
             data: formDataObject
         }).then(function (response) {
+            console.log(response);
             message.success('Sửa đặt phòng thành công !');
             dispatch(receiveData(types.REQUEST_UPDATE_EVENT, response))
         }).catch(function (error) {
-
             dispatch(requestRejected(error));
         })
     }
@@ -212,29 +212,28 @@ export function requestSearchEvent(data) {
 }
 // add tour 
 export function requestDeleteException(data) {
-    let formDataObject = {};
-    formDataObject = {
-        'content': data.content,
-        'day': data.day,
-        'timestart': data.timestart,
-        'timeend': data.timeend,
-        'title': data.title,
-        'room_id': data.room_id
-    }
     return (dispatch) => {
-        return http.request({
-            method: 'POST',
-            url: `/deletebrrepeat/${data.id}`,
-            data: formDataObject
-        }).then(function (response) {
-            message.success('Xóa đặt phòng thành công !');
-            dispatch(receiveData(types.REQUEST_DELETE_EVENT_EXCEPTION, response));
-        }).catch(function (error) {
-            dispatch(requestRejected(error));
-        })
+        dispatch(receiveData(types.REQUEST_DELETE_EVENT_EXCEPTION, data));
     }
 }
-export function requestEditException(data, day, room) {
+export function requestEditException(data, day, room) {    
+    let email = '';
+    if (data.arrayEmail !== undefined && data.arrayEmail.length > 0) {
+        if (data.arrayEmail.length > 1) {
+            data.arrayEmail.forEach((i, index, item) => {
+                if (index === item.length - 1) {
+                    email += `${item[index].key}`;
+                } else {
+                    email += `${item[index].key},`;
+                }
+            })
+        } else {
+            data.arrayEmail.forEach((i, index, item) => {
+                email += `${item[index].key}`
+            })
+        }
+
+    }
     let formDataObject = {};
     formDataObject = {
         'content': data.content,
@@ -242,9 +241,12 @@ export function requestEditException(data, day, room) {
         'timestart': data.timestart,
         'timeend': data.timeend,
         'title': data.title,
-        'room_id': room
+        'room_id': room,
+        'timestartreply': data.timestart,
+        'timeendreply': data.timeend,
+        'dayreply': dateFormatDate(data.dateStart, 'yyyy-mm-dd'),
+        'mail': email
     }
-
     return (dispatch) => {
         return http.request({
             method: 'POST',

@@ -149,6 +149,7 @@ class HomePage extends Component {
                     timestart: attributes.timestart,
                     timeend: attributes.timeend,
                     color: attributes.room.color,
+                    mailto:attributes.mailto,
                     redate: attributes && attributes.repeat !== null ? attributes.repeat.repeatby : 'Không Lặp',
                     reweek: attributes && attributes.repeat !== null ? attributes.repeat.byweekday : '',
                     recount: attributes && attributes.repeat !== null ? attributes.repeat.count : '',

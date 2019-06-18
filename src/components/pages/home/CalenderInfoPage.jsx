@@ -93,7 +93,8 @@ class CalenderInfoPage extends Component {
             isRepeat: false,
             arrayEmail: [],
             minCount: 1,
-            maxCount: 365
+            maxCount: 365,
+            edit: false
         };
     }
     roundMinutesDate(data, add) {
@@ -123,11 +124,13 @@ class CalenderInfoPage extends Component {
                     this.onAddSelectDate(data[0].attributes.repeat.repeatby, data[0].attributes.repeat.count)
                 }
                 this.setState({
+                    edit: true,
+                    arrayEmail: data[0].attributes.mailto,
                     isRepeat: data[0].attributes.repeat !== null ? true : false,
                     id: data[0].id,
                     title: data[0].attributes.title,
                     content: data[0].attributes.content !== null ? data[0].attributes.content : "",
-                    dateStart: dateFormatDate(data[0].attributes.daystart, 'yyyy-mm-dd'),
+                    dateStart: this.props.match.params.date,
                     timestart: dateFormatDate(`${data[0].attributes.daystart + ' ' + data[0].attributes.timestart}`, 'HH:MM'),
                     timeend: dateFormatDate(`${data[0].attributes.daystart + ' ' + data[0].attributes.timeend}`, 'HH:MM'),
                     count: data[0].attributes.repeat !== null ? data[0].attributes.repeat.count : 1,
@@ -472,8 +475,63 @@ class CalenderInfoPage extends Component {
         var selfProps = this.props;
         var selfState = this.state;
         if (this.state.valueEdit === 1) {
-            selfProps.dispatch(action.requestUpdateEvent(selfState));
-            selfProps.history.push(`/?date=${dateFormatDate(selfState.dateStart, 'yyyy-mm-dd')}`);
+            let data = this.state;
+            let formDataObject = {};
+            if (data.checkbox === true) {
+                let arrayDay = '';
+                if (data.byweekday !== null) {
+                    if (data.byweekday.length > 1) {
+                        data.byweekday.forEach((i, index, item) => {
+                            if (index === item.length - 1) {
+                                arrayDay += `${item[index]}`;
+                            } else {
+                                arrayDay += `${item[index]},`;
+                            }
+                        })
+                    } else {
+                        data.byweekday.forEach((i, index, item) => {
+                            arrayDay += `${item[index]} `;
+                        })
+                    }
+
+                }
+                formDataObject = {
+                    'room_id': data.rooms,
+                    'content': htmlToText.fromString(data.content),
+                    'title': data.title,
+                    'user_id': cookies.get('data').id,
+                    'daystart': dateFormatDate(data.dateStart, 'yyyy-mm-dd'),
+                    'timestart': data.timestart,
+                    'timeend': data.timeend,
+                    'check': '1',
+                    'repeatby': data.choice,
+                    'interval': 1,
+                    'count': data.byweekday.length > 0 ? (data.count * data.byweekday.length + 1) : (data.count + 1),
+                    'byweekday': data.choice === 'weekly' ? arrayDay : ''
+                }
+            } else {
+                formDataObject = {
+                    'room_id': data.rooms,
+                    'content': htmlToText.fromString(data.content),
+                    'user_id': cookies.get('data').id,
+                    'daystart': dateFormatDate(data.dateStart, 'yyyy-mm-dd'),
+                    'timestart': data.timestart,
+                    'timeend': data.timeend,
+                    'check': '0',
+                    'title': data.title
+                }
+            }
+            http.request({
+                url: `/bookrooms/${data.id}`,
+                method: 'PUT',
+                data: formDataObject
+            }).then(function (response) {
+                message.success('Sửa đặt phòng thành công !');
+                selfProps.dispatch(action.requestUpdateEvent(response));
+                selfProps.history.push(`/?date=${dateFormatDate(selfState.dateStart, 'yyyy-mm-dd')}`);
+            }).catch(function (error) {
+                message.error(error.messages[0])
+            })
         } else {
             selfProps.dispatch(action.requestEditException(selfState, selfProps.match.params.date, selfState.rooms));
             selfProps.history.push(`/?date=${dateFormatDate(selfState.dateStart, 'yyyy-mm-dd')}`);
@@ -603,7 +661,6 @@ class CalenderInfoPage extends Component {
         this.props.history.push(`/?date=${dateFormatDate(this.state.dateStart, 'yyyy-mm-dd')}`);
     }
     render() {
-        // console.log((this.props.match.path === '/new') && (queryString.parse(this.props.location.search).date === undefined));
         const radioStyle = {
             display: 'block',
             height: '30px',
@@ -827,7 +884,7 @@ class CalenderInfoPage extends Component {
                                     </div>
                                 </div>
                             </div>
-                            <SearchComponent onGetArrayEmail={this.onGetArrayEmail}></SearchComponent>
+                            <SearchComponent onGetArrayEmail={this.onGetArrayEmail} arrayEmail={this.state.arrayEmail} edit={this.state.edit}></SearchComponent>
                         </div>
                     </div>
                 </main >
