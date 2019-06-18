@@ -285,7 +285,7 @@ class CalenderInfoPage extends Component {
                     choice: 'daily'
                 })
                 this.setState({
-                    count: this.state.count + 1
+                    count: this.state.count
                 })
                 break;
             case "monthly":
@@ -294,7 +294,7 @@ class CalenderInfoPage extends Component {
                     choice: 'monthly'
                 })
                 this.setState({
-                    count: this.state.count + 1
+                    count: this.state.count
                 })
                 break;
             case "yearly":
@@ -303,7 +303,7 @@ class CalenderInfoPage extends Component {
                     choice: 'yearly'
                 })
                 this.setState({
-                    count: this.state.count + 1
+                    count: this.state.count
                 })
                 break;
             case "weekly":
@@ -318,7 +318,7 @@ class CalenderInfoPage extends Component {
                 covertName = `Các thứ  [ ${nameWeek} ] trong tuần`
                 this.setState({
                     choice: 'weekly',
-                    count: (this.state.byweekday.length + 1) * this.state.count
+                    count: this.state.count
                 })
                 break;
             default:
@@ -438,7 +438,7 @@ class CalenderInfoPage extends Component {
                         'timeend': data.timeend,
                         'repeatby': data.choice,
                         'interval': 1,
-                        'count': data.count,
+                        'count': data.byweekday.length > 0 ? (data.count * data.byweekday.length + 1) : (data.count + 1),
                         'byweekday': data.choice === 'weekly' ? arrayDay : '',
                         'mail': data.arrayEmail === undefined ? '' : email
                     }
