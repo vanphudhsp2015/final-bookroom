@@ -111,64 +111,8 @@ export function requestDeleteEvent(id) {
     }
 }
 export function requestUpdateEvent(data) {
-    let formDataObject = {};
-    if (data.checkbox === true) {
-        let arrayDay = '';
-        if (data.byweekday !== null) {
-            if (data.byweekday.length > 1) {
-                data.byweekday.forEach((i, index, item) => {
-                    if (index === item.length - 1) {
-                        arrayDay += `${item[index]}`;
-                    } else {
-                        arrayDay += `${item[index]},`;
-                    }
-                })
-            } else {
-                data.byweekday.forEach((i, index, item) => {
-                    arrayDay += `${item[index]} `;
-                })
-            }
-
-        }
-        formDataObject = {
-            'room_id': data.rooms,
-            'content': htmlToText.fromString(data.content),
-            'title': data.title,
-            'user_id': cookies.get('data').id,
-            'daystart': dateFormatDate(data.dateStart, 'yyyy-mm-dd'),
-            'timestart': data.timestart,
-            'timeend': data.timeend,
-            'check': '1',
-            'repeatby': data.choice,
-            'interval': 1,
-            'count': data.byweekday.length > 0 ? (data.count * data.byweekday.length + 1) : (data.count + 1),
-            'byweekday': data.choice === 'weekly' ? arrayDay : ''
-        }
-    } else {
-        formDataObject = {
-            'room_id': data.rooms,
-            'content': htmlToText.fromString(data.content),
-            'user_id': cookies.get('data').id,
-            'daystart': dateFormatDate(data.dateStart, 'yyyy-mm-dd'),
-            'timestart': data.timestart,
-            'timeend': data.timeend,
-            'check': '0',
-            'title': data.title
-        }
-    }
-
     return (dispatch) => {
-        return http.request({
-            url: `/bookrooms/${data.id}`,
-            method: 'PUT',
-            data: formDataObject
-        }).then(function (response) {
-            console.log(response);
-            message.success('Sửa đặt phòng thành công !');
-            dispatch(receiveData(types.REQUEST_UPDATE_EVENT, response))
-        }).catch(function (error) {
-            dispatch(requestRejected(error));
-        })
+        dispatch(receiveData(types.REQUEST_UPDATE_EVENT, data))
     }
 }
 // filter event rooms
@@ -212,6 +156,23 @@ export function requestSearchEvent(data) {
 }
 // add tour 
 export function requestDeleteException(data) {
+    let email = '';
+    if (data.mailto !== undefined && data.mailto.length > 0) {
+        if (data.mailto.length > 1) {
+            data.mailto.forEach((i, index, item) => {
+                if (index === item.length - 1) {
+                    email += `${item[index]}`;
+                } else {
+                    email += `${item[index]},`;
+                }
+            })
+        } else {
+            data.mailto.forEach((i, index, item) => {
+                email += `${item[index]}`
+            })
+        }
+
+    }
     let formDataObject = {};
     formDataObject = {
         'content': data.content,
@@ -219,7 +180,8 @@ export function requestDeleteException(data) {
         'timestart': data.timestart,
         'timeend': data.timeend,
         'title': data.title,
-        'room_id': data.room_id
+        'room_id': data.room_id,
+        'mail': email
     }
     return (dispatch) => {
         return http.request({
