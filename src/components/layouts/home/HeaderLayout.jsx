@@ -195,10 +195,10 @@ class HeaderLayout extends Component {
                                 onSuccess={this.responseGoogle}
                                 onFailure={this.error}
                                 // onRequest={loading}
-                                offline={false}
-                                approvalPrompt="force"
-                                responseType="id_token"
-                                isSignedIn
+                                // offline={false}
+                                // approvalPrompt="force"
+                                // responseType="id_token"
+                                // isSignedIn
                                 theme="dark"
                                 className="b-google"
                             />
