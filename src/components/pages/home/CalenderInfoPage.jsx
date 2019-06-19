@@ -477,6 +477,23 @@ class CalenderInfoPage extends Component {
         var selfState = this.state;
         if (this.state.valueEdit === 1) {
             let data = this.state;
+            let email = '';
+            if (data.arrayEmail !== undefined && data.arrayEmail.length > 0) {
+                if (data.arrayEmail.length > 1) {
+                    data.arrayEmail.forEach((i, index, item) => {
+                        if (index === item.length - 1) {
+                            email += `${item[index].key}`;
+                        } else {
+                            email += `${item[index].key},`;
+                        }
+                    })
+                } else {
+                    data.arrayEmail.forEach((i, index, item) => {
+                        email += `${item[index].key}`
+                    })
+                }
+
+            }
             let formDataObject = {};
             if (data.checkbox === true) {
                 let arrayDay = '';
@@ -508,7 +525,8 @@ class CalenderInfoPage extends Component {
                     'repeatby': data.choice,
                     'interval': 1,
                     'count': data.byweekday.length > 0 ? (data.count * data.byweekday.length + 1) : (data.count + 1),
-                    'byweekday': data.choice === 'weekly' ? arrayDay : ''
+                    'byweekday': data.choice === 'weekly' ? arrayDay : '',
+                    'mail': email
                 }
             } else {
                 formDataObject = {
@@ -519,7 +537,8 @@ class CalenderInfoPage extends Component {
                     'timestart': data.timestart,
                     'timeend': data.timeend,
                     'check': '0',
-                    'title': data.title
+                    'title': data.title,
+                    'mail': email
                 }
             }
             http.request({
