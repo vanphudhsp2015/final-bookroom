@@ -101,7 +101,7 @@ class FullcalenderComponent extends Component {
             content: info.event.extendedProps.content,
             is_repeat: info.event.extendedProps.is_repeat,
             room_id: info.event.extendedProps.room_id,
-            mailto:info.event.extendedProps.mailto
+            mailto: info.event.extendedProps.mailto
         })
     }
 
@@ -274,8 +274,6 @@ class FullcalenderComponent extends Component {
         })
     }
     onClickDate = (e) => {
-        // (moment(`${nowCurrent + ' ' + dateString + ':00'}`)).diff(dateFormatDate(now, 'yyyy-mm-dd HH:MM:ss'), 'minutes') < 0
-
         this.clickCount += 1;
         var self = this;
         if (this.clickCount === 1) {
@@ -308,7 +306,7 @@ class FullcalenderComponent extends Component {
         m = m < 10 ? '0' + m : m;
         return `${h}:${m}`;
     }
-    render() {        
+    render() {
         if (this.state.isShowForm) {
             return <Redirect to={`/new?date=` + this.state.dateStart + `&time=` + this.state.timestart}></Redirect>
         }
@@ -378,7 +376,7 @@ class FullcalenderComponent extends Component {
                         {(cookies.get('data') !== undefined && parseInt(this.state.user_id) === parseInt(cookies.get('data').id)) || (cookies.get('data') !== undefined && cookies.get('data').attributes.roles[0] === 'super_admin') ?
                             <div className="b-button-funtion">
                                 <div className="b-item">
-                                    <Link to={'/' + this.state.id + '/' + this.state.day} className="b-btn">
+                                    <Link to={'/' + this.state.id + '/' + this.state.day + '?datestart=' + this.state.day + '&timestart=' + this.state.timestart + '&timeend=' + this.state.timeend + '&room=' + this.state.room_id} className="b-btn">
                                         <i className="fas fa-pencil-alt" />
                                     </Link>
                                 </div>

@@ -212,11 +212,28 @@ export function requestSearchEvent(data) {
 }
 // add tour 
 export function requestDeleteException(data) {
+    let formDataObject = {};
+    formDataObject = {
+        'content': data.content,
+        'day': data.day,
+        'timestart': data.timestart,
+        'timeend': data.timeend,
+        'title': data.title,
+        'room_id': data.room_id
+    }
     return (dispatch) => {
-        dispatch(receiveData(types.REQUEST_DELETE_EVENT_EXCEPTION, data));
+        return http.request({
+            method: 'POST',
+            url: `/deletebrrepeat/${data.id}`,
+            data: formDataObject
+        }).then(function (response) {
+            dispatch(receiveData(types.REQUEST_DELETE_EVENT_EXCEPTION, response));
+        }).catch(function (error) {
+            dispatch(requestRejected(error));
+        })
     }
 }
-export function requestEditException(data, day, room) {    
+export function requestEditException(data, day, room, values) {
     let email = '';
     if (data.arrayEmail !== undefined && data.arrayEmail.length > 0) {
         if (data.arrayEmail.length > 1) {
@@ -237,9 +254,9 @@ export function requestEditException(data, day, room) {
     let formDataObject = {};
     formDataObject = {
         'content': data.content,
-        'day': day,
-        'timestart': data.timestart,
-        'timeend': data.timeend,
+        'day': values.datestart,
+        'timestart': values.timestart,
+        'timeend': values.timeend,
         'title': data.title,
         'room_id': room,
         'timestartreply': data.timestart,
@@ -247,6 +264,8 @@ export function requestEditException(data, day, room) {
         'dayreply': dateFormatDate(data.dateStart, 'yyyy-mm-dd'),
         'mail': email
     }
+    console.log(formDataObject);
+
     return (dispatch) => {
         return http.request({
             method: 'POST',
