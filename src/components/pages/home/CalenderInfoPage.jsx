@@ -123,6 +123,7 @@ class CalenderInfoPage extends Component {
                 if (data[0].attributes.repeat !== null) {
                     this.onAddSelectDate(data[0].attributes.repeat.repeatby, data[0].attributes.repeat.count)
                 }
+                var values = queryString.parse(this.props.location.search)
                 this.setState({
                     edit: true,
                     arrayEmail: data[0].attributes.mailto,
@@ -131,10 +132,10 @@ class CalenderInfoPage extends Component {
                     title: data[0].attributes.title,
                     content: data[0].attributes.content !== null ? data[0].attributes.content : "",
                     dateStart: this.props.match.params.date,
-                    timestart: dateFormatDate(`${data[0].attributes.daystart + ' ' + data[0].attributes.timestart}`, 'HH:MM'),
-                    timeend: dateFormatDate(`${data[0].attributes.daystart + ' ' + data[0].attributes.timeend}`, 'HH:MM'),
+                    timestart: dateFormatDate(`${this.state.dateStart} ${values.timestart}`, 'HH:MM'),
+                    timeend: dateFormatDate(`${this.state.dateStart} ${values.timeend}`, 'HH:MM'),
                     count: data[0].attributes.repeat !== null ? data[0].attributes.repeat.count : 1,
-                    rooms: data[0].attributes.room.id,
+                    rooms: values.room,
                     checkbox: data[0].attributes.repeat !== null ? true : false,
                     choice: data[0].attributes.repeat !== null ? data[0].attributes.repeat.repeatby : 'daily',
                     selectRepeat: data[0].attributes.repeat !== null ? [...this.state.selectRepeat, { id: '99', name: `Lặp Lại Theo ${this.onChangerCalender(data[0].attributes.repeat.repeatby)} ${data[0].attributes.repeat.count - 1} Lần` }] : this.state.selectRepeat,
@@ -533,7 +534,8 @@ class CalenderInfoPage extends Component {
                 message.error(error.messages[0])
             })
         } else {
-            selfProps.dispatch(action.requestEditException(selfState, selfProps.match.params.date, selfState.rooms));
+            var values = queryString.parse(this.props.location.search)
+            selfProps.dispatch(action.requestEditException(selfState, selfProps.match.params.date, selfState.rooms, values));
             selfProps.history.push(`/?date=${dateFormatDate(selfState.dateStart, 'yyyy-mm-dd')}`);
         }
         this.setState({
