@@ -100,7 +100,8 @@ class FullcalenderComponent extends Component {
             user_id: info.event.extendedProps.user_id,
             content: info.event.extendedProps.content,
             is_repeat: info.event.extendedProps.is_repeat,
-            room_id: info.event.extendedProps.room_id
+            room_id: info.event.extendedProps.room_id,
+            mailto:info.event.extendedProps.mailto
         })
     }
 
@@ -307,7 +308,7 @@ class FullcalenderComponent extends Component {
         m = m < 10 ? '0' + m : m;
         return `${h}:${m}`;
     }
-    render() {
+    render() {        
         if (this.state.isShowForm) {
             return <Redirect to={`/new?date=` + this.state.dateStart + `&time=` + this.state.timestart}></Redirect>
         }

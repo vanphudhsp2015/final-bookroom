@@ -29,6 +29,11 @@ class SearchComponent extends Component {
                 })
             }
         }
+        if (this.props.edit !== prevProps.edit) {
+            this.setState({
+                value: this.props.edit ? this.covertEmailToArray(this.props.arrayEmail) : [],
+            })
+        }
     }
     fetchUser = value => {
         var self = this;
@@ -62,8 +67,18 @@ class SearchComponent extends Component {
         });
     };
 
-    render() {
+    covertEmailToArray = (data) => {
+        let dataNew = []
+        dataNew = data.map(item => {
+            return {
+                key: item,
+                label: item
+            }
+        })
+        return dataNew;
 
+    }
+    render() {
         const { fetching, data, value } = this.state;
         return (
             <div className="b-description-right">
