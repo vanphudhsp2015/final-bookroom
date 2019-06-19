@@ -262,10 +262,9 @@ export function requestEditException(data, day, room, values) {
         'timestartreply': data.timestart,
         'timeendreply': data.timeend,
         'dayreply': dateFormatDate(data.dateStart, 'yyyy-mm-dd'),
-        'mail': email
+        'mail': email,
+        'oldroom_id': values.room
     }
-    console.log(formDataObject);
-
     return (dispatch) => {
         return http.request({
             method: 'POST',
