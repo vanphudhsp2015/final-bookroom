@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Modal } from 'antd';
 import Pagination from '../../../../feature/Pagination';
+import avatar from '../../../../assets/images/avatar.png'
 const confirm = Modal.confirm;
 var dateFormat = require('dateformat');
 class TableComponent extends Component {
@@ -121,7 +122,7 @@ class TableComponent extends Component {
                                                         <td>{data.id}</td>
                                                         <td >
                                                             <div className="product-name">
-                                                                <img className="link-name" src={data.attributes.img === null ? 'https://img.icons8.com/bubbles/2x/system-administrator-female.png' : data.attributes.img} alt="alt-user" />
+                                                                <img className="link-name" src={data.attributes.img === null ? avatar : data.attributes.img} alt="alt-user" />
                                                                 <h4 className="b-text">{data.attributes.name}</h4>
                                                             </div>
                                                         </td>

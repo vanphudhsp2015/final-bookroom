@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import Cookies from 'universal-cookie';
+import avatar from '../../../assets/images/avatar.png'
 const cookies = new Cookies();
 class SiderLayout extends Component {
     onDropdown = (event) => {
@@ -14,7 +15,7 @@ class SiderLayout extends Component {
                     <li>
                         <div className="user-profile">
                             <div className="user-pic">
-                                <img className="img-user" src={data.attributes.img === null ? 'https://img.icons8.com/bubbles/2x/system-administrator-female.png' : data.img} alt="img-user" /></div>
+                                <img className="img-user" src={data.attributes.img === null ? avatar : data.img} alt="img-user" /></div>
                             <div className="user-content">
                                 <Link to="/" onClick={this.onDropdown}>
                                     <h5 className="name-title">{data.attributes.name}
