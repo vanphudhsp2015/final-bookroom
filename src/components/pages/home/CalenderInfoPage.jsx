@@ -508,7 +508,7 @@ class CalenderInfoPage extends Component {
                         })
                     } else {
                         data.byweekday.forEach((i, index, item) => {
-                            arrayDay += `${item[index]} `;
+                            arrayDay += `${item[index]}`;
                         })
                     }
 

@@ -57,7 +57,8 @@ class FullcalenderComponent extends Component {
             timestart: this.roundMinutesDate(now, 0),
             timeend: this.roundMinutesDate(now, 60),
             isShowForm: false,
-            room_id: ''
+            room_id: '',
+            day: dateFormat(now, 'yyyy-mm-dd')
         }
     }
 
@@ -284,7 +285,7 @@ class FullcalenderComponent extends Component {
             if (cookies.get('data') === undefined) {
                 message.error('Vui Lòng Đăng Nhập')
             } else {
-                if (moment(dateFormat(e.dateStr, 'yyyy-mm-dd HH:MM:ss')).diff(dateFormat(now, 'yyyy-mm-dd HH:MM:ss'), 'minites') < 0) {
+                if (moment(dateFormat(e.dateStr, 'yyyy-mm-dd HH:MM:ss')).diff(dateFormat(now, 'yyyy-mm-dd HH:MM:ss'), 'minutes') < 0) {
                     message.error('Vui Lòng Chọn Thời Gian Lớn Hơn Thời Gian Hiện Tại');
                     return;
                 } else {
@@ -307,6 +308,7 @@ class FullcalenderComponent extends Component {
         return `${h}:${m}`;
     }
     render() {
+        let dataCurrrent = moment(dateFormat(`${this.state.day} ${this.state.timestart}`, 'yyyy-mm-dd HH:MM:ss')).diff(dateFormat(now, 'yyyy-mm-dd HH:MM:ss'), 'minutes');
         if (this.state.isShowForm) {
             return <Redirect to={`/new?date=` + this.state.dateStart + `&time=` + this.state.timestart}></Redirect>
         }
@@ -372,8 +374,7 @@ class FullcalenderComponent extends Component {
                     cancelText="Hủy"
                 >
                     <div className="b-events">
-                        {/* {cookies.get('data') !== undefined && cookies.get('data').attributes} */}
-                        {(cookies.get('data') !== undefined && parseInt(this.state.user_id) === parseInt(cookies.get('data').id)) || (cookies.get('data') !== undefined && cookies.get('data').attributes.roles[0] === 'super_admin') ?
+                        {(cookies.get('data') !== undefined && parseInt(this.state.user_id) === parseInt(cookies.get('data').id) && dataCurrrent > 0) || (cookies.get('data') !== undefined && cookies.get('data').attributes.roles[0] === 'super_admin' && dataCurrrent > 0) ?
                             <div className="b-button-funtion">
                                 <div className="b-item">
                                     <Link to={'/' + this.state.id + '/' + this.state.day + '?datestart=' + this.state.day + '&timestart=' + this.state.timestart + '&timeend=' + this.state.timeend + '&room=' + this.state.room_id} className="b-btn">
