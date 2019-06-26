@@ -51,8 +51,8 @@ const arrayTime = [
     { id: '23', date: '17:30' },
     { id: '24', date: '18:00' },
     { id: '25', date: '18:30' }
-]
-
+];
+const keyESC = 27;
 class CalenderInfoPage extends Component {
 
     constructor(props) {
@@ -218,10 +218,12 @@ class CalenderInfoPage extends Component {
     };
 
     handleCancel = e => {
-        this.setState({
-            visible: false,
-            repeat: '1'
-        });
+        if (e.keyCode === keyESC) {
+            this.setState({
+                visible: false,
+                repeat: '1'
+            });
+        }
     };
     onChangerSelectRepeat = (event) => {
         switch (event.target.value) {
@@ -561,7 +563,7 @@ class CalenderInfoPage extends Component {
             isShowEdit: false
         })
     }
-    onCloseEdit = () => {
+    onCloseEdit = (e) => {
         this.setState({
             isShowEdit: false
         })

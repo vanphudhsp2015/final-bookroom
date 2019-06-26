@@ -29,6 +29,7 @@ dateFormat.i18n = {
         'a', 'p', 'am', 'pm', 'A', 'P', 'AM', 'PM'
     ]
 };
+const keyESC = 27;
 class FullcalenderComponent extends Component {
     clickCount = 0
     calendarComponentRef = React.createRef()
@@ -116,9 +117,11 @@ class FullcalenderComponent extends Component {
     }
 
     handleCancel = (e) => {
-        this.setState({
-            show: false,
-        });
+        if (e.keyCode === keyESC) {
+            this.setState({
+                show: false,
+            });
+        }
     }
     onDelete(id, user_id) {
         this.setState({
@@ -367,11 +370,12 @@ class FullcalenderComponent extends Component {
                     header={null}
                     visible={this.state.show}
                     onOk={this.handleOk}
-                    // onCancel={this.handleCancel}
+                    onCancel={this.handleCancel}
                     footer={null}
                     closable={false}
                     okText="Xác Nhận"
                     cancelText="Hủy"
+                    keyboard
                 >
                     <div className="b-events">
                         {(cookies.get('data') !== undefined && parseInt(this.state.user_id) === parseInt(cookies.get('data').id) && dataCurrrent > 0) || (cookies.get('data') !== undefined && cookies.get('data').attributes.roles[0] === 'super_admin' && dataCurrrent > 0) ?

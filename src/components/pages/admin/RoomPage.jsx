@@ -3,9 +3,6 @@ import { connect } from 'react-redux';
 import { HeaderLayout, FooterLayout, SiderLayout } from '../../layouts/admin';
 import { TableComponent, FormComponent } from '../../shared/admin';
 import * as action from '../../../actions/room';
-import { Redirect } from 'react-router-dom';
-import Cookies from 'universal-cookie';
-const cookies = new Cookies();
 
 
 class RoomPage extends Component {
@@ -54,17 +51,6 @@ class RoomPage extends Component {
         })
     }
     render() {
-        if (cookies.get('data') !== undefined) {
-            if (cookies.get('data').attributes.roles[0] !== 'super_admin') {
-                return (
-                    <Redirect to='/'></Redirect>
-                )
-            }
-        } else {
-            return (
-                <Redirect to='/'></Redirect>
-            )
-        }
         const mainContent = () => {
             switch (this.state.views) {
                 case "LIST":
