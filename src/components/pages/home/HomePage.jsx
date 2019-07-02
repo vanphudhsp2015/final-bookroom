@@ -9,6 +9,7 @@ import Cookies from 'universal-cookie';
 import { message } from 'antd';
 const cookies = new Cookies();
 var moment = require('moment');
+const env = process.env || {}
 
 class HomePage extends Component {
     constructor(props, context) {
@@ -248,9 +249,19 @@ class HomePage extends Component {
         const dateTime = moment(start).add(remainder, "minutes").format("HH:mm");
         return dateTime;
     }
+    onNewTag = (e) => {
+        e.preventDefault();        
+        const url =  env.REACT_APP_LINK_FEEDBACK;
+        window.open(url, '_blank');
+    }
     render() {
         return (
             <div className="wrapper">
+                <div className="feedback">
+                    <a href="/" className="b-link" onClick={this.onNewTag}>
+                        <i className="fas fa-comments-dollar"></i>
+                    </a>
+                </div>
                 <HeaderLayout isHome={true} onResetCheckLogin={this.onResetCheckLogin} isCheck={this.state.isLogin}></HeaderLayout>
                 <main className="b-page-main">
                     <div className="b-block">
