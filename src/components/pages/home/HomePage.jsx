@@ -259,7 +259,7 @@ class HomePage extends Component {
             <div className="wrapper">
                 <div className="feedback">
                     <a href="/" className="b-link" onClick={this.onNewTag}>
-                        <i className="fas fa-comments-dollar"></i>
+                        <i className="fas fa-comments"></i>
                     </a>
                 </div>
                 <HeaderLayout isHome={true} onResetCheckLogin={this.onResetCheckLogin} isCheck={this.state.isLogin}></HeaderLayout>

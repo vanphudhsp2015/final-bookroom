@@ -156,6 +156,10 @@ class CalenderInfoPage extends Component {
         this.setState({
             [event.target.name]: event.target.value
         })
+        if (this.state.title.length > 190) {
+            message.error('Vui lòng nhập tiêu đề ngắn hơn 150 ký tự!');
+            return;
+        }
     }
     onChangeDate = (date, dateString) => {
         if (dateString === '') {
@@ -389,6 +393,10 @@ class CalenderInfoPage extends Component {
         }
         if (this.state.validateDate === true) {
             message.error('Vui lòng nhập thời gian  !');
+            return;
+        }
+        if (self.title.length > 190) {
+            message.error('Vui lòng nhập tiêu đề ngắn hơn 150 ký tự!');
             return;
         }
         if (self.title.trim() === '') {
