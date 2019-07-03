@@ -655,13 +655,17 @@
     border-radius: 100%;
     box-shadow: 0 0 10px -2px rgba(0, 0, 0, 0.45);
     background-color: #3384e2;
+    @include transition(all 0.3s);
+    &:hover {
+      box-shadow: 0 0 10px 2px rgba(0, 0, 0, 0.45);
+    }
     i {
       position: absolute;
       left: 50%;
       top: 50%;
       @include transform(translate(-50%, -50%));
       color: #fff;
-      @include rem(font-size,24);
+      @include rem(font-size, 24);
     }
   }
 }
