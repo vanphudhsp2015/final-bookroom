@@ -14,6 +14,7 @@
     @include justify-content(space-between);
     @include align-items(center);
     width: 80%;
+    margin-top: 10px;
     .b-search {
       padding: 0 20px;
       color: white;

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { HeaderLayout, SiderLayout, FooterLayout } from '../../layouts/admin';
+import { MasterLayout } from '../../layouts/admin';
 import { CalenderComponent, FormModalComponent, CardCalenderComponent } from '../../shared/admin';
 import { connect } from 'react-redux';
 import * as action from '../../../actions/events';
@@ -253,65 +253,52 @@ class EventAdminPage extends Component {
     }
     render() {
         return (
-            <div className="wrapper">
+            <MasterLayout>
                 <FormModalComponent views={this.state.views} onCheckModal={this.onCheckModal} visible={this.state.visible} onUpdate={this.onUpdate} dataEdit={this.state.dataEdit} edit={this.state.edit} onAddEvent={this.onAddEvent} room={this.convertArrayRoom(this.props.room)}></FormModalComponent>
-                <HeaderLayout></HeaderLayout>
-                <section className="b-dashboard-content">
-                    <SiderLayout></SiderLayout>
-                    <div className="right-content">
-                        <div className="container-fluid">
-                            <div className="b-admin-calender">
-                                <div className="b-calender">
-                                    <div className="b-heading">
-                                        <div className="b-block">
-                                            <div className="b-block-left">
-                                                <CardCalenderComponent onGetDate={this.onGetDate} onResetCalender={this.onResetCalender} isCard={this.state.isCard}></CardCalenderComponent>
-                                                <h3 className="b-text-title"  >
-                                                    <i className="fas fa-calendar-week" style={{ cursor: 'pointer' }} onClick={this.onCalenderCard}></i> Calender
-                                                </h3>
-                                            </div>
-                                            <div className="b-block-center">
-                                                <form className="b-form-filter" onSubmit={this.onSearchEvent}>
-                                                    <div className="b-form-group">
-                                                        <DatePicker allowClear={false} hideDisabledOptions onChange={this.onChange} defaultValue={moment(now, dateFormat)} value={moment(this.state.dateStart, dateFormat)} className="b-input" />
-                                                    </div>
-                                                    <div className="b-form-group">
-                                                        <TimePicker allowClear={false} hideDisabledOptions disabledHours={disabledHours} minuteStep={30} defaultValue={moment(this.state.timestart, format)} format={format} onChange={this.onChangeTime} className="b-input" />
-                                                    </div>
-                                                    <div className="b-form-group">
-                                                        <TimePicker allowClear={false} hideDisabledOptions disabledHours={disabledHours} minuteStep={30} defaultValue={moment(this.state.timeend, format)} value={moment(this.state.timeend, format)} format={format} onChange={this.onChangeTimeItem} className="b-input" />
-                                                    </div>
-                                                    <div className="b-form-group">
-                                                        <button type="submit" className="b-btn">
-                                                            <i className="fas fa-search-location" ></i> Tìm Kiếm
-                                                        </button>
-
-                                                    </div>
-                                                </form>
-                                            </div>
-                                            <div className="b-block-right">
-                                                <button className="b-btn" onClick={this.onReloadData}>
-                                                    <i className="fas fa-plus"></i> Cập Nhật
-                                                </button>
-                                                <button className="b-btn" onClick={this.onShowModal}>
-                                                    <i className="fas fa-plus"></i> Thêm
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="b-content-main">
-                                        <CalenderComponent onDeleteException={this.onDeleteException} room={this.convertArrayRoom(this.props.room)} onDate={this.state.onDate} onUpdate={this.onUpdate} onEdit={this.onEdit} onDelete={this.onDelete} data={this.convertToFrontEnd(this.props.data)}></CalenderComponent>
-                                    </div>
+                <div className="b-admin-calender">
+                    <div className="b-calender">
+                        <div className="b-heading">
+                            <div className="b-block">
+                                <div className="b-block-left">
+                                    <CardCalenderComponent onGetDate={this.onGetDate} onResetCalender={this.onResetCalender} isCard={this.state.isCard}></CardCalenderComponent>
+                                    <h3 className="b-text-title"  >
+                                        <i className="fas fa-calendar-week" style={{ cursor: 'pointer' }} onClick={this.onCalenderCard}></i> Calender
+                                    </h3>
                                 </div>
-
-
+                                <div className="b-block-center">
+                                    <form className="b-form-filter" onSubmit={this.onSearchEvent}>
+                                        <div className="b-form-group">
+                                            <DatePicker allowClear={false} hideDisabledOptions onChange={this.onChange} defaultValue={moment(now, dateFormat)} value={moment(this.state.dateStart, dateFormat)} className="b-input" />
+                                        </div>
+                                        <div className="b-form-group">
+                                            <TimePicker allowClear={false} hideDisabledOptions disabledHours={disabledHours} minuteStep={30} defaultValue={moment(this.state.timestart, format)} format={format} onChange={this.onChangeTime} className="b-input" />
+                                        </div>
+                                        <div className="b-form-group">
+                                            <TimePicker allowClear={false} hideDisabledOptions disabledHours={disabledHours} minuteStep={30} defaultValue={moment(this.state.timeend, format)} value={moment(this.state.timeend, format)} format={format} onChange={this.onChangeTimeItem} className="b-input" />
+                                        </div>
+                                        <div className="b-form-group">
+                                            <button type="submit" className="b-btn">
+                                                <i className="fas fa-search-location" ></i> Tìm Kiếm
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div className="b-block-right">
+                                    <button className="b-btn" onClick={this.onReloadData}>
+                                        <i className="fas fa-plus"></i> Cập Nhật
+                                    </button>
+                                    <button className="b-btn" onClick={this.onShowModal}>
+                                        <i className="fas fa-plus"></i> Thêm
+                                    </button>
+                                </div>
                             </div>
                         </div>
-                        <FooterLayout></FooterLayout>
+                        <div className="b-content-main">
+                            <CalenderComponent onDeleteException={this.onDeleteException} room={this.convertArrayRoom(this.props.room)} onDate={this.state.onDate} onUpdate={this.onUpdate} onEdit={this.onEdit} onDelete={this.onDelete} data={this.convertToFrontEnd(this.props.data)}></CalenderComponent>
+                        </div>
                     </div>
-
-                </section>
-            </div>
+                </div>
+            </MasterLayout>
         );
     }
 }

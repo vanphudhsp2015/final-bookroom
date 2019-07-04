@@ -397,15 +397,28 @@ class FullcalenderComponent extends Component {
                                 </div>
                             </div>
                             :
-                            <div className="b-button-funtion">
-                                <div className="b-item">
-                                    <button className="b-btn" onClick={this.onCloseModal}>
-                                        <i className="fas fa-times"></i>
-                                    </button>
+                            ((cookies.get('data') !== undefined && parseInt(this.state.user_id) === parseInt(cookies.get('data').id) && dataCurrrent < 0) || (cookies.get('data') !== undefined && cookies.get('data').attributes.roles[0] === 'super_admin' && dataCurrrent < 0)) ?
+                                <div className="b-button-funtion">
+                                    <div className="b-item">
+                                        <button className="b-btn" onClick={this.onDelete.bind(this, this.state.id, this.state.user_id)}>
+                                            <i className="far fa-trash-alt" />
+                                        </button>
+                                    </div>
+                                    <div className="b-item" onClick={this.onCloseModal}>
+                                        <button className="b-btn">
+                                            <i className="fas fa-times"></i>
+                                        </button>
+                                    </div>
                                 </div>
-                            </div>
+                                :
+                                <div className="b-button-funtion">
+                                    <div className="b-item">
+                                        <button className="b-btn" onClick={this.onCloseModal}>
+                                            <i className="fas fa-times"></i>
+                                        </button>
+                                    </div>
+                                </div>
                         }
-
                         <div className="b-content">
                             <h2 className="b-text-title">
                                 Tên sự kiện: {this.state.title}

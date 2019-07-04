@@ -16,6 +16,10 @@ export default function (state = INITIAL_STATE, action = {}) {
                 isLogin: true,
                 user: action.payload
             })
+        case types.REQUEST_LOGOUT:
+            return Object.assign({}, state, {
+                isLogin: false
+            })
         default:
             return state;
     }

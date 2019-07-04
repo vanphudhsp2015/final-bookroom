@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { HeaderLayout, SiderLayout, FooterLayout } from '../../layouts/admin';
+import { MasterLayout } from '../../layouts/admin';
 import { TableComponent } from '../../shared/admin';
 import { requestGetUsers } from '../../../actions/user';
 
@@ -30,20 +30,9 @@ class UserPage extends Component {
             }
         }
         return (
-            <div className="wrapper">
-                <HeaderLayout></HeaderLayout>
-                <section className="b-dashboard-content">
-                    <SiderLayout></SiderLayout>
-                    <div className="right-content">
-                        <div className="container-fluid">
-                            {mainContent()}
-                        </div>
-                        <FooterLayout></FooterLayout>
-                    </div>
-
-                </section>
-
-            </div>
+            <MasterLayout>
+                {mainContent()}
+            </MasterLayout>
         );
     }
 }
