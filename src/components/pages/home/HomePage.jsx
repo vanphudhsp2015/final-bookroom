@@ -35,6 +35,11 @@ class HomePage extends Component {
             })
         }
     }
+    componentDidUpdate(prevProps, prevState) {
+        if (this.props.isLogin !== prevProps.isLogin) {
+            this.onGetData();
+        }
+    }
 
     onGetData() {
         this.props.dispatch(action.requestGetEvent());
@@ -271,6 +276,7 @@ class HomePage extends Component {
 function mapStateProps(state) {
     return {
         data: state.event.all,
+        isLogin: state.login.isLogin,
         room: state.room.all,
     }
 }

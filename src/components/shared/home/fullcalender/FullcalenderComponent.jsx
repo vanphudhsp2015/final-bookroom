@@ -397,7 +397,7 @@ class FullcalenderComponent extends Component {
                                 </div>
                             </div>
                             :
-                            ((parseInt(this.state.user_id) === parseInt(cookies.get('data').id) && dataCurrrent < 0) || (cookies.get('data') !== undefined && cookies.get('data').attributes.roles[0] === 'super_admin' && dataCurrrent < 0)) ?
+                            ((cookies.get('data') !== undefined && parseInt(this.state.user_id) === parseInt(cookies.get('data').id) && dataCurrrent < 0) || (cookies.get('data') !== undefined && cookies.get('data').attributes.roles[0] === 'super_admin' && dataCurrrent < 0)) ?
                                 <div className="b-button-funtion">
                                     <div className="b-item">
                                         <button className="b-btn" onClick={this.onDelete.bind(this, this.state.id, this.state.user_id)}>

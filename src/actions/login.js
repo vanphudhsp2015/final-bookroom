@@ -48,11 +48,7 @@ export function requestGetLogin(data) {
     }
 }
 // logout
-export function requestLogout() {
-    let token = cookies.get('token');
-    cookies.remove('token');
-    cookies.remove('data');
-    cookies.remove('accessToken');
+export function requestLogout(token) {
     return (dispatch) => {
         return axios.request({
             method: 'GET',
@@ -67,7 +63,6 @@ export function requestLogout() {
             dispatch(receiveData(types.REQUEST_LOGOUT, response))
         }).catch(function (error) {
             console.log(error);
-
         })
     }
 }

@@ -106,7 +106,11 @@ class HeaderLayout extends Component {
 
     }
     logoutGoogle = () => {
-        this.props.dispatch(action.requestLogout(cookies.remove('accessToken')));
+        let token = cookies.get('token');
+        cookies.remove('token');
+        cookies.remove('data');
+        cookies.remove('accessToken')
+        this.props.dispatch(action.requestLogout(token));
         this.setState({
             isLogout: true
         })
