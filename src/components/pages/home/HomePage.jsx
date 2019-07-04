@@ -27,12 +27,7 @@ class HomePage extends Component {
         }
     }
     componentDidMount() {
-        var timeout = null;
-        clearTimeout(timeout);
-        var self = this;
-        timeout = setTimeout(function () {
-            self.onGetData();
-        }, 700);
+        this.onGetData();
         if (this.props.location !== undefined) {
             const values = queryString.parse(this.props.location.search)
             this.setState({
@@ -248,8 +243,8 @@ class HomePage extends Component {
         return dateTime;
     }
     onNewTag = (e) => {
-        e.preventDefault();        
-        const url =  env.REACT_APP_LINK_FEEDBACK;
+        e.preventDefault();
+        const url = env.REACT_APP_LINK_FEEDBACK;
         window.open(url, '_blank');
     }
     render() {
