@@ -1,8 +1,14 @@
 .b-dashboard-footer {
-    h3 {
-        padding: 15px 20px;
-        @include rem("font-size",14);
-        color: $color_title;
-        font-family: 'Nunito Sans', sans-serif;
-    }
+  width: 100%;
+  background-color: #4fc3f2;
+  margin-top: 50px;
+  @include flexbox();
+  align-items: center;
+  justify-content: center;
+  .text-muted {
+    padding: 20px 20px 14px 20px;
+    @include rem("font-size", 14);
+    font-family: "Nunito Sans", sans-serif;
+    color: #fff !important;
+  }
 }
