@@ -225,12 +225,10 @@ class HomePage extends Component {
                             user_id: item.attributes.user_id,
                             exception: []
                         }
-
                     }
                 } else {
                     return null;
                 }
-
             })
             if (check === true) {
                 return result = [...result, ...dataItem]

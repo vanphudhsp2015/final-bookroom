@@ -38,19 +38,19 @@ class SiderLayout extends Component {
                     {contentUser()}
                     <li className="item-menu">
                         <NavLink className="item-link waves-effect waves-dark" exact={true} activeClassName='active' to="/admin/room">
-                            <i className="fas fa-table" />
+                            <i className="fab fa-buromobelexperte"></i>
                             <span className="hide-menu">Danh Sách Phòng</span>
                         </NavLink>
                     </li>
                     <li className="item-menu">
                         <NavLink className="item-link waves-effect waves-dark" exact={true} activeClassName='active' to="/admin/user">
-                            <i className="fas fa-table" />
+                            <i className="fas fa-users"></i>
                             <span className="hide-menu">Danh Sách User</span>
                         </NavLink>
                     </li>
                     <li className="item-menu">
                         <NavLink className="item-link waves-effect waves-dark" exact={true} activeClassName='active' to="/admin/event">
-                            <i className="fas fa-table" />
+                            <i className="fas fa-book-reader"></i>
                             <span className="hide-menu">Đặt Phòng</span>
                         </NavLink>
                     </li>
