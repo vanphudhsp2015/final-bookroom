@@ -12,8 +12,8 @@ import '../../../../main.scss'
 import Cookies from 'universal-cookie';
 import { Link, Redirect } from 'react-router-dom';
 import moment from 'moment';
+import PropTypes from 'prop-types';
 const cookies = new Cookies();
-const confirm = Modal.confirm;
 var dateFormat = require('dateformat');
 var now = new Date()
 dateFormat.i18n = {
@@ -33,21 +33,15 @@ const keyESC = 27;
 class FullcalenderComponent extends Component {
     clickCount = 0
     calendarComponentRef = React.createRef()
-
     constructor(props) {
         super(props);
         this.state = {
             calendarWeekends: true,
-            ArrayList: [],
             show: false,
             title: '',
             description: '',
             datenow: now,
             isShowCalender: false,
-            checkbox: false,
-            data: [],
-            value: [],
-            fetching: false,
             isShowDelete: false,
             valueDelete: 1,
             isShowEdit: false,
@@ -129,53 +123,6 @@ class FullcalenderComponent extends Component {
             id: id,
             user_id: user_id
         })
-
-    }
-    onEdit(id, user_id) {
-        var self = this.props;
-        confirm({
-            title: 'Bạn Muốn Sửa Sự Kiện?',
-            content: 'Bấm Ok để sửa',
-            onOk() {
-                if (cookies.get('data') === undefined) {
-                    message.warning('Vui Lòng Đăng Nhập Để Sửa Sự Kiện !')
-                } else {
-                    if (parseInt(user_id) === parseInt(cookies.get('data').id)) {
-                        self.onEdit(id);
-                    } else {
-                        message.warning('Bạn không có quyền xóa sự kiện này !')
-                    }
-                }
-            },
-            onCancel() {
-            },
-        });
-        this.setState({
-            show: !this.state.show
-        })
-    }
-    handleDrop = (eventObj, date) => {
-        console.group('onDrop');
-        console.log('date');
-        console.dir(date);
-        console.groupEnd();
-    }
-    onResize = (info) => {
-        let data = {
-            id: info.event.id,
-            timeEnd: dateFormat(info.event.end, 'HH:MM'),
-            is_resize: true
-        }
-        if (cookies.get('data') === undefined) {
-            message.warning('Vui Lòng Đăng Nhập Để Sửa Sự Kiện !')
-        } else {
-            if (parseInt(info.event.extendedProps.user_id) === parseInt(cookies.get('data').id)) {
-                this.props.onUpdate(data);
-            } else {
-                info.revert();
-                message.warning('Bạn không có quyền Sửa sự kiện này !')
-            }
-        }
 
     }
     onShowCalender = () => {
@@ -297,7 +244,6 @@ class FullcalenderComponent extends Component {
                         dateStart: dateFormat(e.dateStr, 'yyyy-mm-dd'),
                         timestart: dateFormat(e.dateStr, 'HH:MM'),
                         timeend: this.roundMinutesDate(e.dateStr, 30),
-
                     })
                 }
             }
@@ -463,11 +409,11 @@ class FullcalenderComponent extends Component {
                     listDayFormat
                     height={'parent'}
                     timeZone={'local'}
-                    contentHeight={600}
+                    contentHeight={625}
                     aspectRatio={1}
                     handleWindowResize
                     allDayText={'Giờ'}
-                    allDaySlot
+                    allDaySlot={false}
                     plugins={[resourceTimeGridPlugin, rrsetPlugin, dayGridPlugin, timeGridPlugin, interactionPlugin, listPlugin]}
                     ref={this.calendarComponentRef}
                     weekends={this.state.calendarWeekends}
@@ -490,12 +436,6 @@ class FullcalenderComponent extends Component {
                     eventOverlap={function (stillEvent, movingEvent) {
                         return stillEvent.allDay && movingEvent.allDay;
                     }}
-                    eventResize={
-                        this.onResize
-                    }
-                    eventDrop={
-                        this.oneventDrop
-                    }
                     droppable={false}
                     eventTextColor={'#FEFEF9'}
                     eventBorderColor={'rgba(0,0,0,1.5)'}
@@ -507,5 +447,12 @@ class FullcalenderComponent extends Component {
         );
     }
 }
-
+FullcalenderComponent.propTypes = {
+    room: PropTypes.array,
+    data: PropTypes.array,
+    searchDate: PropTypes.string,
+    datecalender: PropTypes.string,
+    onDeleteException: PropTypes.func,
+    onDelete: PropTypes.func
+}
 export default FullcalenderComponent;

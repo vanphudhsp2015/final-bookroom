@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Modal } from 'antd';
 import Pagination from '../../../../feature/Pagination';
 import avatar from '../../../../assets/images/avatar.png'
+import PropTypes from 'prop-types';
 const confirm = Modal.confirm;
 var dateFormat = require('dateformat');
 class TableComponent extends Component {
@@ -149,12 +150,16 @@ class TableComponent extends Component {
         return (
             <div className="add-form">
                 <div className="container-fluid">
-
                     {contentMain()}
                 </div>
             </div>
         );
     }
 }
-
+TableComponent.propTypes = {
+    data: PropTypes.array,
+    onDelete: PropTypes.func,
+    onEdit: PropTypes.func,
+    onChangerView: PropTypes.func
+}
 export default TableComponent;

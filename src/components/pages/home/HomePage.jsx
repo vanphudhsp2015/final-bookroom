@@ -7,6 +7,7 @@ import * as action_Room from '../../../actions/room';
 import queryString from 'query-string'
 import Cookies from 'universal-cookie';
 import { message } from 'antd';
+import PropTypes from 'prop-types';
 const cookies = new Cookies();
 var moment = require('moment');
 const env = process.env || {}
@@ -279,5 +280,10 @@ function mapStateProps(state) {
         isLogin: state.login.isLogin,
         room: state.room.all,
     }
+}
+HomePage.propTypes = {
+    data: PropTypes.array,
+    isLogin: PropTypes.bool,
+    room: PropTypes.array
 }
 export default connect(mapStateProps, null)(HomePage);
