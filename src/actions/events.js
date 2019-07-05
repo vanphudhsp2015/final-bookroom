@@ -117,12 +117,12 @@ export function requestUpdateEvent(data) {
 }
 // filter event rooms
 
-export function requestGetEventByRoom(id) {
+export function requestGetEventByRoom(id) {    
     return (dispatch) => {
         dispatch(requestLoading());
         return http.request({
             method: 'GET',
-            url: `/getbrbyid/${id}`,
+            url: `/get_book_room_by_id/${id}`,
         }).then(function (response) {
             dispatch(receiveData(types.REQUEST_FILTER_EVENT_ROOM, response))
         }).catch(function (error) {
