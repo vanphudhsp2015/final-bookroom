@@ -117,7 +117,7 @@ export function requestUpdateEvent(data) {
 }
 // filter event rooms
 
-export function requestGetEventByRoom(id) {    
+export function requestGetEventByRoom(id) {
     return (dispatch) => {
         dispatch(requestLoading());
         return http.request({
@@ -141,10 +141,10 @@ export function requestSearchEvent(data) {
         dispatch(requestLoading());
         return http.request({
             method: 'GET',
-            url: `/admin/getbrbyday`,
+            url: `/admin/get_book_room_by_day`,
             params,
         }).then(function (response) {
-            if (response.data.data.length > 0) {
+            if (response.length > 0) {
                 dispatch(receiveData(types.REQUEST_RESEARCH, response));
             } else {
                 message.warning('Không có lịch nào trong khoảng thời gian này !!!');
@@ -186,7 +186,7 @@ export function requestDeleteException(data) {
     return (dispatch) => {
         return http.request({
             method: 'POST',
-            url: `/deletebrrepeat/${data.id}`,
+            url: `/bookrooms/repeat/delete/${data.id}`,
             data: formDataObject
         }).then(function (response) {
             dispatch(receiveData(types.REQUEST_DELETE_EVENT_EXCEPTION, response));
@@ -230,7 +230,7 @@ export function requestEditException(data, day, room, values) {
     return (dispatch) => {
         return http.request({
             method: 'POST',
-            url: `/editbrrepeat/${data.id}`,
+            url: `/bookrooms/repeat/edit/${data.id}`,
             data: formDataObject
         }).then(function (response) {
             message.success('Sửa đặt phòng thành công !');
