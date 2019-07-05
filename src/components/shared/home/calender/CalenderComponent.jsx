@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Calendar from 'react-calendar';
+import PropTypes from 'prop-types';
 
 class CalenderComponent extends Component {
     constructor(props, context) {
@@ -13,7 +14,6 @@ class CalenderComponent extends Component {
         this.props.onGetDate(date)
     }
     render() {
-
         return (
             <div className="b-calender">
                 <Calendar
@@ -26,5 +26,7 @@ class CalenderComponent extends Component {
         );
     }
 }
-
+CalenderComponent.propTypes = {
+    onGetDate: PropTypes.func,
+}
 export default CalenderComponent;

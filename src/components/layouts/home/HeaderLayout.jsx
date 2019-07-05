@@ -6,7 +6,8 @@ import Cookies from 'universal-cookie';
 import * as action from '../../../actions/login';
 import { Redirect, Link } from 'react-router-dom';
 import { API_GG } from '../../../constants/config';
-import Logo from '../../../assets/images/logo-light.svg'
+import Logo from '../../../assets/images/logo-light.svg';
+import PropTypes from 'prop-types';
 const cookies = new Cookies();
 class HeaderLayout extends Component {
     constructor(props, context) {
@@ -54,8 +55,6 @@ class HeaderLayout extends Component {
         this.onResetLogin();
     }
     responseGoogle = (response) => {
-        // console.log(response);
-
         if (response) {
             this.props.dispatch(action.requestGetLogin(response))
             cookies.set('accessToken', response.Zi.access_token);
@@ -103,7 +102,6 @@ class HeaderLayout extends Component {
     }
     onMessager = () => {
         message.warning('Bạn không phải Admin');
-
     }
     logoutGoogle = () => {
         let token = cookies.get('token');
@@ -178,7 +176,6 @@ class HeaderLayout extends Component {
 
             }
         }
-
         return (
             <header className="b-page-header" >
                 <Modal
@@ -195,14 +192,8 @@ class HeaderLayout extends Component {
                         <div className="b-content" style={{ width: '100%' }}>
                             <GoogleLogin
                                 clientId={API_GG}
-                                // scope="https://www.googleapis.com/auth/analytics"
                                 onSuccess={this.responseGoogle}
                                 onFailure={this.error}
-                                // onRequest={loading}
-                                // offline={false}
-                                // approvalPrompt="force"
-                                // responseType="id_token"
-                                // isSignedIn
                                 theme="dark"
                                 className="b-google"
                             />
@@ -234,5 +225,10 @@ function mapStateProps(state) {
         isLogin: state.login.isLogin,
         user: state.login.user
     }
+}
+HeaderLayout.propTypes = {
+    isHome: PropTypes.bool,
+    isCheck: PropTypes.bool,
+    onResetCheckLogin:PropTypes.func
 }
 export default connect(mapStateProps, null)(HeaderLayout);

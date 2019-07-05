@@ -3,8 +3,7 @@ import { connect } from 'react-redux';
 import { MasterLayout } from '../../layouts/admin';
 import { TableComponent, FormComponent } from '../../shared/admin';
 import * as action from '../../../actions/room';
-
-
+import PropTypes from 'prop-types';
 class RoomPage extends Component {
     constructor(props, context) {
         super(props, context);
@@ -78,5 +77,8 @@ function mapStateProps(state) {
     return {
         data: state.room.all,
     }
+}
+RoomPage.propTypes = {
+    data: PropTypes.array
 }
 export default connect(mapStateProps, null)(RoomPage);

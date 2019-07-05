@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import { Button, Radio } from 'antd';
-import { CalenderComponent } from '../../shared/home';
+import { CalenderComponent, DescriptionComponent } from '../../shared/home';
 import { connect } from 'react-redux';
 import 'antd/dist/antd.css';
 import Cookies from 'universal-cookie';
 import { Redirect } from 'react-router-dom';
+import PropTypes from 'prop-types';
 const cookies = new Cookies();
 var dateFormatDate = require('dateformat');
 const RadioGroup = Radio.Group;
@@ -98,25 +99,8 @@ class SlideBar extends Component {
             </RadioGroup>
           </div>
         </div>
-        <div className="b-page-description">
-          <div className="b-heading">
-            <h2 className="b-text-title">
-              Mô Tả
-          </h2>
-          </div>
-          <div className="b-content">
-            <div className="b-content-block">
-              <p className="b-text-norm">
-                Của Tôi
-            </p>
-            </div>
-            <div className="b-content-right">
-              <div className="b-shape">
-              </div>
-            </div>
-          </div>
-        </div>
-      </div >
+        <DescriptionComponent></DescriptionComponent>
+      </div>
     );
   }
 }
@@ -126,5 +110,9 @@ function mapStateProps(state) {
     data: state.event.all
   }
 }
-
+SlideBar.propTypes = {
+  room: PropTypes.array,
+  onGetDate: PropTypes.func,
+  onChangerRoom: PropTypes.func
+}
 export default connect(mapStateProps, null)(SlideBar);
