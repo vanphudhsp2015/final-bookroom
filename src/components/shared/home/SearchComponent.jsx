@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { http } from '../../../../libraries/http/http';
+import { http } from '../../../libraries/http/http';
 import { Select, Spin, message } from 'antd';
 import debounce from 'lodash/debounce';
 const { Option } = Select;

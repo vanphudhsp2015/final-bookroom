@@ -3,12 +3,12 @@ import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid'
 import listPlugin from '@fullcalendar/list';
-import rrsetPlugin from '../../../../libraries/rruleset';
+import rrsetPlugin from '../../../libraries/rruleset';
 import interactionPlugin from '@fullcalendar/interaction' // needed for dayClick
 import resourceTimeGridPlugin from '@fullcalendar/resource-timegrid';
 import allLocales from '@fullcalendar/core/locales-all';
 import { Modal, Calendar, Radio, message } from 'antd';
-import '../../../../main.scss'
+import '../../../main.scss'
 import Cookies from 'universal-cookie';
 import { Link, Redirect } from 'react-router-dom';
 import moment from 'moment';
