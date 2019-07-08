@@ -220,7 +220,7 @@ class HeaderLayout extends Component {
         );
     }
 }
-function mapStateProps(state) {
+function mapStateToProps(state) {
     return {
         isLogin: state.login.isLogin,
         user: state.login.user
@@ -231,4 +231,4 @@ HeaderLayout.propTypes = {
     isCheck: PropTypes.bool,
     onResetCheckLogin:PropTypes.func
 }
-export default connect(mapStateProps, null)(HeaderLayout);
+export default connect(mapStateToProps, null)(HeaderLayout);

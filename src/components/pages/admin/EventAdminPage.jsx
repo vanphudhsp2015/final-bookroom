@@ -302,10 +302,10 @@ class EventAdminPage extends Component {
         );
     }
 }
-function mapStateProps(state) {
+function mapStateToProps(state) {
     return {
         data: state.event.all,
         room: state.room.all
     }
 }
-export default connect(mapStateProps, null)(EventAdminPage);
+export default connect(mapStateToProps, null)(EventAdminPage);

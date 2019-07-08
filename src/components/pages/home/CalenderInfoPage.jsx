@@ -923,10 +923,10 @@ class CalenderInfoPage extends Component {
         );
     }
 }
-function mapStateProps(state) {
+function mapStateToProps(state) {
     return {
         data: state.event.all,
         room: state.room.all
     }
 }
-export default connect(mapStateProps)(CalenderInfoPage);
+export default connect(mapStateToProps)(CalenderInfoPage);

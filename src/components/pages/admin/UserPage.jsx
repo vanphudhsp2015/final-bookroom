@@ -36,10 +36,10 @@ class UserPage extends Component {
         );
     }
 }
-function mapStateProps(state) {
+function mapStateToProps(state) {
     return {
 
         users: state.user.all,
     }
 }
-export default connect(mapStateProps, { requestGetUsers })(UserPage);
+export default connect(mapStateToProps, { requestGetUsers })(UserPage);

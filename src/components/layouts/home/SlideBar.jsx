@@ -104,7 +104,7 @@ class SlideBar extends Component {
     );
   }
 }
-function mapStateProps(state) {
+function mapStateToProps(state) {
   return {
     exists_event: state.event.distinct,
     data: state.event.all
@@ -115,4 +115,4 @@ SlideBar.propTypes = {
   onGetDate: PropTypes.func,
   onChangerRoom: PropTypes.func
 }
-export default connect(mapStateProps, null)(SlideBar);
+export default connect(mapStateToProps, null)(SlideBar);

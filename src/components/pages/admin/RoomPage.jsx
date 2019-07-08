@@ -73,7 +73,7 @@ class RoomPage extends Component {
         );
     }
 }
-function mapStateProps(state) {
+function mapStateToProps(state) {
     return {
         data: state.room.all,
     }
@@ -81,4 +81,4 @@ function mapStateProps(state) {
 RoomPage.propTypes = {
     data: PropTypes.array
 }
-export default connect(mapStateProps, null)(RoomPage);
+export default connect(mapStateToProps, null)(RoomPage);

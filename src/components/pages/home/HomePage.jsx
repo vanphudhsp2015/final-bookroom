@@ -274,7 +274,7 @@ class HomePage extends Component {
         );
     }
 }
-function mapStateProps(state) {
+function mapStateToProps(state) {
     return {
         data: state.event.all,
         isLogin: state.login.isLogin,
@@ -286,4 +286,4 @@ HomePage.propTypes = {
     isLogin: PropTypes.bool,
     room: PropTypes.array
 }
-export default connect(mapStateProps, null)(HomePage);
+export default connect(mapStateToProps, null)(HomePage);
