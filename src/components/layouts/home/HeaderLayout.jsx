@@ -1,12 +1,22 @@
 import React, { Component } from 'react';
-import { Modal, message } from 'antd';
+import {
+    Modal,
+    message
+} from 'antd';
 import { connect } from 'react-redux'
-import { GoogleLogin, GoogleLogout } from 'react-google-login';
+import {
+    GoogleLogin,
+    GoogleLogout
+} from 'react-google-login';
 import Cookies from 'universal-cookie';
 import * as action from '../../../actions/login';
-import { Redirect, Link } from 'react-router-dom';
+import {
+    Redirect,
+    Link
+} from 'react-router-dom';
 import { API_GG } from '../../../constants/config';
-import Logo from '../../../assets/images/logo-light.svg'
+import Logo from '../../../assets/images/logo-light.svg';
+import PropTypes from 'prop-types';
 const cookies = new Cookies();
 class HeaderLayout extends Component {
     constructor(props, context) {
@@ -54,8 +64,6 @@ class HeaderLayout extends Component {
         this.onResetLogin();
     }
     responseGoogle = (response) => {
-        // console.log(response);
-
         if (response) {
             this.props.dispatch(action.requestGetLogin(response))
             cookies.set('accessToken', response.Zi.access_token);
@@ -66,7 +74,7 @@ class HeaderLayout extends Component {
         }
     }
     error = (response) => {
-        console.error("error " + response) // eslint-disable-line
+        message.error(response);
     }
     logout = () => {
         this.props.dispatch(action.requestLogout());
@@ -103,15 +111,17 @@ class HeaderLayout extends Component {
     }
     onMessager = () => {
         message.warning('Bạn không phải Admin');
-
     }
     logoutGoogle = () => {
-        this.props.dispatch(action.requestLogout(cookies.remove('accessToken')));
+        let token = cookies.get('token');
+        cookies.remove('token');
+        cookies.remove('data');
+        cookies.remove('accessToken')
+        this.props.dispatch(action.requestLogout(token));
         this.setState({
             isLogout: true
         })
     }
-
     render() {
         if (this.state.isRedirect) {
             return (
@@ -174,7 +184,6 @@ class HeaderLayout extends Component {
 
             }
         }
-
         return (
             <header className="b-page-header" >
                 <Modal
@@ -191,14 +200,8 @@ class HeaderLayout extends Component {
                         <div className="b-content" style={{ width: '100%' }}>
                             <GoogleLogin
                                 clientId={API_GG}
-                                // scope="https://www.googleapis.com/auth/analytics"
                                 onSuccess={this.responseGoogle}
                                 onFailure={this.error}
-                                // onRequest={loading}
-                                // offline={false}
-                                // approvalPrompt="force"
-                                // responseType="id_token"
-                                // isSignedIn
                                 theme="dark"
                                 className="b-google"
                             />
@@ -225,10 +228,15 @@ class HeaderLayout extends Component {
         );
     }
 }
-function mapStateProps(state) {
+function mapStateToProps(state) {
     return {
         isLogin: state.login.isLogin,
         user: state.login.user
     }
 }
-export default connect(mapStateProps, null)(HeaderLayout);
+HeaderLayout.propTypes = {
+    isHome: PropTypes.bool,
+    isCheck: PropTypes.bool,
+    onResetCheckLogin: PropTypes.func
+}
+export default connect(mapStateToProps)(HeaderLayout);

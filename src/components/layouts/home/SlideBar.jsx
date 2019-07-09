@@ -1,10 +1,14 @@
 import React, { Component } from 'react';
 import { Button, Radio } from 'antd';
-import { CalenderComponent } from '../../shared/home';
+import {
+  CalenderComponent,
+  DescriptionComponent
+} from '../../shared/home';
 import { connect } from 'react-redux';
 import 'antd/dist/antd.css';
 import Cookies from 'universal-cookie';
 import { Redirect } from 'react-router-dom';
+import PropTypes from 'prop-types';
 const cookies = new Cookies();
 var dateFormatDate = require('dateformat');
 const RadioGroup = Radio.Group;
@@ -55,7 +59,6 @@ class SlideBar extends Component {
       value: e.target.value,
     });
   }
-
   onRedirectForm = () => {
     if (cookies.get('data') === undefined) {
       this.props.onCheckLogin();
@@ -76,7 +79,7 @@ class SlideBar extends Component {
             TẠO
           </Button>
         </div>
-        <CalenderComponent data={this.state.dateStart} onGetDate={this.onGetDate}></CalenderComponent>
+        <CalenderComponent data={this.state.dateStart} onGetDate={this.onGetDate} />
         <div className="b-rooms">
           <div className="b-heading text-center">
             <h2 className="b-text-title">
@@ -91,40 +94,26 @@ class SlideBar extends Component {
                   <div className="b-form-check">
                     <Radio style={radioStyle} value={data.id} >{data.attributes.name}</Radio>
                   </div>
-                  <div className="b-form-color" style={{ backgroundColor: data.attributes.color }}>
-                  </div>
+                  <div className="b-form-color" style={{ backgroundColor: data.attributes.color }} />
                 </div>
               ))}
             </RadioGroup>
           </div>
         </div>
-        <div className="b-page-description">
-          <div className="b-heading">
-            <h2 className="b-text-title">
-              Mô Tả
-          </h2>
-          </div>
-          <div className="b-content">
-            <div className="b-content-block">
-              <p className="b-text-norm">
-                Của Tôi
-            </p>
-            </div>
-            <div className="b-content-right">
-              <div className="b-shape">
-              </div>
-            </div>
-          </div>
-        </div>
-      </div >
+        <DescriptionComponent />
+      </div>
     );
   }
 }
-function mapStateProps(state) {
+function mapStateToProps(state) {
   return {
     exists_event: state.event.distinct,
     data: state.event.all
   }
 }
-
-export default connect(mapStateProps, null)(SlideBar);
+SlideBar.propTypes = {
+  room: PropTypes.array,
+  onGetDate: PropTypes.func,
+  onChangerRoom: PropTypes.func
+}
+export default connect(mapStateToProps)(SlideBar);

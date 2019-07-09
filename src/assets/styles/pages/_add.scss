@@ -1,218 +1,205 @@
 .add-form {
-    width: calc(100%-250px);
-    padding-top: 20px;
+  width: calc(100%-250px);
+  padding-top: 20px;
+  width: 100%;
+  .page-title {
+    padding-bottom: 20px;
+    .title {
+      font-weight: 700;
+      color: $color_title;
+      @include rem("font-size", 18);
+      font-family: "Nunito Sans", sans-serif;
+    }
+    .b-link {
+      color: #2962ff;
+      @include rem("font-size", 12);
+      font-family: "Nunito Sans", sans-serif;
+    }
+    .b-arrow {
+      margin: 0 5px;
+      color: #6c757d;
+      @include rem("font-size", 12);
+      font-family: "Nunito Sans", sans-serif;
+    }
+  }
+  .btn-upgrade {
+    text-align: right;
+
+    .link-upgrade {
+      border-radius: 2px;
+      background: #f62d51;
+      padding: 8px 10px;
+      color: #ffffff;
+      @include rem("font-size", 14);
+      font-family: "Nunito Sans", sans-serif;
+    }
+  }
+  .card-body {
+    position: relative;
     width: 100%;
-    .page-title {
-        padding-bottom: 20px; 
-        .title {
-            font-weight: 700;
-            color: $color_title;
-            @include rem("font-size", 18);
-            font-family: 'Nunito Sans', sans-serif;
-        }
-        .b-link {
-            color: #2962FF;
-            @include rem("font-size", 12);
-            font-family: 'Nunito Sans', sans-serif;
-        }
-        .b-arrow {
-            margin: 0 5px;
-            color: #6C757D;
-            @include rem("font-size", 12);
-            font-family: 'Nunito Sans', sans-serif;
-        }
+    min-height: 100%;
+    background: #ffffff;
+    @include box-shadow(1px 2px 20px rgba(0, 0, 0, 0.08));
+    .card-title {
+      color: $color_title;
+      @include rem("font-size", 18);
+      font-family: "Nunito Sans", sans-serif;
     }
-    .btn-upgrade {
-        text-align: right;
+    .add-product {
+      padding-top: 5px;
+      padding-bottom: 20px;
+      .btn-add {
+        color: rgb(44, 179, 233);
+        @include rem("font-size", 15);
+        font-family: "Nunito Sans", sans-serif;
+        padding: 2px 10px;
+        width: 150px;
+        border: 2px solid rgb(44, 179, 233);
+        background-color: white;
+        &:hover {
+          color: white;
+          background-color: rgb(44, 179, 233);
+        }
+      }
+    }
+    .table-responsive {
+      max-width: 100%;
 
-        .link-upgrade {
-            border-radius: 2px;
-            background: #F62D51;
-            padding: 8px 10px;
-            color: #FFFFFF;
+      .table {
+        .bg-table {
+          background-color: #f8f9fa !important;
+          border-collapse: collapse;
+          th {
+            color: $color_title;
             @include rem("font-size", 14);
-            font-family: 'Nunito Sans', sans-serif;
+            font-family: "Nunito Sans", sans-serif;
+          }
         }
-    }
-    .card-body {
-        position: relative;
-        width: 100%;
-        height: 100%;
-        background: #FFFFFF;
-        @include box-shadow(1px 2px 20px rgba(0, 0, 0, 0.08));
-        .card-title {
+
+        .product-name {
+          .link-name {
+            float: left;
+            color: #ffffff;
+            @include rem("font-size", 14);
+            font-family: "Nunito Sans", sans-serif;
+            width: 40px;
+            height: 40px;
+            border-radius: 100%;
+            padding: 10px;
+            &.user-1 {
+              background-color: #2962ff;
+            }
+            &.user-2 {
+              background-color: #fb8c00;
+            }
+            &.user-3 {
+              background-color: #36bea6;
+            }
+            &.user-4 {
+              background-color: #7460ee;
+            }
+          }
+          .b-text {
+            display: block;
+            position: relative;
+            left: 5%;
+            padding: 10px;
             color: $color_title;
-            @include rem("font-size", 18);
-            font-family: 'Nunito Sans', sans-serif;
-
+            @include rem("font-size", 16);
+            font-family: "Nunito Sans", sans-serif;
+            font-weight: 700;
+          }
         }
-        .add-product {
-            padding-top: 5px;
-            padding-bottom: 20px;
-            .btn-add {
-                
-                color: rgb(44, 179, 233);
-                @include rem("font-size", 15);
-                font-family: 'Nunito Sans', sans-serif;
-                padding: 2px 10px;
-                width: 150px;
-                border: 2px solid rgb(44, 179, 233);
-                background-color: white;
-                &:hover {
-                    color: white;
-                    background-color: rgb(44, 179, 233);
-                }
+
+        td {
+          color: $color_title;
+          @include rem("font-size", 14);
+          font-family: "Nunito Sans", sans-serif;
+          .b-item {
+            padding: 2px 5px;
+            border-radius: 30px;
+            background-color: #f62d51 !important;
+            color: #fff;
+            margin-left: 2px;
+            margin-right: 2px;
+            &.is-current {
+              background-color: #2962ff !important;
             }
-        }
-        .table-responsive {
-            max-width: 100%;
-
-            .table {
-
-                .bg-table {
-                    background-color: #f8f9fa!important;
-                    border-collapse: collapse;
-                    th {
-                        color: $color_title;
-                        @include rem("font-size", 14);
-                        font-family: 'Nunito Sans', sans-serif;
-                    }
-                }
-
-                .product-name {
-
-                    .link-name {
-                        float: left;
-                        color: #FFFFFF;
-                        @include rem("font-size", 14);
-                        font-family: 'Nunito Sans', sans-serif;
-                        width: 40px;
-                        height: 40px;
-                        border-radius: 100%;
-                        padding: 10px;
-                        &.user-1 {
-                            background-color: #2962FF;
-                        }
-                        &.user-2 {
-                            background-color: #FB8C00;
-                        }
-                        &.user-3 {
-                            background-color: #36BEA6;
-                        }
-                        &.user-4 {
-                            background-color: #7460EE;
-                        }
-                    }
-                    .b-text {
-                        display: block;
-                        position: relative;
-                        left: 5%;
-                        padding: 10px;
-                        color: $color_title;
-                        @include rem("font-size", 16);
-                        font-family: 'Nunito Sans', sans-serif;
-                        font-weight: 700;
-                    }
-
-                }
-
-                td {
-                    color: $color_title;
-                    @include rem("font-size", 14);
-                    font-family: 'Nunito Sans', sans-serif;
-                    .b-item {
-                        padding: 2px 5px;
-                        border-radius: 30px;
-                        background-color: #f62d51 !important;
-                        color: #fff;
-                        margin-left: 2px;
-                        margin-right: 2px;
-                        &.is-current {
-                          background-color: #2962ff !important;
-                        }
-                      }
-                    .label {
-                        color: #FFFFFF;
-                        @include rem("font-size", 10.5);
-                        font-family: 'Nunito Sans', sans-serif;
-                        padding: 3px 15px;
-                        border-radius: 2px;
-                        &.label-1 {
-                            background-color: #F62D51;
-                        }
-                        &.label-2 {
-                            background-color: #2962FF;
-                        }
-                        &.label-3 {
-                            background-color: #36BEA6;
-                        }
-                        &.label-4 {
-                            background-color: #7460EE;
-                        }
-                    }
-                    .btn_edit {
-                        color: #4CAF50;
-                        @include rem("font-size", 10.5);
-                        font-family: 'Nunito Sans', sans-serif;
-                        padding: 2px 10px;
-                        border: 2px solid #4CAF50;
-                        background-color: white;
-                        &:hover {
-                            color: white;
-                            background-color: #4CAF50;
-                        }
-                    }
-                    .btn_dele {
-                        color: #F62D51;
-                        @include rem("font-size", 10.5);
-                        font-family: 'Nunito Sans', sans-serif;
-                        background-color: white;
-                        padding: 2px 10px;
-                        border: 2px solid #F62D51;
-                        border-radius: 2px;
-                        &:hover {
-                            color: white;
-                            background-color: #F62D51;
-                        }
-                    }
-                }
-                .price {
-
-                    color: $color_title;
-                    @include rem("font-size", 16);
-                    font-family: 'Nunito Sans', sans-serif;
-                    font-weight: 700;
-
-                }
-
+          }
+          .label {
+            color: #ffffff;
+            @include rem("font-size", 10.5);
+            font-family: "Nunito Sans", sans-serif;
+            padding: 3px 15px;
+            border-radius: 2px;
+            &.label-1 {
+              background-color: #f62d51;
             }
-            
-            
-        }
-        .b-pagination{
-            padding-top: 40px;
-            .b-list-page{
-                @include flexbox();
-                @include justify-content(center);
-                .btn-page{
-                    
-                    margin: -3px;
-                    padding: 10px 15px;
-                    color: #2962FF;
-                    background-color: white; 
-                    font-weight: 700;
-                    border: 1px solid rgb(212, 209, 209);
-                    i{
-                        font-size: 12px;
-                    }
-                    &:hover{
-                        background-color: #2962FF;
-                        color: #fff; 
-                    }
-                }
+            &.label-2 {
+              background-color: #2962ff;
             }
+            &.label-3 {
+              background-color: #36bea6;
+            }
+            &.label-4 {
+              background-color: #7460ee;
+            }
+          }
+          .btn_edit {
+            color: #4caf50;
+            @include rem("font-size", 10.5);
+            font-family: "Nunito Sans", sans-serif;
+            padding: 2px 10px;
+            border: 2px solid #4caf50;
+            background-color: white;
+            &:hover {
+              color: white;
+              background-color: #4caf50;
+            }
+          }
+          .btn_dele {
+            color: #f62d51;
+            @include rem("font-size", 10.5);
+            font-family: "Nunito Sans", sans-serif;
+            background-color: white;
+            padding: 2px 10px;
+            border: 2px solid #f62d51;
+            border-radius: 2px;
+            &:hover {
+              color: white;
+              background-color: #f62d51;
+            }
+          }
         }
-      
-
+        .price {
+          color: $color_title;
+          @include rem("font-size", 16);
+          font-family: "Nunito Sans", sans-serif;
+          font-weight: 700;
+        }
+      }
     }
+    .b-pagination {
+      padding-top: 40px;
+      .b-list-page {
+        @include flexbox();
+        @include justify-content(center);
+        .btn-page {
+          margin: -3px;
+          padding: 10px 15px;
+          color: #2962ff;
+          background-color: white;
+          font-weight: 700;
+          border: 1px solid rgb(212, 209, 209);
+          i {
+            font-size: 12px;
+          }
+          &:hover {
+            background-color: #2962ff;
+            color: #fff;
+          }
+        }
+      }
+    }
+  }
 }
