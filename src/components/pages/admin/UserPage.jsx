@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { MasterLayout } from '../../layouts/admin';
 import { TableComponent } from '../../shared/admin';
 import { requestGetUsers } from '../../../actions/user';
-
 class UserPage extends Component {
     constructor(props) {
         super(props);
@@ -14,7 +13,6 @@ class UserPage extends Component {
     componentDidMount() {
         this.props.requestGetUsers();
     }
-
     render() {
         const mainContent = () => {
             switch (this.state.views) {
@@ -38,7 +36,6 @@ class UserPage extends Component {
 }
 function mapStateToProps(state) {
     return {
-
         users: state.user.all,
     }
 }

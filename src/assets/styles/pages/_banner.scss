@@ -13,7 +13,7 @@
     .card-row {
         padding: 10px 0;
         .page-title {
-            
+
             .title {
                 font-weight: 700;
                 color: $color_title;
@@ -54,7 +54,7 @@
                 color: $color_title;
                 @include rem("font-size", 18);
                 font-family: 'Nunito Sans', sans-serif;
-    
+
             }
             .card-subtitle {
                 color: #A1AAB2;
@@ -82,9 +82,9 @@
                         background-color: #EEF2F1;
                     }
                     .social {
-    
+
                         width: 80%;
-    
+
                         i {
                             float: left;
                             padding-top: 12px;
@@ -111,9 +111,9 @@
                             left: 2%;
                             padding-top: 10px;
                         }
-    
+
                     }
-    
+
                     .text-muted {
                         @include rem("font-size", 12);
                         font-family: 'Nunito Sans', sans-serif;
@@ -124,7 +124,7 @@
             .header-card {
                 @include flexbox();
                 @include justify-content(space-between);
-    
+
                 .drop-select {
                     .custom-select {
                         color: #4F5467;
@@ -145,7 +145,7 @@
                 @include align-items(center);
                 @include justify-content(center);
                 .table {
-    
+
                     .bg-table {
                         background-color: #f8f9fa!important;
                         border-collapse: collapse;
@@ -155,15 +155,15 @@
                             font-family: 'Nunito Sans', sans-serif;
                         }
                     }
-                    
-                    
-    
+
+
+
                     td {
                         color: $color_title;
                         @include rem("font-size", 14);
                         font-family: 'Nunito Sans', sans-serif;
                         .product-name {
-                        
+
                             .link-name {
                                 float: left;
                                 color: #FFFFFF;
@@ -172,8 +172,8 @@
                                 min-width: 40px;
                                 max-width: 40px;
                                 border-radius: 100%;
-                                
-                            
+
+
                             }
                             .b-text {
                                 display: block;
@@ -185,7 +185,7 @@
                                 font-family: 'Nunito Sans', sans-serif;
                                 font-weight: 700;
                             }
-        
+
                         }
                         .label {
                             color: #FFFFFF;
@@ -233,20 +233,20 @@
                         }
                     }
                     .price {
-    
+
                         color: $color_title;
                         @include rem("font-size", 16);
                         font-family: 'Nunito Sans', sans-serif;
                         font-weight: 700;
-    
+
                     }
-    
+
                 }
-    
+
             }
-    
+
             .comment-row {
-    
+
                 padding: 25px;
                 display: block;
                 width: 100%;
@@ -259,7 +259,7 @@
                 .comment-text {
                     position: relative;
                     left: 5%;
-    
+
                     .comment-header {
                         margin-top: -10px;
                         color: $color_title;
@@ -302,10 +302,10 @@
                                     color: red;
                                 }
                             }
-    
+
                             &.icon-1 {
                                 opacity: 0;
-    
+
                             }
                         }
                         .text-muted {
@@ -313,7 +313,7 @@
                             @include rem("font-size", 14);
                             font-family: 'Nunito Sans', sans-serif;
                         }
-    
+
                     }
                 }
                 &:hover {
@@ -322,7 +322,7 @@
                         .action-icon {
                             &.icon-1 {
                                 opacity: 1;
-    
+
                             }
                         }
                     }
@@ -330,7 +330,7 @@
             }
             .shower-widget {
                 padding-top: 20px;
-    
+
                 .icon-shower {
                     float: left;
                     @include rem("font-size",48);
@@ -352,7 +352,7 @@
                     }
                 }
             }
-    
+
             .table-temp {
                 position: relative;
                 .temp-title {
@@ -365,7 +365,7 @@
                     color: $color_title;
                     font-family: 'Nunito Sans', sans-serif;
                 }
-    
+
             }
             .sub-temp {
                 @include flexbox();
@@ -389,6 +389,6 @@
             }
         }
     }
-    
+
 
 }

@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import Calendar from 'react-calendar';
 import PropTypes from 'prop-types';
-
 class CalenderComponent extends Component {
     constructor(props, context) {
         super(props, context);
@@ -9,7 +8,6 @@ class CalenderComponent extends Component {
             date: new Date()
         }
     }
-
     onChange = (date) => {
         this.props.onGetDate(date)
     }
