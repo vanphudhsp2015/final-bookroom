@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import { Button, Radio } from 'antd';
-import { CalenderComponent, DescriptionComponent } from '../../shared/home';
+import {
+  CalenderComponent,
+  DescriptionComponent
+} from '../../shared/home';
 import { connect } from 'react-redux';
 import 'antd/dist/antd.css';
 import Cookies from 'universal-cookie';
@@ -56,7 +59,6 @@ class SlideBar extends Component {
       value: e.target.value,
     });
   }
-
   onRedirectForm = () => {
     if (cookies.get('data') === undefined) {
       this.props.onCheckLogin();
@@ -77,7 +79,7 @@ class SlideBar extends Component {
             TẠO
           </Button>
         </div>
-        <CalenderComponent data={this.state.dateStart} onGetDate={this.onGetDate}></CalenderComponent>
+        <CalenderComponent data={this.state.dateStart} onGetDate={this.onGetDate} />
         <div className="b-rooms">
           <div className="b-heading text-center">
             <h2 className="b-text-title">
@@ -92,14 +94,13 @@ class SlideBar extends Component {
                   <div className="b-form-check">
                     <Radio style={radioStyle} value={data.id} >{data.attributes.name}</Radio>
                   </div>
-                  <div className="b-form-color" style={{ backgroundColor: data.attributes.color }}>
-                  </div>
+                  <div className="b-form-color" style={{ backgroundColor: data.attributes.color }} />
                 </div>
               ))}
             </RadioGroup>
           </div>
         </div>
-        <DescriptionComponent></DescriptionComponent>
+        <DescriptionComponent />
       </div>
     );
   }
@@ -115,4 +116,4 @@ SlideBar.propTypes = {
   onGetDate: PropTypes.func,
   onChangerRoom: PropTypes.func
 }
-export default connect(mapStateToProps, null)(SlideBar);
+export default connect(mapStateToProps)(SlideBar);

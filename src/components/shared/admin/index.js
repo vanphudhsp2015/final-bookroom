@@ -3,4 +3,10 @@ import FormComponent from './form/FormComponent';
 import CalenderComponent from './calender/CalenderComponent';
 import FormModalComponent from './form/FormModalComponent';
 import CardCalenderComponent from './calender/CardCalenderComponent'
-export { CardCalenderComponent, TableComponent, FormComponent, CalenderComponent, FormModalComponent };
+export {
+  CardCalenderComponent,
+  TableComponent,
+  FormComponent,
+  CalenderComponent,
+  FormModalComponent
+};

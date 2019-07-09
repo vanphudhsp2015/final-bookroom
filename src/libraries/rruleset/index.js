@@ -9,15 +9,12 @@ import {
   createDuration,
   createPlugin
 } from '@fullcalendar/core';
-
 import { RRule, RRuleSet, rrulestr } from 'rrule';
 import _ from 'lodash';
-
 const EVENT_DEF_PROPS = {
   rruleSet: null,
   duration: createDuration
 }
-
 let recurring = {
   parse: function (rawEvent, leftoverProps, dateEnv) {
     if (rawEvent.rruleSet != null) {
@@ -37,11 +34,9 @@ let recurring = {
     return rruleSet.all();
   }
 }
-
 export default createPlugin({
   recurringTypes: [recurring]
 })
-
 function parseRRuleSet(input, dateEnv) {
   var allDayGuess = null;
   let rruleSet;
@@ -78,12 +73,10 @@ function parseRRuleSet(input, dateEnv) {
     }
     rruleSet = new RRuleSet(true);
     rruleSet.rrule(new RRule(refined));
-
     if (Array.isArray(excludes) && excludes.length > 0) {
       for (var i = excludes.length - 1; i >= 0; i--) {
         // console.log();
         // console.log(excludes[i]);
-        
         // rruleSet.exdate(new Date('6/01/2019 08:19:00 AM UTC'));
         rruleSet.exdate(new Date(excludes[i]));
       }
@@ -94,14 +87,12 @@ function parseRRuleSet(input, dateEnv) {
   }
   return null;
 }
-
 function convertConstants(input) {
   if (Array.isArray(input)) {
     return input.map(convertConstant);
   }
   return convertConstant(input);
 }
-
 function convertConstant(input) {
   if (typeof input === 'string') {
     return RRule[input.toUpperCase()];

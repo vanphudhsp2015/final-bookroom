@@ -1,10 +1,19 @@
 import React, { Component } from 'react';
-import { Modal, message } from 'antd';
+import {
+    Modal,
+    message
+} from 'antd';
 import { connect } from 'react-redux'
-import { GoogleLogin, GoogleLogout } from 'react-google-login';
+import {
+    GoogleLogin,
+    GoogleLogout
+} from 'react-google-login';
 import Cookies from 'universal-cookie';
 import * as action from '../../../actions/login';
-import { Redirect, Link } from 'react-router-dom';
+import {
+    Redirect,
+    Link
+} from 'react-router-dom';
 import { API_GG } from '../../../constants/config';
 import Logo from '../../../assets/images/logo-light.svg';
 import PropTypes from 'prop-types';
@@ -65,7 +74,7 @@ class HeaderLayout extends Component {
         }
     }
     error = (response) => {
-        console.error("error " + response) // eslint-disable-line
+        message.error(response);
     }
     logout = () => {
         this.props.dispatch(action.requestLogout());
@@ -113,7 +122,6 @@ class HeaderLayout extends Component {
             isLogout: true
         })
     }
-
     render() {
         if (this.state.isRedirect) {
             return (
@@ -229,6 +237,6 @@ function mapStateToProps(state) {
 HeaderLayout.propTypes = {
     isHome: PropTypes.bool,
     isCheck: PropTypes.bool,
-    onResetCheckLogin:PropTypes.func
+    onResetCheckLogin: PropTypes.func
 }
-export default connect(mapStateToProps, null)(HeaderLayout);
+export default connect(mapStateToProps)(HeaderLayout);
