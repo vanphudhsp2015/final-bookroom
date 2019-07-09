@@ -43,7 +43,6 @@ export function requestGetLogin(data) {
           message.error('Bạn không phải thành viên GreenGlobal');
         }
       }
-
     })
   }
 }
@@ -62,7 +61,7 @@ export function requestLogout(token) {
       message.success('Đăng Xuất Thành Công!');
       dispatch(receiveData(types.REQUEST_LOGOUT, response))
     }).catch(function (error) {
-      console.log(error);
+      message.error(error);
     })
   }
 }
@@ -81,8 +80,7 @@ export function requestCheckLogin() {
     }).then(function (response) {
       dispatch(receiveData(types.REQUEST_CHECK_LOGIN, response.data))
     }).catch(function (error) {
-      console.log(error);
-
+      message.error(error);
     })
   }
 }

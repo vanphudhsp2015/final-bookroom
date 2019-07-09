@@ -1,5 +1,6 @@
 import * as types from '../constants/actionType';
 import { http } from '../libraries/http/http';
+import { message } from 'antd';
 export function requestGetUsers() {
   return (dispatch) => {
     return http.request({
@@ -8,7 +9,7 @@ export function requestGetUsers() {
     }).then(function (response) {
       dispatch(receiveData(types.REQUEST_GET_USERS, response))
     }).catch(function (error) {
-      console.log(error)
+      message.error(error);
     })
   }
 }

@@ -9,7 +9,7 @@ export function requestGetRoom() {
     }).then(function (response) {
       dispatch(receiveData(types.REQUEST_GET_ROOMS, response))
     }).catch(function (error) {
-      console.log(error);
+      message.error(error);
     })
   }
 }
@@ -23,7 +23,7 @@ export function requestDeleteRoom(id) {
       message.success('Bạn Đã Xóa Thành Công')
       dispatch(receiveData(types.REQUEST_DELETE_ROOM, id))
     }).catch(function (error) {
-      console.log(error);
+      message.error(error);
     })
   }
 }
@@ -43,8 +43,7 @@ export function requestAddRoom(data) {
       message.success('Bạn Đã Thêm  Thành Công')
       dispatch(receiveData(types.REQUEST_ADD_ROOM, response))
     }).catch(function (error) {
-      console.log(error);
-
+      message.error(error);
     })
   }
 }
@@ -64,7 +63,7 @@ export function requestEditRoom(data) {
       message.success('Sửa Thành Công!');
       dispatch(receiveData(types.REQUEST_UPDATE_ROOM, response))
     }).catch(function (error) {
-      console.log(error);
+      message.error(error)
     })
   }
 }

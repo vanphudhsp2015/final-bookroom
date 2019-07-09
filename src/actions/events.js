@@ -104,7 +104,7 @@ export function requestDeleteEvent(id) {
       dispatch(receiveData(types.REQUEST_DELETE_EVENT, id))
     }).catch(function (error) {
       if (error.response) {
-        console.log(error.response);
+        message.error(error.response);
       }
       dispatch(requestRejected(error));
     })
@@ -116,7 +116,6 @@ export function requestUpdateEvent(data) {
   }
 }
 // filter event rooms
-
 export function requestGetEventByRoom(id) {
   return (dispatch) => {
     dispatch(requestLoading());
