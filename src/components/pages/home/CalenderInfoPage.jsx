@@ -694,9 +694,7 @@ class CalenderInfoPage extends Component {
     };
     return (
       <div className="wrapper">
-        <HeaderLayout
-          searchDate={this.state.searchDate}
-        />
+        <HeaderLayout searchDate={this.state.searchDate} />
         <main className="b-page-main">
           <div className="b-page-calender">
             <Modal
@@ -709,34 +707,22 @@ class CalenderInfoPage extends Component {
               cancelText="Hủy"
             >
               <div className="b-events">
-                <Radio.Group
-                  onChange={this.onChangeEditEvent}
-                  value={this.state.valueEdit}
-                >
+                <Radio.Group onChange={this.onChangeEditEvent} value={this.state.valueEdit}>
                   {this.state.isRepeat ?
-                    <>
-                      <Radio
-                        style={radioStyle}
-                        value={2}
-                      >
+                    <React.Fragment>
+                      <Radio style={radioStyle} value={2}>
                         Chỉ sửa đặt phòng này
                       </Radio>
-                      <Radio
-                        style={radioStyle}
-                        value={1}
-                      >
+                      <Radio style={radioStyle} value={1}>
                         Sửa tất cả đặt phòng này
                       </Radio>
-                    </>
+                    </React.Fragment>
                     :
-                    <>
-                      <Radio
-                        style={radioStyle}
-                        value={1}
-                      >
+                    <React.Fragment>
+                      <Radio style={radioStyle} value={1}>
                         Sửa  đặt phòng này
                       </Radio>
-                    </>
+                    </React.Fragment>
                   }
                 </Radio.Group>
               </div>
@@ -787,7 +773,7 @@ class CalenderInfoPage extends Component {
                             </Select>
                           </div>
                           :
-                          <div></div>
+                          null
                         }
                         <div className="b-form-group">
                           <label >Lặp Lại</label>
@@ -796,9 +782,6 @@ class CalenderInfoPage extends Component {
                             max={this.state.maxCount}
                             value={this.state.count}
                             onChange={this.onChangeNumber}
-                            style={{
-                              marginLeft: '10px'
-                            }}
                           />
                         </div>
                       </div>

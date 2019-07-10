@@ -354,7 +354,7 @@ class EventAdminPage extends Component {
             </div>
           </div>
         </div>
-      </MasterLayout >
+      </MasterLayout>
     );
   }
 }

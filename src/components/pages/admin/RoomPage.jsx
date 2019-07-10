@@ -77,7 +77,7 @@ class RoomPage extends Component {
     return (
       <MasterLayout>
         {mainContent()}
-      </MasterLayout >
+      </MasterLayout>
     );
   }
 }
