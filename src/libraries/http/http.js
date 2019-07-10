@@ -2,6 +2,7 @@ import axios from 'axios'
 import qs from 'qs'
 import * as types from '../../constants/actionAPI';
 import Cookies from 'universal-cookie';
+import { message } from 'antd';
 const cookies = new Cookies();
 function parseError(messages) {
   // Thông Báo Lỗi
@@ -70,7 +71,7 @@ instance.interceptors.request.use((config) => {
 instance.interceptors.response.use((response) => {
   return parseBody(response)
 }, error => {
-  console.warn('Error status', error.response.status)
+  message.warn(error.response.status);
   if (error.response) {
     return parseError(error.response.data)
   } else {
@@ -97,7 +98,7 @@ instanceItem.interceptors.request.use((config) => {
 instanceItem.interceptors.response.use((response) => {
   return parseBodyItem(response)
 }, error => {
-  console.warn('Error status', error.response.status)
+  message.warn(error.response.status);
   if (error.response) {
     return parseError(error.response.data)
   } else {
