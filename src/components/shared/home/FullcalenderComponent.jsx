@@ -71,7 +71,6 @@ class FullcalenderComponent extends Component {
       let calendarApi = this.calendarComponentRef.current.getApi()
       calendarApi.gotoDate(dateFormat(this.props.searchDate, 'yyyy-mm-dd'))
     }
-
   }
   onResetDouble() {
     this.setState({
@@ -83,7 +82,6 @@ class FullcalenderComponent extends Component {
       calendarWeekends: !this.state.calendarWeekends
     })
   }
-
   onEvent(info) {
     this.setState({
       show: true,
@@ -105,7 +103,6 @@ class FullcalenderComponent extends Component {
       mailto: info.event.extendedProps.mailto
     })
   }
-
   handleClose = () => {
     this.setState({ show: false });
   }
@@ -114,7 +111,6 @@ class FullcalenderComponent extends Component {
       show: false,
     });
   }
-
   handleCancel = (e) => {
     if (e.keyCode === keyESC) {
       this.setState({
@@ -134,7 +130,6 @@ class FullcalenderComponent extends Component {
     this.setState({
       isShowCalender: !this.state.isShowCalender
     })
-
   }
   onCloseCanlender = () => {
     this.setState({
@@ -176,7 +171,6 @@ class FullcalenderComponent extends Component {
         valueDelete: 1
       })
     }
-
   }
   onCloseDelete = () => {
     this.setState({
@@ -261,10 +255,24 @@ class FullcalenderComponent extends Component {
     m = m < 10 ? '0' + m : m;
     return `${h}:${m}`;
   }
+  renderSwitchRepeat = (param) => {
+    switch (param) {
+      case "daily":
+        return "Lặp theo ngày";
+      case "weekly":
+        return 'Lặp theo tuần';
+      case "monthly":
+        return 'Lặp theo tháng';
+      case "yearly":
+        return 'Lặp theo năm';
+      default:
+        return null;
+    }
+  }
   render() {
     let dataCurrrent = moment(dateFormat(`${this.state.day} ${this.state.timestart}`, 'yyyy-mm-dd HH:MM:ss')).diff(dateFormat(now, 'yyyy-mm-dd HH:MM:ss'), 'minutes');
     if (this.state.isShowForm) {
-      return <Redirect to={`/new?date=` + this.state.dateStart + `&time=` + this.state.timestart}></Redirect>
+      return <Redirect to={`/new?date=` + this.state.dateStart + `&time=` + this.state.timestart} />
     }
     const radioStyle = {
       display: 'block',
@@ -285,22 +293,21 @@ class FullcalenderComponent extends Component {
           <div className="b-events">
             <Radio.Group onChange={this.onChangeDeleteEvent} value={this.state.valueDelete}>
               {this.state.is_repeat ?
-                <>
+                <React.Fragment>
                   <Radio style={radioStyle} value={1}>
                     Xóa tất cả đặt phòng này
-                                    </Radio>
+                  </Radio>
                   <Radio style={radioStyle} value={2}>
                     Chỉ xóa đặt phòng này
-                                    </Radio>
-                </>
+                  </Radio>
+                </React.Fragment>
                 :
                 <div className="b-check-delete">
                   <p className="b-text-norm">
-                    <i className="fas fa-exclamation-triangle"></i>  Xóa đặt phòng này
-                                    </p>
+                    <i className="fas fa-exclamation-triangle" />  Xóa đặt phòng này
+                  </p>
                 </div>
               }
-
             </Radio.Group>
           </div>
         </Modal>
@@ -337,7 +344,10 @@ class FullcalenderComponent extends Component {
                   </Link>
                 </div>
                 <div className="b-item">
-                  <button className="b-btn" onClick={this.onDelete.bind(this, this.state.id, this.state.user_id)}>
+                  <button
+                    className="b-btn"
+                    onClick={this.onDelete.bind(this, this.state.id, this.state.user_id)}
+                  >
                     <i className="far fa-trash-alt" />
                   </button>
                 </div>
@@ -357,7 +367,7 @@ class FullcalenderComponent extends Component {
                   </div>
                   <div className="b-item" onClick={this.onCloseModal}>
                     <button className="b-btn">
-                      <i className="fas fa-times"></i>
+                      <i className="fas fa-times" />
                     </button>
                   </div>
                 </div>
@@ -365,43 +375,39 @@ class FullcalenderComponent extends Component {
                 <div className="b-button-funtion">
                   <div className="b-item">
                     <button className="b-btn" onClick={this.onCloseModal}>
-                      <i className="fas fa-times"></i>
+                      <i className="fas fa-times" />
                     </button>
                   </div>
                 </div>
             }
             <div className="b-content">
-              <h2 className="b-text-title">
-                Tên sự kiện: {this.state.title}
-              </h2>
-              <p className="b-text-norm">
-                Thời gian: {this.state.datestart} [ {this.state.timestart} - {this.state.timeend} ]
-                            </p>
-              <p className={this.state.redate !== 'Không Lặp' ? "b-text-user" : ''} style={{
-                marginTop: '5px'
-              }}>
-                {this.state.redate === 'daily' ? 'Lặp Theo Ngày' : ''}
-                {this.state.redate === 'weekly' ? 'Lặp Theo Tuần' : ''}
-                {this.state.redate === 'monthly' ? 'Lặp Theo Tháng' : ''}
-                {this.state.redate === 'yearly' ? 'Lặp Theo Năm' : ''}
-                {this.state.recount ? ` ${this.state.recount + '  lần lặp lại'}` : ''}
-              </p>
+              <div>
+                <h2 className="b-text-title">
+                  Tên sự kiện: {this.state.title}
+                </h2>
+                <p className="b-text-norm">
+                  Thời gian: {this.state.datestart} [ {this.state.timestart} - {this.state.timeend} ]
+                </p>
+                <p className={this.state.redate !== 'Không Lặp' ? "b-text-user" : ''}>
+                  {this.renderSwitchRepeat(this.state.redate)}
+                  {this.state.recount ? ` ${this.state.recount + '  lần lặp lại'}` : ''}
+                </p>
+              </div>
               <span className="b-text-rom">
                 Địa điểm/Phòng: {this.state.room}
               </span>
-              <p className="b-text-user" style={{
-                marginTop: '10px'
-              }}>
-                Người tạo: {this.state.user}
-              </p>
-              <span className="b-text-rom">
-                Nội dung/Ghi chú:
-                            </span>
-              <p className="b-text-norm" dangerouslySetInnerHTML={{ __html: this.state.content }}>
-              </p>
+              <div>
+                <p className="b-text-user">
+                  Người tạo: {this.state.user}
+                </p>
+                <p className="b-text-rom">
+                  Nội dung/Ghi chú:
+                </p>
+                <p className="b-text-norm" dangerouslySetInnerHTML={{ __html: this.state.content }}>
+                </p>
+              </div>
             </div>
           </div>
-
         </Modal>
         <FullCalendar
           schedulerLicenseKey={'GPL-My-Project-Is-Open-Source'}
