@@ -133,12 +133,25 @@ class CalenderComponent extends Component {
         valueDelete: 1
       })
     }
-
   }
   onCloseDelete = () => {
     this.setState({
       isShowDelete: false
     })
+  }
+  onRederText(value) {
+    switch (value) {
+      case "daily":
+        return "Lặp lại theo ngày";
+      case "weekly":
+        return "Lặp lại theo tuần";
+      case "monthly":
+        return "Lặp lại theo tháng";
+      case "yearly":
+        return "Lặp lại theo năm";
+      default:
+        return null;
+    }
   }
   render() {
     const radioStyle = {
@@ -147,7 +160,7 @@ class CalenderComponent extends Component {
       lineHeight: '30px',
     };
     return (
-      <>
+      <React.Fragment>
         <Modal
           header={null}
           visible={this.state.isShowDelete}
@@ -160,19 +173,19 @@ class CalenderComponent extends Component {
           <div className="b-events">
             <Radio.Group onChange={this.onChangeDeleteEvent} value={this.state.valueDelete}>
               {this.state.is_repeat ?
-                <>
+                <React.Fragment>
                   <Radio style={radioStyle} value={1}>
                     Xóa Tất Cả Sự Kiện Này
                   </Radio>
                   <Radio style={radioStyle} value={2}>
                     Chỉ Xóa Sự Kiện Này
                   </Radio>
-                </>
+                </React.Fragment>
                 :
                 <div className="b-check-delete">
                   <p className="b-text-norm">
-                    <i className="fas fa-exclamation-triangle"></i>  Xóa Đặt Phòng Này
-                                    </p>
+                    <span className="fas fa-exclamation-triangle" /> Xóa Đặt Phòng Này
+                  </p>
                 </div>
               }
 
@@ -183,50 +196,50 @@ class CalenderComponent extends Component {
           header={null}
           visible={this.state.show}
           onOk={this.handleOk}
-          // onCancel={this.handleCancel}
           closable={false}
           footer={null}
         >
           <div className="b-events">
             <div className="b-button-funtion">
               <div className="b-item">
-                <button className="b-btn" onClick={this.onEdit.bind(this, this.state.id)} >
-                  <i className="fas fa-pencil-alt" />
+                <button className="b-btn" onClick={this.onEdit.bind(this, this.state.id)}>
+                  <span className="fas fa-pencil-alt" />
                 </button>
               </div>
               <div className="b-item">
-                <button className="b-btn" onClick={this.onDelete.bind(this, this.state.id)} >
-                  <i className="far fa-trash-alt" />
+                <button className="b-btn" onClick={this.onDelete.bind(this, this.state.id)}>
+                  <span className="far fa-trash-alt" />
                 </button>
               </div>
               <div className="b-item">
                 <button className="b-btn" onClick={this.onCloseModal}>
-                  <i className="fas fa-times"></i>
+                  <span className="fas fa-times" />
                 </button>
               </div>
             </div>
             <div className="b-content">
-              <h2 className="b-text-title">
-                [{this.state.title}]
-                            </h2>
-              <p className="b-text-norm">
-                {this.state.datestart} ( {this.state.timestart} - {this.state.timeend} )
-                            </p>
-              <span className="b-text-rom">
-                {this.state.room}
-              </span>
-              <p className="b-text-user">
-                {this.state.user}
-              </p>
-              <p className={this.state.redate !== 'Không Lặp' ? "b-text-user" : ''}>
-                {this.state.redate === 'daily' ? 'Lặp Theo Ngày' : ''}
-                {this.state.redate === 'weekly' ? 'Lặp Theo Tuần' : ''}
-                {this.state.redate === 'monthly' ? 'Lặp Theo Tháng' : ''}
-                {this.state.redate === 'yearly' ? 'Lặp Theo Năm' : ''}
-              </p>
-              <p>
-                {this.state.recount ? `${this.state.recount + '  lần lặp lại'}` : ''}
-              </p>
+              <div>
+                <h2 className="b-text-title">
+                  [{this.state.title}]
+                </h2>
+                <p className="b-text-norm">
+                  {this.state.datestart} ( {this.state.timestart} - {this.state.timeend} )
+                </p>
+                <p className="b-text-rom">
+                  {this.state.room}
+                </p>
+              </div>
+              <div>
+                <p className="b-text-user">
+                  {this.state.user}
+                </p>
+                <p className={this.state.redate !== 'Không Lặp' ? "b-text-user" : ''}>
+                  {this.onRederText(this.state.redate)}
+                </p>
+                <p>
+                  {this.state.recount ? `${this.state.recount + '  lần lặp lại'}` : ''}
+                </p>
+              </div>
             </div>
           </div>
         </Modal>
@@ -252,7 +265,16 @@ class CalenderComponent extends Component {
           handleWindowResize
           allDayText={'Giờ'}
           allDaySlot
-          plugins={[resourceTimeGridPlugin, rrsetPlugin, dayGridPlugin, timeGridPlugin, interactionPlugin, listPlugin]}
+          plugins={
+            [
+              resourceTimeGridPlugin,
+              rrsetPlugin,
+              dayGridPlugin,
+              timeGridPlugin,
+              interactionPlugin,
+              listPlugin
+            ]
+          }
           ref={this.calendarComponentRef}
           weekends={this.state.calendarWeekends}
           events={this.props.data}
@@ -275,7 +297,7 @@ class CalenderComponent extends Component {
           eventTextColor={'#FEFEF9'}
           eventBorderColor={'rgba(0,0,0,1.5)'}
         />
-      </>
+      </React.Fragment>
     );
   }
 }

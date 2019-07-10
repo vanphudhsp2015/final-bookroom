@@ -17,10 +17,8 @@ class MasterLayout extends Component {
             <FooterLayout />
           </div>
         </section>
-
       </div>
     );
   }
 }
-
 export default MasterLayout;
