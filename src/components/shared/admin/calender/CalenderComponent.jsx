@@ -163,10 +163,10 @@ class CalenderComponent extends Component {
                 <>
                   <Radio style={radioStyle} value={1}>
                     Xóa Tất Cả Sự Kiện Này
-                                    </Radio>
+                  </Radio>
                   <Radio style={radioStyle} value={2}>
                     Chỉ Xóa Sự Kiện Này
-                                    </Radio>
+                  </Radio>
                 </>
                 :
                 <div className="b-check-delete">
