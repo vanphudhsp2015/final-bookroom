@@ -5,7 +5,7 @@ class FooterLayout extends Component {
       <footer className="b-dashboard-footer">
         <h3 className="text-muted text-center">
           Sản phẩm của tập thể thành viên Fresher GreenGlobal.
-                </h3>
+        </h3>
       </footer>
     );
   }

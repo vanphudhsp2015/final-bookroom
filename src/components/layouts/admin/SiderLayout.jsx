@@ -15,11 +15,15 @@ class SiderLayout extends Component {
           <li>
             <div className="user-profile">
               <div className="user-pic">
-                <img className="img-user" src={data.attributes.img === null ? avatar : data.img} alt="img-user" /></div>
+                <img
+                  className="img-user"
+                  src={data.attributes.img === null ? avatar : data.img}
+                  alt="img-user"
+                />
+              </div>
               <div className="user-content">
                 <Link to="/" onClick={this.onDropdown}>
-                  <h5 className="name-title">{data.attributes.name}
-                  </h5>
+                  <span className="name-title">{data.attributes.name}</span>
                   <span className="user-email text-muted">{data.attributes.email}</span>
                 </Link>
               </div>
@@ -28,7 +32,7 @@ class SiderLayout extends Component {
         )
       } else {
         return (
-          <></>
+          <React.Fragment />
         )
       }
     }
@@ -37,20 +41,35 @@ class SiderLayout extends Component {
         <ul className="list-menu">
           {contentUser()}
           <li className="item-menu">
-            <NavLink className="item-link waves-effect waves-dark" exact={true} activeClassName='active' to="/admin/room">
-              <i className="fab fa-buromobelexperte"></i>
+            <NavLink
+              className="item-link waves-effect waves-dark"
+              exact
+              activeClassName='active'
+              to="/admin/room"
+            >
+              <span className="fab fa-buromobelexperte" />
               <span className="hide-menu">Danh Sách Phòng</span>
             </NavLink>
           </li>
           <li className="item-menu">
-            <NavLink className="item-link waves-effect waves-dark" exact={true} activeClassName='active' to="/admin/user">
-              <i className="fas fa-users"></i>
+            <NavLink
+              className="item-link waves-effect waves-dark"
+              exact
+              activeClassName='active'
+              to="/admin/user"
+            >
+              <span className="fas fa-users" />
               <span className="hide-menu">Danh Sách User</span>
             </NavLink>
           </li>
           <li className="item-menu">
-            <NavLink className="item-link waves-effect waves-dark" exact={true} activeClassName='active' to="/admin/event">
-              <i className="fas fa-book-reader"></i>
+            <NavLink
+              className="item-link waves-effect waves-dark"
+              exact
+              activeClassName='active'
+              to="/admin/event"
+            >
+              <span className="fas fa-book-reader" />
               <span className="hide-menu">Đặt Phòng</span>
             </NavLink>
           </li>
