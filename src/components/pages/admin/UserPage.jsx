@@ -18,12 +18,16 @@ class UserPage extends Component {
             switch (this.state.views) {
                 case "LIST":
                     return (
-                        <TableComponent choice="USER" onChangerView={this.onChangerView} data={this.props.users} onDelete={this.onDelete}></TableComponent>
+                        <TableComponent
+                            choice="USER"
+                            onChangerView={this.onChangerView}
+                            data={this.props.users}
+                            onDelete={this.onDelete}
+                        />
                     )
-
                 default:
                     return (
-                        <></>
+                        <div></div>
                     )
             }
         }
