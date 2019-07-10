@@ -1,9 +1,9 @@
 import axios from 'axios'
 import qs from 'qs'
-import * as types from '../../constants/actionAPI';
-import Cookies from 'universal-cookie';
-import { message } from 'antd';
-const cookies = new Cookies();
+import * as types from '../../constants/actionAPI'
+import Cookies from 'universal-cookie'
+import { message } from 'antd'
+const cookies = new Cookies()
 function parseError(messages) {
   // Thông Báo Lỗi
   if (messages) {
@@ -21,18 +21,20 @@ function parseError(messages) {
  */
 function parseBody(response) {
   if (response.status === 200) {
-    return response.data.data;
+    return response.data.data
   } else if (response.status === 201) {
-    return response.data.data;
+    return response.data.data
+  } else if (response.status === 204) {
+    return response;
   } else {
     return this.parseError(response.data.messages)
   }
 }
 function parseBodyItem(response) {
   if (response.status === 200) {
-    return response.data;
+    return response.data
   } else if (response.status === 201) {
-    return response.data.data;
+    return response.data.data
   } else {
     return this.parseError(response.data.messages)
   }
@@ -56,8 +58,8 @@ let instanceItem = axios.create({
 instance.interceptors.request.use((config) => {
   // Do something before request is sent
   config.headers = {
-    "Accept": "application/json",
-    'Content-Type': 'application/json',
+    'Accept': 'application/json',
+    'Content-Type': 'application/json'
   }
   const token = cookies.get('token')
   if (token) {
@@ -71,7 +73,7 @@ instance.interceptors.request.use((config) => {
 instance.interceptors.response.use((response) => {
   return parseBody(response)
 }, error => {
-  message.warn(error.response.status);
+  message.warn(error.response.status)
   if (error.response) {
     return parseError(error.response.data)
   } else {
@@ -83,8 +85,8 @@ instanceItem.interceptors.request.use((config) => {
   // Do something before request is sent
   // Truyền token vào header
   config.headers = {
-    "Accept": "application/json",
-    'Content-Type': 'application/json',
+    'Accept': 'application/json',
+    'Content-Type': 'application/json'
   }
   const token = cookies.get('token')
   if (token) {
@@ -98,7 +100,7 @@ instanceItem.interceptors.request.use((config) => {
 instanceItem.interceptors.response.use((response) => {
   return parseBodyItem(response)
 }, error => {
-  message.warn(error.response.status);
+  message.warn(error.response.status)
   if (error.response) {
     return parseError(error.response.data)
   } else {

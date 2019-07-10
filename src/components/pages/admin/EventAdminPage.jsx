@@ -279,7 +279,7 @@ class EventAdminPage extends Component {
                     isCard={this.state.isCard}
                   />
                   <h3 className="b-text-title">
-                    <i
+                    <span
                       className="fas fa-calendar-week"
                       style={{ cursor: 'pointer' }}
                       onClick={this.onCalenderCard}
@@ -326,18 +326,17 @@ class EventAdminPage extends Component {
                     </div>
                     <div className="b-form-group">
                       <button type="submit" className="b-btn">
-                        <i className="fas fa-search-location" />
-                        Tìm Kiếm
+                        <span className="fas fa-search-location" /> Tìm Kiếm
                       </button>
                     </div>
                   </form>
                 </div>
                 <div className="b-block-right">
                   <button className="b-btn" onClick={this.onReloadData}>
-                    <i className="fas fa-plus" />Cập Nhật
+                    <span className="fas fa-plus" />Cập Nhật
                   </button>
                   <button className="b-btn" onClick={this.onShowModal}>
-                    <i className="fas fa-plus" /> Thêm
+                    <span className="fas fa-plus" /> Thêm
                   </button>
                 </div>
               </div>
