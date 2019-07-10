@@ -4,39 +4,38 @@ import { MasterLayout } from '../../layouts/admin';
 import { TableComponent } from '../../shared/admin';
 import { requestGetUsers } from '../../../actions/user';
 class UserPage extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            views: 'LIST',
-        }
+  constructor(props) {
+    super(props);
+    this.state = {
+      views: 'LIST',
     }
-    componentDidMount() {
-        this.props.requestGetUsers();
-    }
-    render() {
-        const mainContent = () => {
-            switch (this.state.views) {
-                case "LIST":
-                    return (
-                        <TableComponent choice="USER" onChangerView={this.onChangerView} data={this.props.users} onDelete={this.onDelete}></TableComponent>
-                    )
-
-                default:
-                    return (
-                        <></>
-                    )
-            }
-        }
+  }
+  componentDidMount() {
+    this.props.requestGetUsers();
+  }
+  render() {
+    const mainContent = () => {
+      if (this.state.views === 'LIST') {
         return (
-            <MasterLayout>
-                {mainContent()}
-            </MasterLayout>
-        );
+          <TableComponent
+            choice="USER"
+            onChangerView={this.onChangerView}
+            data={this.props.users}
+            onDelete={this.onDelete}
+          />
+        )
+      }
     }
+    return (
+      <MasterLayout>
+        {mainContent()}
+      </MasterLayout>
+    );
+  }
 }
 function mapStateToProps(state) {
-    return {
-        users: state.user.all,
-    }
+  return {
+    users: state.user.all,
+  }
 }
 export default connect(mapStateToProps, { requestGetUsers })(UserPage);

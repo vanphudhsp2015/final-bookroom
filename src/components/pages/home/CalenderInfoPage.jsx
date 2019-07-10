@@ -829,12 +829,17 @@ class CalenderInfoPage extends Component {
                       </Select>
                       <span className={this.state.validateTimeItem ? "is-error is-check" : "is-error"}>
                         * Thời gian lớn hơn hiện tại
-                                            </span>
+                      </span>
                     </div>
                   </div>
                   <div className="b-select-repeat">
                     <div className="b-form-group">
-                      <select className="b-select" value={this.state.repeat} name="repeat" onChange={this.onChangerSelectRepeat}>
+                      <select
+                        className="b-select"
+                        value={this.state.repeat}
+                        name="repeat"
+                        onChange={this.onChangerSelectRepeat}
+                      >
                         {
                           this.state.selectRepeat.map(data => (
                             <option key={data.id} value={data.id}>{data.name}</option>
@@ -845,7 +850,7 @@ class CalenderInfoPage extends Component {
                   </div>
                 </div>
                 <div className="b-heading-right">
-                  <button className="b-btn waves-effect waves-ripple" type="submit" >Lưu</button>
+                  <button className="b-btn waves-effect waves-ripple" type="submit">Lưu</button>
                   <button className="b-btn b-btn-cancel waves-effect waves-ripple" type="cancel" onClick={this.onCancelForm}>Hủy</button>
                 </div>
               </div>
@@ -855,7 +860,7 @@ class CalenderInfoPage extends Component {
                 <div className="b-heading">
                   <h2 className="b-text-title">
                     Chi tiết sự kiện
-                                        </h2>
+                  </h2>
                 </div>
                 <div className="b-description-content">
                   <div className="b-form-group">
@@ -863,7 +868,12 @@ class CalenderInfoPage extends Component {
                       <i className="fas fa-bell" />
                     </div>
                     <div className="b-form-control">
-                      <select className='b-input' name="rooms" value={this.state.rooms} onChange={this.onChanger}>
+                      <select
+                        className='b-input'
+                        name="rooms"
+                        value={this.state.rooms}
+                        onChange={this.onChanger}
+                      >
                         {this.props.room.map(data => (
                           <option key={data.id} value={data.id}>{data.attributes.name} - {data.attributes.seats} Chổ ngồi</option>
                         ))}
@@ -905,8 +915,8 @@ class CalenderInfoPage extends Component {
                 edit={this.state.edit} />
             </div>
           </div>
-        </main >
-      </div >
+        </main>
+      </div>
     );
   }
 }
