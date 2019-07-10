@@ -869,7 +869,7 @@ class CalenderInfoPage extends Component {
                   </div>
                 </div>
                 <div className="b-heading-right">
-                  <button className="b-btn waves-effect waves-ripple" type="submit" >Lưu</button>
+                  <button className="b-btn waves-effect waves-ripple" type="submit">Lưu</button>
                   <button className="b-btn b-btn-cancel waves-effect waves-ripple" type="cancel" onClick={this.onCancelForm}>Hủy</button>
                 </div>
               </div>
@@ -935,8 +935,8 @@ class CalenderInfoPage extends Component {
               />
             </div>
           </div>
-        </main >
-      </div >
+        </main>
+      </div>
     );
   }
 }

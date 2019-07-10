@@ -15,7 +15,7 @@ class UserPage extends Component {
   }
   render() {
     const mainContent = () => {
-      if (this.state.views === "LIST") {
+      if (this.state.views === 'LIST') {
         return (
           <TableComponent
             choice="USER"

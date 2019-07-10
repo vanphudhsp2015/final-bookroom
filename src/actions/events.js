@@ -34,7 +34,6 @@ export function requestAddEvents(data) {
         email += `${item[index].key}`
       })
     }
-
   }
   let formDataObject = {};
   if (data.checkbox === true) {
