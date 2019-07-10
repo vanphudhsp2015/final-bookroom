@@ -400,6 +400,7 @@
       @include rem(font-size, 14);
       @include rem(line-height, 20);
       color: #4c4c4c;
+      margin-top: 10px;
       &::before {
         font-family: "Font Awesome 5 Free";
         content: "\f784";

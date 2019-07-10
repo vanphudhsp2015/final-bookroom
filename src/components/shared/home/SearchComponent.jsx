@@ -7,7 +7,6 @@ import {
 } from 'antd';
 import debounce from 'lodash/debounce';
 const { Option } = Select;
-
 class SearchComponent extends Component {
   constructor(props, context) {
     super(props, context);
@@ -20,7 +19,6 @@ class SearchComponent extends Component {
     }
     this.lastFetchId = 0;
     this.fetchUser = debounce(this.fetchUser, 800);
-
   }
   componentDidUpdate(prevProps, prevState) {
     if (this.state.value !== prevState.value) {
@@ -54,7 +52,6 @@ class SearchComponent extends Component {
 
     })
   };
-
   handleChange = value => {
     const regex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@(([[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     if (value.length > 0) {
@@ -63,14 +60,12 @@ class SearchComponent extends Component {
         return;
       }
     }
-
     this.setState({
       value,
       data: [],
       fetching: false,
     });
   };
-
   covertEmailToArray = (data) => {
     let dataNew = []
     dataNew = data.map(item => {
@@ -80,7 +75,6 @@ class SearchComponent extends Component {
       }
     })
     return dataNew;
-
   }
   render() {
     const { fetching, data, value } = this.state;
@@ -89,7 +83,7 @@ class SearchComponent extends Component {
         <div className="b-heading">
           <h2 className="b-text-title">
             Thành phần tham dự
-                    </h2>
+          </h2>
         </div>
         <div className="b-description-content">
           <div className="b-form-group">
