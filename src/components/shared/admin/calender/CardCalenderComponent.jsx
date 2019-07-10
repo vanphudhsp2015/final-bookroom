@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import {
   Calendar,
-  Modal
+  Modal,
+  message
 } from 'antd';
 var dateFormatDate = require('dateformat');
 class CardCalenderComponent extends Component {
@@ -28,7 +29,6 @@ class CardCalenderComponent extends Component {
       show: false,
     });
   }
-
   handleCancel = (e) => {
     this.props.onResetCalender();
     this.setState({
@@ -36,7 +36,7 @@ class CardCalenderComponent extends Component {
     });
   }
   onPanelChange = (value, mode) => {
-    console.log(value, mode);
+    message.success(value);
   }
   onSelect = (value) => {
     this.props.onGetDate(dateFormatDate(value._d, 'yyyy-mm-dd'))
@@ -57,7 +57,8 @@ class CardCalenderComponent extends Component {
         <Calendar
           onSelect={this.onSelect}
           fullscreen={false}
-          onPanelChange={this.onPanelChange} />
+          onPanelChange={this.onPanelChange}
+        />
       </Modal>
     );
   }
