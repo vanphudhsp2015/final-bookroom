@@ -254,16 +254,47 @@ class HomePage extends Component {
     return (
       <div className="wrapper">
         <div className="feedback">
-          <a href="/" className="b-link" onClick={this.onNewTag}>
-            <i className="fas fa-comments"></i>
+          <a
+            href="/"
+            className="b-link"
+            onClick={this.onNewTag}
+          >
+            <i className="fas fa-comments" />
           </a>
         </div>
-        <HeaderLayout isHome={true} onResetCheckLogin={this.onResetCheckLogin} isCheck={this.state.isLogin}></HeaderLayout>
+        <HeaderLayout
+          isHome={true}
+          onResetCheckLogin={this.onResetCheckLogin}
+          isCheck={this.state.isLogin}
+        />
         <main className="b-page-main">
           <div className="b-block">
-            <SlideBar onCheckLogin={this.onCheckLogin} room={this.props.room} onCancleEdit={this.onCancleEdit} onChangerRoom={this.onChangerRoom} onUpdate={this.onUpdate} dataEdit={this.state.dataEdit} edit={this.state.edit} onGetDate={this.onGetDate} onAddEvent={this.onAddEvent}></SlideBar>
+            <SlideBar
+              onCheckLogin={this.onCheckLogin}
+              room={this.props.room}
+              onCancleEdit={this.onCancleEdit}
+              onChangerRoom={this.onChangerRoom}
+              onUpdate={this.onUpdate}
+              dataEdit={this.state.dataEdit}
+              edit={this.state.edit}
+              onGetDate={this.onGetDate}
+              onAddEvent={this.onAddEvent}
+            />
             <div className="b-block-right">
-              <FullcalenderComponent searchDate={this.state.searchDate} onAddEvent={this.onAddEvent} onDeleteException={this.onDeleteException} rooms={this.props.room} room={this.convertArrayRoom(this.props.room)} onCancleEdit={this.onCancleEdit} onUpdate={this.onUpdate} onEdit={this.onEdit} onDelete={this.onDelete} is_checkdate={this.state.is_getdate} datecalender={this.state.datecalender} data={this.convertToFrontEnd(this.props.data)}></FullcalenderComponent>
+              <FullcalenderComponent
+                searchDate={this.state.searchDate}
+                onAddEvent={this.onAddEvent}
+                onDeleteException={this.onDeleteException}
+                rooms={this.props.room}
+                room={this.convertArrayRoom(this.props.room)}
+                onCancleEdit={this.onCancleEdit}
+                onUpdate={this.onUpdate}
+                onEdit={this.onEdit}
+                onDelete={this.onDelete}
+                is_checkdate={this.state.is_getdate}
+                datecalender={this.state.datecalender}
+                data={this.convertToFrontEnd(this.props.data)}
+              />
             </div>
           </div>
         </main>

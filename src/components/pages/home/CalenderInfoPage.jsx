@@ -501,7 +501,6 @@ class CalenderInfoPage extends Component {
             email += `${item[index].key}`
           })
         }
-
       }
       let formDataObject = {};
       if (data.checkbox === true) {
@@ -520,7 +519,6 @@ class CalenderInfoPage extends Component {
               arrayDay += `${item[index]}`;
             })
           }
-
         }
         formDataObject = {
           'room_id': data.rooms,
@@ -696,7 +694,9 @@ class CalenderInfoPage extends Component {
     };
     return (
       <div className="wrapper">
-        <HeaderLayout searchDate={this.state.searchDate} />
+        <HeaderLayout
+          searchDate={this.state.searchDate}
+        />
         <main className="b-page-main">
           <div className="b-page-calender">
             <Modal
@@ -709,24 +709,35 @@ class CalenderInfoPage extends Component {
               cancelText="Hủy"
             >
               <div className="b-events">
-                <Radio.Group onChange={this.onChangeEditEvent} value={this.state.valueEdit}>
+                <Radio.Group
+                  onChange={this.onChangeEditEvent}
+                  value={this.state.valueEdit}
+                >
                   {this.state.isRepeat ?
                     <>
-                      <Radio style={radioStyle} value={2}>
+                      <Radio
+                        style={radioStyle}
+                        value={2}
+                      >
                         Chỉ sửa đặt phòng này
-                                            </Radio>
-                      <Radio style={radioStyle} value={1}>
+                      </Radio>
+                      <Radio
+                        style={radioStyle}
+                        value={1}
+                      >
                         Sửa tất cả đặt phòng này
-                                            </Radio>
+                      </Radio>
                     </>
                     :
                     <>
-                      <Radio style={radioStyle} value={1}>
+                      <Radio
+                        style={radioStyle}
+                        value={1}
+                      >
                         Sửa  đặt phòng này
-                                            </Radio>
+                      </Radio>
                     </>
                   }
-
                 </Radio.Group>
               </div>
             </Modal>
@@ -742,14 +753,19 @@ class CalenderInfoPage extends Component {
                   <div className="b-heading">
                     <h2 className="b-text-title">
                       ĐẶT LỊCH PHÒNG HỌP
-                                            </h2>
+                    </h2>
                   </div>
                   <div className="b-content">
                     <form onSubmit={this.onSubmitDate}>
                       <div className="b-repeat">
                         <div className="b-form-group">
                           <label >Theo</label>
-                          <select className="b-select" name='choice' value={this.state.choice} onChange={this.onChangerChoice}>
+                          <select
+                            className="b-select"
+                            name='choice'
+                            value={this.state.choice}
+                            onChange={this.onChangerChoice}
+                          >
                             <option value="daily">Ngày</option>
                             <option value="weekly">Tuần</option>
                             <option value="monthly">Tháng</option>
@@ -763,21 +779,27 @@ class CalenderInfoPage extends Component {
                               style={{ width: '100%' }}
                               placeholder="Chọn thứ trong tuần !"
                               defaultValue={this.state.byweekday}
-                              onChange={this.handleChangeByWeek}>
+                              onChange={this.handleChangeByWeek}
+                            >
                               {children.map(data => (
                                 <Option key={data.id} value={data.name}>{data.title}</Option>
                               ))}
                             </Select>
                           </div>
                           :
-                          <></>
+                          <div></div>
                         }
-
                         <div className="b-form-group">
                           <label >Lặp Lại</label>
-                          <InputNumber min={this.state.minCount} max={this.state.maxCount} value={this.state.count} onChange={this.onChangeNumber} style={{
-                            marginLeft: '10px'
-                          }} />
+                          <InputNumber
+                            min={this.state.minCount}
+                            max={this.state.maxCount}
+                            value={this.state.count}
+                            onChange={this.onChangeNumber}
+                            style={{
+                              marginLeft: '10px'
+                            }}
+                          />
                         </div>
                       </div>
                       <div className="b-form-button">
@@ -793,17 +815,31 @@ class CalenderInfoPage extends Component {
               <div className="b-heading">
                 <div className="b-heading-left">
                   <div className="b-form-group">
-                    <input type="text" name="title" autoComplete="off" value={this.state.title} placeholder="Nhập tiêu đề" className="b-input" onChange={this.onChanger} />
+                    <input
+                      type="text"
+                      name="title"
+                      autoComplete="off"
+                      value={this.state.title}
+                      placeholder="Nhập tiêu đề"
+                      className="b-input"
+                      onChange={this.onChanger}
+                    />
                     <span className={this.state.title === '' ? "" : "is-current"}>*</span>
                   </div>
                   <div className="b-group-select">
                     <div className="b-form-group">
                       <label>Ngày cuộc họp</label>
                       <br />
-                      <DatePicker allowClear={false} className="b-picker" onChange={this.onChangeDate} defaultValue={moment(this.state.dateStart, dateFormat)} format={dateFormat} />
+                      <DatePicker
+                        allowClear={false}
+                        className="b-picker"
+                        onChange={this.onChangeDate}
+                        defaultValue={moment(this.state.dateStart, dateFormat)}
+                        format={dateFormat}
+                      />
                       <span className={this.state.validateDate ? "is-error  is-check" : "is-error"}>
                         * Thời gian không hợp lệ
-                                        </span>
+                      </span>
                     </div>
                     <div className="b-form-group">
                       <label>Thời gian bắt đầu</label>
@@ -816,7 +852,7 @@ class CalenderInfoPage extends Component {
                       </Select>
                       <span className={this.state.validateTime ? "is-error is-check" : "is-error"}>
                         * Thời gian lớn hơn hiện tại
-                                            </span>
+                      </span>
                     </div>
                     <div className="b-form-group">
                       <label>Thời gian kết thúc</label>
@@ -829,12 +865,17 @@ class CalenderInfoPage extends Component {
                       </Select>
                       <span className={this.state.validateTimeItem ? "is-error is-check" : "is-error"}>
                         * Thời gian lớn hơn hiện tại
-                                            </span>
+                      </span>
                     </div>
                   </div>
                   <div className="b-select-repeat">
                     <div className="b-form-group">
-                      <select className="b-select" value={this.state.repeat} name="repeat" onChange={this.onChangerSelectRepeat}>
+                      <select
+                        className="b-select"
+                        value={this.state.repeat}
+                        name="repeat"
+                        onChange={this.onChangerSelectRepeat}
+                      >
                         {
                           this.state.selectRepeat.map(data => (
                             <option key={data.id} value={data.id}>{data.name}</option>
@@ -855,7 +896,7 @@ class CalenderInfoPage extends Component {
                 <div className="b-heading">
                   <h2 className="b-text-title">
                     Chi tiết sự kiện
-                                        </h2>
+                  </h2>
                 </div>
                 <div className="b-description-content">
                   <div className="b-form-group">
@@ -863,7 +904,12 @@ class CalenderInfoPage extends Component {
                       <i className="fas fa-bell" />
                     </div>
                     <div className="b-form-control">
-                      <select className='b-input' name="rooms" value={this.state.rooms} onChange={this.onChanger}>
+                      <select
+                        className='b-input'
+                        name="rooms"
+                        value={this.state.rooms}
+                        onChange={this.onChanger}
+                      >
                         {this.props.room.map(data => (
                           <option key={data.id} value={data.id}>{data.attributes.name} - {data.attributes.seats} Chổ ngồi</option>
                         ))}
@@ -902,7 +948,8 @@ class CalenderInfoPage extends Component {
               <SearchComponent
                 onGetArrayEmail={this.onGetArrayEmail}
                 arrayEmail={this.state.arrayEmail}
-                edit={this.state.edit} />
+                edit={this.state.edit}
+              />
             </div>
           </div>
         </main >

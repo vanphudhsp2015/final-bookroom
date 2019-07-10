@@ -52,25 +52,32 @@ class RoomPage extends Component {
   }
   render() {
     const mainContent = () => {
-      switch (this.state.views) {
-        case "LIST":
-          return (
-            <TableComponent onEdit={this.onEdit} choice="ROOM" onDelete={this.onDelete} data={this.props.data} onChangerView={this.onChangerView}></TableComponent>
-          )
-        case "FORM":
-          return (
-            <FormComponent choice="ROOM" onUpdate={this.onUpdate.bind(this)} edit={this.state.edit} dataEdit={this.state.dataEdit} onAdd={this.onAdd} ></FormComponent>
-          )
-        default:
-          return (
-            <></>
-          )
+      if (this.state.views === 'LIST') {
+        return (
+          <TableComponent
+            onEdit={this.onEdit}
+            choice="ROOM"
+            onDelete={this.onDelete}
+            data={this.props.data}
+            onChangerView={this.onChangerView}
+          />
+        )
+      } else {
+        return (
+          <FormComponent
+            choice="ROOM"
+            onUpdate={this.onUpdate.bind(this)}
+            edit={this.state.edit}
+            dataEdit={this.state.dataEdit}
+            onAdd={this.onAdd}
+          />
+        )
       }
     }
     return (
       <MasterLayout>
         {mainContent()}
-      </MasterLayout>
+      </MasterLayout >
     );
   }
 }
