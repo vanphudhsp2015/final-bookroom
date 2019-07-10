@@ -118,12 +118,10 @@ class EventAdminPage extends Component {
               user_id: item.attributes.user_id,
               exception: []
             }
-
           }
         } else {
           return null;
         }
-
       })
       if (check === true) {
         return result = [...result, ...dataItem]
@@ -168,7 +166,6 @@ class EventAdminPage extends Component {
         edit: true
       })
     }
-
   }
   onUpdate = (data) => {
     this.props.dispatch(action.requestUpdateEvent(data));
@@ -176,7 +173,6 @@ class EventAdminPage extends Component {
       visible: false,
       edit: false
     })
-
   }
   onCancleEdit = () => {
     this.setState({
@@ -270,7 +266,8 @@ class EventAdminPage extends Component {
           dataEdit={this.state.dataEdit}
           edit={this.state.edit}
           onAddEvent={this.onAddEvent}
-          room={this.convertArrayRoom(this.props.room)} />
+          room={this.convertArrayRoom(this.props.room)}
+        />
         <div className="b-admin-calender">
           <div className="b-calender">
             <div className="b-heading">
@@ -279,35 +276,68 @@ class EventAdminPage extends Component {
                   <CardCalenderComponent
                     onGetDate={this.onGetDate}
                     onResetCalender={this.onResetCalender}
-                    isCard={this.state.isCard} />
-                  <h3 className="b-text-title"  >
-                    <i className="fas fa-calendar-week" style={{ cursor: 'pointer' }} onClick={this.onCalenderCard}></i> Calender
+                    isCard={this.state.isCard}
+                  />
+                  <h3 className="b-text-title">
+                    <i
+                      className="fas fa-calendar-week"
+                      style={{ cursor: 'pointer' }}
+                      onClick={this.onCalenderCard}
+                    />
+                    Calender
                   </h3>
                 </div>
                 <div className="b-block-center">
                   <form className="b-form-filter" onSubmit={this.onSearchEvent}>
                     <div className="b-form-group">
-                      <DatePicker allowClear={false} hideDisabledOptions onChange={this.onChange} defaultValue={moment(now, dateFormat)} value={moment(this.state.dateStart, dateFormat)} className="b-input" />
+                      <DatePicker
+                        allowClear={false}
+                        hideDisabledOptions
+                        onChange={this.onChange}
+                        defaultValue={moment(now, dateFormat)}
+                        value={moment(this.state.dateStart, dateFormat)}
+                        className="b-input"
+                      />
                     </div>
                     <div className="b-form-group">
-                      <TimePicker allowClear={false} hideDisabledOptions disabledHours={disabledHours} minuteStep={30} defaultValue={moment(this.state.timestart, format)} format={format} onChange={this.onChangeTime} className="b-input" />
+                      <TimePicker
+                        allowClear={false}
+                        hideDisabledOptions
+                        disabledHours={disabledHours}
+                        minuteStep={30}
+                        defaultValue={moment(this.state.timestart, format)}
+                        format={format}
+                        onChange={this.onChangeTime}
+                        className="b-input"
+                      />
                     </div>
                     <div className="b-form-group">
-                      <TimePicker allowClear={false} hideDisabledOptions disabledHours={disabledHours} minuteStep={30} defaultValue={moment(this.state.timeend, format)} value={moment(this.state.timeend, format)} format={format} onChange={this.onChangeTimeItem} className="b-input" />
+                      <TimePicker
+                        allowClear={false}
+                        hideDisabledOptions
+                        disabledHours={disabledHours}
+                        minuteStep={30}
+                        defaultValue={moment(this.state.timeend, format)}
+                        value={moment(this.state.timeend, format)}
+                        format={format}
+                        onChange={this.onChangeTimeItem}
+                        className="b-input"
+                      />
                     </div>
                     <div className="b-form-group">
                       <button type="submit" className="b-btn">
-                        <i className="fas fa-search-location" ></i> Tìm Kiếm
+                        <i className="fas fa-search-location" />
+                        Tìm Kiếm
                       </button>
                     </div>
                   </form>
                 </div>
                 <div className="b-block-right">
                   <button className="b-btn" onClick={this.onReloadData}>
-                    <i className="fas fa-plus"></i> Cập Nhật
+                    <i className="fas fa-plus" />Cập Nhật
                   </button>
                   <button className="b-btn" onClick={this.onShowModal}>
-                    <i className="fas fa-plus"></i> Thêm
+                    <i className="fas fa-plus" /> Thêm
                   </button>
                 </div>
               </div>
@@ -319,7 +349,8 @@ class EventAdminPage extends Component {
                 onDate={this.state.onDate}
                 onUpdate={this.onUpdate}
                 onEdit={this.onEdit}
-                onDelete={this.onDelete} data={this.convertToFrontEnd(this.props.data)} />
+                onDelete={this.onDelete} data={this.convertToFrontEnd(this.props.data)}
+              />
             </div>
           </div>
         </div>
