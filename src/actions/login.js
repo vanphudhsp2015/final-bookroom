@@ -20,7 +20,7 @@ export function requestGetLogin(data) {
       data: token
     }).then(function (response) {
       if (response !== undefined) {
-        cookies.set('token', response.data.access_token);
+        cookies.set('token', response.data.access_token, { maxAge: 86400 });
         axios.request({
           method: 'GET',
           url: `${API.API_URL}/api/v1/me`,
@@ -31,7 +31,7 @@ export function requestGetLogin(data) {
           }
         }).then(function (response) {
           if (response) {
-            cookies.set('data', response.data.data);
+            cookies.set('data', response.data.data, { maxAge: 86400 });
             message.success('Đăng Nhập Thành Công !!');
             dispatch(receiveData(types.REQUEST_LOGIN, response.data.data))
           }
