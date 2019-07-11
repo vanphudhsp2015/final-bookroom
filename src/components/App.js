@@ -4,9 +4,9 @@ import '../assets/styles/main.scss';
 class App extends Component {
   render() {
     return (
-      <>
+      <React.Fragment>
         {Routes()}
-      </>
+      </React.Fragment>
     );
   }
 }

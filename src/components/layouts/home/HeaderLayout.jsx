@@ -37,6 +37,14 @@ class HeaderLayout extends Component {
     }
   }
   componentDidMount() {
+    if (cookies.get('token') === undefined) {
+      cookies.remove('accessToken');
+      cookies.remove('token');
+      cookies.remove('data');
+      this.setState({
+        isLogout: true
+      })
+    }
     document.addEventListener('mousedown', this.handleClickOutside);
   }
   componentWillUnmount() {
@@ -66,7 +74,7 @@ class HeaderLayout extends Component {
   responseGoogle = (response) => {
     if (response) {
       this.props.dispatch(action.requestGetLogin(response))
-      cookies.set('accessToken', response.Zi.access_token);
+      cookies.set('accessToken', response.Zi.access_token, { maxAge: 86400 });
       this.setState({
         visible: false,
         isLogout: false
