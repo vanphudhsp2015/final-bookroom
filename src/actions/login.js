@@ -80,7 +80,12 @@ export function requestCheckLogin() {
     }).then(function (response) {
       dispatch(receiveData(types.REQUEST_CHECK_LOGIN, response.data))
     }).catch(function (error) {
-      message.error(error);
+      if (error.response.status === 401) {
+        cookies.remove('token')
+        cookies.remove('data')
+        cookies.remove('accessToken')
+        dispatch(receiveData(types.REQUEST_CHECK_TOKEN, error))
+      }
     })
   }
 }

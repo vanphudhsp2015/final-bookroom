@@ -26,6 +26,8 @@ function parseBody(response) {
     return response.data.data
   } else if (response.status === 204) {
     return response;
+  } else if (response.status === 400) {
+    return response;
   } else {
     return this.parseError(response.data.messages)
   }
@@ -73,7 +75,7 @@ instance.interceptors.request.use((config) => {
 instance.interceptors.response.use((response) => {
   return parseBody(response)
 }, error => {
-  message.warn(error.response.status)
+  // message.warn(error.response.status)
   if (error.response) {
     return parseError(error.response.data)
   } else {

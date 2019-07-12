@@ -49,8 +49,6 @@ class FullcalenderComponent extends Component {
       isShowCalender: false,
       isShowDelete: false,
       valueDelete: 1,
-      isShowEdit: false,
-      isRedirect: false,
       isException: false,
       visible: false,
       dateStart: dateFormat(now, 'yyyy-mm-dd'),
@@ -61,7 +59,6 @@ class FullcalenderComponent extends Component {
       day: dateFormat(now, 'yyyy-mm-dd')
     }
   }
-
   componentDidUpdate(prevProps, prevState) {
     if (prevProps.datecalender !== this.props.datecalender) {
       let calendarApi = this.calendarComponentRef.current.getApi()
@@ -71,11 +68,6 @@ class FullcalenderComponent extends Component {
       let calendarApi = this.calendarComponentRef.current.getApi()
       calendarApi.gotoDate(dateFormat(this.props.searchDate, 'yyyy-mm-dd'))
     }
-  }
-  onResetDouble() {
-    this.setState({
-      countClick: 0
-    })
   }
   toggleWeekends = () => {
     this.setState({ // update a property
@@ -103,9 +95,6 @@ class FullcalenderComponent extends Component {
       mailto: info.event.extendedProps.mailto
     })
   }
-  handleClose = () => {
-    this.setState({ show: false });
-  }
   handleOk = (e) => {
     this.setState({
       show: false,
@@ -124,7 +113,6 @@ class FullcalenderComponent extends Component {
       id: id,
       user_id: user_id
     })
-
   }
   onShowCalender = () => {
     this.setState({
@@ -148,15 +136,10 @@ class FullcalenderComponent extends Component {
       show: false
     })
   }
-  onChangerCheck = (e) => {
-    this.setState({
-      checkbox: e.target.checked
-    })
-  }
   handleDeleteOk = () => {
     const { id } = this.state;
     var self = this.props;
-    if (this.state.valueDelete === 2) {
+    if (this.state.valueDelete === 1) {
       self.onDeleteException(this.state);
       this.setState({
         isShowDelete: false,
@@ -182,41 +165,11 @@ class FullcalenderComponent extends Component {
       valueDelete: e.target.value,
     });
   }
-  handleEditOk = () => {
-    if (this.state.valueDelete === 2) {
-      this.setState({
-        isShowDelete: false,
-        show: !this.state.show,
-        isException: true
-      })
-    } else {
-      this.setState({
-        isShowDelete: false,
-        show: !this.state.show,
-        isRedirect: true
-      })
-    }
-  }
-  onCloseEdit = () => {
-    this.setState({
-      isShowEdit: false
-    })
-  }
-  onShowModalEdit = () => {
-    this.setState({
-      isShowEdit: true
-    })
-  }
   roundMinutesDate(data, add) {
     const start = moment(data);
     const remainder = 30 - (start.minute() % 30) + add;
     const dateTime = moment(start).add(remainder, "minutes").format("HH:mm");
     return dateTime;
-  }
-  onChanger = (event) => {
-    this.setState({
-      [event.target.name]: event.target.value
-    })
   }
   componentWillUnmount() {
     this.setState({
@@ -247,13 +200,6 @@ class FullcalenderComponent extends Component {
         }
       }
     }
-  }
-  convertMinsToHrsMins(mins) {
-    let h = Math.floor(mins / 60);
-    let m = mins % 60;
-    h = h < 10 ? '0' + h : h;
-    m = m < 10 ? '0' + m : m;
-    return `${h}:${m}`;
   }
   renderSwitchRepeat = (param) => {
     switch (param) {
@@ -295,16 +241,16 @@ class FullcalenderComponent extends Component {
               {this.state.is_repeat ?
                 <React.Fragment>
                   <Radio style={radioStyle} value={1}>
-                    Xóa tất cả đặt phòng này
+                    Chỉ xóa đặt phòng này
                   </Radio>
                   <Radio style={radioStyle} value={2}>
-                    Chỉ xóa đặt phòng này
+                    Xóa tất cả đặt phòng này
                   </Radio>
                 </React.Fragment>
                 :
                 <div className="b-check-delete">
                   <p className="b-text-norm">
-                    <i className="fas fa-exclamation-triangle" />  Xóa đặt phòng này
+                    <span className="fas fa-exclamation-triangle" />  Xóa đặt phòng này
                   </p>
                 </div>
               }
@@ -340,20 +286,17 @@ class FullcalenderComponent extends Component {
               <div className="b-button-funtion">
                 <div className="b-item">
                   <Link to={'/' + this.state.id + '/' + this.state.day + '?datestart=' + this.state.day + '&timestart=' + this.state.timestart + '&timeend=' + this.state.timeend + '&room=' + this.state.room_id} className="b-btn">
-                    <i className="fas fa-pencil-alt" />
+                    <span className="fas fa-pencil-alt" />
                   </Link>
                 </div>
                 <div className="b-item">
-                  <button
-                    className="b-btn"
-                    onClick={this.onDelete.bind(this, this.state.id, this.state.user_id)}
-                  >
-                    <i className="far fa-trash-alt" />
+                  <button className="b-btn" onClick={this.onDelete.bind(this, this.state.id, this.state.user_id)}>
+                    <span className="far fa-trash-alt" />
                   </button>
                 </div>
                 <div className="b-item" onClick={this.onCloseModal}>
                   <button className="b-btn">
-                    <i className="fas fa-times"></i>
+                    <span className="fas fa-times" />
                   </button>
                 </div>
               </div>
@@ -362,12 +305,12 @@ class FullcalenderComponent extends Component {
                 <div className="b-button-funtion">
                   <div className="b-item">
                     <button className="b-btn" onClick={this.onDelete.bind(this, this.state.id, this.state.user_id)}>
-                      <i className="far fa-trash-alt" />
+                      <span className="far fa-trash-alt" />
                     </button>
                   </div>
                   <div className="b-item" onClick={this.onCloseModal}>
                     <button className="b-btn">
-                      <i className="fas fa-times" />
+                      <span className="fas fa-times" />
                     </button>
                   </div>
                 </div>
@@ -375,7 +318,7 @@ class FullcalenderComponent extends Component {
                 <div className="b-button-funtion">
                   <div className="b-item">
                     <button className="b-btn" onClick={this.onCloseModal}>
-                      <i className="fas fa-times" />
+                      <span className="fas fa-times" />
                     </button>
                   </div>
                 </div>
@@ -393,9 +336,9 @@ class FullcalenderComponent extends Component {
                   {this.state.recount ? ` ${this.state.recount + '  lần lặp lại'}` : ''}
                 </p>
               </div>
-              <span className="b-text-rom">
+              <p className="b-text-rom">
                 Địa điểm/Phòng: {this.state.room}
-              </span>
+              </p>
               <div>
                 <p className="b-text-user">
                   Người tạo: {this.state.user}
@@ -425,7 +368,16 @@ class FullcalenderComponent extends Component {
           handleWindowResize
           allDayText={'Giờ'}
           allDaySlot={false}
-          plugins={[resourceTimeGridPlugin, rrsetPlugin, dayGridPlugin, timeGridPlugin, interactionPlugin, listPlugin]}
+          plugins={
+            [
+              resourceTimeGridPlugin,
+              rrsetPlugin,
+              dayGridPlugin,
+              timeGridPlugin,
+              interactionPlugin,
+              listPlugin
+            ]
+          }
           ref={this.calendarComponentRef}
           weekends={this.state.calendarWeekends}
           events={this.props.data}

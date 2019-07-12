@@ -44,6 +44,8 @@ class HeaderLayout extends Component {
       this.setState({
         isLogout: true
       })
+    } else {
+      this.props.dispatch(action.requestCheckLogin());
     }
     document.addEventListener('mousedown', this.handleClickOutside);
   }
@@ -146,7 +148,7 @@ class HeaderLayout extends Component {
                   className="b-btn"
                   onClick={this.onRedirect}
                 >
-                  <i className="fas fa-cog" style={{ transform: 'translateY(3px)' }} />
+                  <span className="fas fa-cog" />
                 </button>
               </li>
               :
@@ -160,7 +162,7 @@ class HeaderLayout extends Component {
                     cookies.get('data').attributes.img} alt="Admin"
                 />
                 Xin Chào,{cookies.get('data').attributes.name}
-                <i className="fas fa-angle-down" />
+                <span className="fas fa-angle-down" />
               </button>
               <div className="b-hash-menu">
                 <div className="b-logout">
@@ -179,7 +181,7 @@ class HeaderLayout extends Component {
         return (
           <li className="b-item ">
             <button className="b-btn" onClick={this.showModal}>
-              <i className="fas fa-user" />
+              <span className="fas fa-user" />
               Đăng Nhập
             </button>
           </li>
@@ -192,6 +194,7 @@ class HeaderLayout extends Component {
         return (
           <li className="b-item ">
             <button className="b-btn" onClick={this.showModal}>
+              <span className="fas fa-user" />
               Đăng Nhập
             </button>
           </li>
@@ -219,7 +222,7 @@ class HeaderLayout extends Component {
                 Đăng Nhập
               </h2>
             </div>
-            <div className="b-content" style={{ width: '100%' }}>
+            <div className="b-content">
               <GoogleLogin
                 clientId={API_GG}
                 onSuccess={this.responseGoogle}
@@ -254,6 +257,7 @@ class HeaderLayout extends Component {
 function mapStateToProps(state) {
   return {
     isLogin: state.login.isLogin,
+    isToken: state.login.isToken,
     user: state.login.user
   }
 }

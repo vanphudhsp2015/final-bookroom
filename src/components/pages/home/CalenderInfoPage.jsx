@@ -78,9 +78,9 @@ class CalenderInfoPage extends Component {
       timestart: this.roundMinutesDate(now, 0),
       timeend: this.roundMinutesDate(now, 60),
       selectRepeat: [
+        { id: '1', name: 'Hàng ngày', count: 10 },
         { id: '2', name: 'Không lặp lại' },
         { id: '3', name: 'Mọi ngày trong tuần từ thứ 2 đến thứ 6' },
-        { id: '1', name: 'Hàng ngày', count: 10 },
         { id: '0', name: 'Tùy chỉnh' },
       ],
       visible: false,
@@ -233,6 +233,7 @@ class CalenderInfoPage extends Component {
       case '0':
         this.setState({
           visible: true,
+          count: 1
         })
         break;
       case '1':
@@ -276,9 +277,9 @@ class CalenderInfoPage extends Component {
     this.setState({
       visible: false,
       selectRepeat: [
+        { id: '1', name: 'Hàng ngày', count: 10 },
         { id: '2', name: 'Không lặp lại' },
         { id: '3', name: 'Mọi ngày trong tuần từ thứ 2 đến thứ 6' },
-        { id: '1', name: 'Hàng ngày', count: 10 },
         { id: '0', name: 'Tùy chỉnh' },
       ],
       count: 1
@@ -451,7 +452,7 @@ class CalenderInfoPage extends Component {
             'timeend': data.timeend,
             'repeatby': data.choice,
             'interval': 1,
-            'count': data.byweekday.length > 0 ? (data.count * data.byweekday.length + 1) : (data.count + 1),
+            'count': data.byweekday.length > 0 ? ((data.count + 1) * data.byweekday.length) : (data.count + 1),
             'byweekday': data.choice === 'weekly' ? arrayDay : '',
             'mail': data.arrayEmail === undefined ? '' : email
           }
@@ -476,7 +477,9 @@ class CalenderInfoPage extends Component {
           selfProps.dispatch(action.requestAddEventCheck(response));
           selfProps.history.push(`/?date=${dateFormatDate(self.dateStart, 'yyyy-mm-dd')}`);
         }).catch(function (error) {
-          message.error(error.messages[0])
+          if (error.messages[0].status === 400) {
+            message.error(error.messages[0].errors[0].detail);
+          }
         })
       }
     }
@@ -484,7 +487,7 @@ class CalenderInfoPage extends Component {
   handleEditOk = () => {
     var selfProps = this.props;
     var selfState = this.state;
-    if (this.state.valueEdit === 1) {
+    if (this.state.valueEdit === 2) {
       let data = this.state;
       let email = '';
       if (data.arrayEmail !== undefined && data.arrayEmail.length > 0) {
@@ -531,7 +534,7 @@ class CalenderInfoPage extends Component {
           'check': '1',
           'repeatby': data.choice,
           'interval': 1,
-          'count': data.byweekday.length > 0 ? (data.count * data.byweekday.length + 1) : (data.count + 1),
+          'count': data.byweekday.length > 0 ? ((data.count + 1) * data.byweekday.length) : (data.count + 1),
           'byweekday': data.choice === 'weekly' ? arrayDay : '',
           'mail': email
         }
@@ -557,7 +560,9 @@ class CalenderInfoPage extends Component {
         selfProps.dispatch(action.requestUpdateEvent(response));
         selfProps.history.push(`/?date=${dateFormatDate(selfState.dateStart, 'yyyy-mm-dd')}`);
       }).catch(function (error) {
-        message.error(error.messages[0])
+        if (error.messages[0].status === 400) {
+          message.error(error.messages[0].errors[0].detail);
+        }
       })
     } else {
       var values = queryString.parse(this.props.location.search)
@@ -710,10 +715,10 @@ class CalenderInfoPage extends Component {
                 <Radio.Group onChange={this.onChangeEditEvent} value={this.state.valueEdit}>
                   {this.state.isRepeat ?
                     <React.Fragment>
-                      <Radio style={radioStyle} value={2}>
+                      <Radio style={radioStyle} value={1}>
                         Chỉ sửa đặt phòng này
                       </Radio>
-                      <Radio style={radioStyle} value={1}>
+                      <Radio style={radioStyle} value={2}>
                         Sửa tất cả đặt phòng này
                       </Radio>
                     </React.Fragment>
